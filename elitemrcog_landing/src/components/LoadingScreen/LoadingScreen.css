@@ -1,0 +1,110 @@
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #EEF0F8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.loading-screen--fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loading-screen__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    animation: loadingFadeIn 0.6s ease forwards;
+}
+
+@keyframes loadingFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.loading-screen__logo-wrap {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: logoPulse 1.5s ease infinite;
+}
+
+.loading-screen__logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+@keyframes logoPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.06);
+    }
+}
+
+.loading-screen__brand {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.loading-screen__brand-elite {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2F327D;
+}
+
+.loading-screen__brand-mrcog {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #00CBB8;
+}
+
+.loading-screen__bar-wrap {
+    width: 180px;
+    height: 4px;
+    background: #dde2f4;
+    border-radius: 100px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.loading-screen__bar {
+    height: 100%;
+    background: linear-gradient(90deg, #2F327D, #00CBB8);
+    border-radius: 100px;
+    animation: loadingBar 1.8s ease forwards;
+}
+
+@keyframes loadingBar {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 100%;
+    }
+}
