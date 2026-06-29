@@ -42,10 +42,17 @@ sudo pm2 startup
 sudo mkdir -p /var/www/elitemrcog
 sudo chown -R $USER:$USER /var/www/elitemrcog
 
+# Setup SSL Certificates using Let's Encrypt (Trusted, Auto-Renewing)
+echo "Generating SSL Certificates for elitemrcog.com..."
+# Note: Nginx must be configured with the domains before this runs!
+# The certbot command will automatically configure Nginx for HTTPS.
+sudo certbot --nginx -d elitemrcog.com -d www.elitemrcog.com -d status.elitemrcog.com --non-interactive --agree-tos -m admin@elitemrcog.com
+
 echo "------------------------------------------------------"
 echo "Server Initialization Complete!"
 echo "Next Steps:"
 echo "1. Clone your repository into /var/www/elitemrcog"
 echo "2. Copy deployment configs from /deploy to /etc"
 echo "3. Run deployment scripts."
+echo "4. SSL Certificates have been configured via Certbot (they auto-renew before 90 days so they are permanently valid)."
 echo "------------------------------------------------------"
