@@ -10,7 +10,7 @@ print("Creating/updating users...")
 
 # SuperAdmin
 superadmin, _ = User.objects.get_or_create(
-    email="superadmin@example.com", 
+    email="superadmin@elitemrcog.com", 
     defaults={
         "first_name": "Super", 
         "last_name": "Admin",
@@ -24,39 +24,25 @@ superadmin.is_staff = True
 superadmin.is_verified = True
 superadmin.set_password("Password123!")
 superadmin.save()
-print("Superadmin created/updated.")
+print("Superadmin created/updated: superadmin@elitemrcog.com / Password123!")
 
-# Admin
-admin, _ = User.objects.get_or_create(
-    email="admin2@example.com", 
-    defaults={
-        "first_name": "Admin", 
-        "last_name": "User", 
-        "is_staff": True, 
-        "is_verified": True
-    }
-)
-admin.is_staff = True
-admin.is_superuser = False
-admin.is_verified = True
-admin.set_password("Password123!")
-admin.save()
-print("Admin created/updated.")
-
-# Student
-student, _ = User.objects.get_or_create(
-    email="student@example.com", 
-    defaults={
-        "first_name": "Student", 
-        "last_name": "User", 
-        "is_verified": True
-    }
-)
-student.is_staff = False
-student.is_superuser = False
-student.is_verified = True
-student.set_password("Password123!")
-student.save()
-print("Student created/updated.")
+# 6 Admins
+for i in range(1, 7):
+    email = f"admin{i}@elitemrcog.com"
+    admin, _ = User.objects.get_or_create(
+        email=email, 
+        defaults={
+            "first_name": f"Admin", 
+            "last_name": f"{i}", 
+            "is_staff": True, 
+            "is_verified": True
+        }
+    )
+    admin.is_staff = True
+    admin.is_superuser = False
+    admin.is_verified = True
+    admin.set_password("Password123!")
+    admin.save()
+    print(f"Admin {i} created/updated: {email} / Password123!")
 
 print("All credentials are fully configured and ready!")
