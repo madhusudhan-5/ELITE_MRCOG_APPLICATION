@@ -1,0 +1,368 @@
+.vl-container {
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.vl-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+}
+
+.vl-title {
+    margin: 0 0 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    color: #111827;
+}
+
+.vl-subtitle {
+    color: #6b7280;
+    margin: 0;
+}
+
+.vl-btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.vl-btn-primary:hover {
+    background: #1d4ed8;
+}
+
+/* Filters */
+.vl-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    align-items: center;
+    flex-wrap: wrap;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.vl-search {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem;
+    border-radius: 6px;
+    flex: 1;
+    min-width: 250px;
+}
+
+.vl-search input {
+    border: none;
+    outline: none;
+    flex: 1;
+}
+
+.vl-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.vl-filter-group select {
+    padding: 0.4rem 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    outline: none;
+}
+
+.vl-refresh-btn {
+    background: none;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+/* List */
+.vl-videos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.vl-list-header {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.vl-video-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1rem;
+    transition: box-shadow 0.2s;
+}
+
+.vl-video-row:hover {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-color: #d1d5db;
+}
+
+.vl-video-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.vl-video-icon {
+    color: #6b7280;
+}
+
+.vl-video-meta {
+    display: flex;
+    flex-direction: column;
+}
+
+.vl-video-title {
+    font-weight: 600;
+    color: #111827;
+}
+
+.vl-video-module {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.vl-video-badges {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: 1rem;
+}
+
+.vl-badge {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    background: #f3f4f6;
+    color: #4b5563;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.vl-badge--free {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.vl-badge--draft {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.vl-video-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.vl-video-actions button {
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+.vl-video-actions button:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.vl-video-actions button.danger:hover {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+/* Modal */
+.vl-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.vl-modal {
+    background: #fff;
+    width: 600px;
+    max-width: 90vw;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+.vl-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.vl-modal-header h3 {
+    margin: 0;
+    font-size: 1.125rem;
+}
+
+.vl-modal-header button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+.vl-modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.vl-form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.vl-form-row label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.vl-form-row input[type="text"],
+.vl-form-row input[type="number"],
+.vl-form-row select,
+.vl-form-row textarea {
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    outline: none;
+}
+
+.vl-form-row input:focus,
+.vl-form-row select:focus,
+.vl-form-row textarea:focus {
+    border-color: #2563eb;
+}
+
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.vl-checkbox-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.vl-checkbox-row label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.vl-thumb-preview {
+    max-height: 100px;
+    object-fit: contain;
+    margin-top: 0.5rem;
+    border-radius: 4px;
+}
+
+.vl-modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.vl-btn-cancel {
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.vl-btn-save {
+    padding: 0.5rem 1rem;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* States */
+.vl-loading, .vl-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem;
+    color: #6b7280;
+    gap: 1rem;
+}
+
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* Toast */
+.vl-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    background: #fff;
+    border-left: 4px solid #10b981;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    z-index: 2000;
+}
+.vl-toast--error { border-left-color: #ef4444; }
+.vl-toast button { background: none; border: none; cursor: pointer; color: #9ca3af; display: flex; }

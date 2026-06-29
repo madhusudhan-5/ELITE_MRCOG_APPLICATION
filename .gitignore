@@ -1,0 +1,15 @@
+elitemrcog_backend_env/
+*.pyc
+__pycache__/
+.DS_Store
+*.png
+*.jpg
+*.pdf
+.vscode/
+authlayout_grep.txt
+parse_log.py
+parse_log_write.py
+recover_files.py
+extract.sh
+node_modules/
+build/

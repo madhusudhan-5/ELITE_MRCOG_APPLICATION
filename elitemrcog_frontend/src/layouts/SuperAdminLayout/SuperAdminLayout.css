@@ -1,0 +1,279 @@
+.superadmin-layout {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    background-color: #f7f9fb;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+}
+
+.superadmin-sidebar {
+    width: 250px;
+    background: #0f172a; /* darker blue slate */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 0;
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.superadmin-sidebar-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    padding: 0 1rem;
+}
+
+.superadmin-sidebar-brand img {
+    height: 35px;
+}
+
+.superadmin-sidebar-brand h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+    color: white;
+}
+
+.superadmin-mobile-close-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: white;
+    position: absolute;
+    right: 1rem;
+    cursor: pointer;
+}
+
+.superadmin-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding-right: 1rem;
+}
+
+.superadmin-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 1.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s;
+    border-radius: 0 30px 30px 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.superadmin-nav-item:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.superadmin-nav-item.active {
+    background-color: #ef4444; /* distinctive red indicating high privs */
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.5);
+}
+
+.superadmin-nav-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 1rem 1.5rem;
+}
+
+.superadmin-sidebar-bottom {
+    margin-top: auto;
+    padding-right: 1rem;
+}
+
+.logout-btn {
+    width: 100%;
+}
+
+.superadmin-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.superadmin-header {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    background: white;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.superadmin-header-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4b5563;
+    font-weight: 600;
+}
+
+.superadmin-mobile-menu-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: #4b5563;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin-right: 0.5rem;
+}
+
+.breadcrumb-back {
+    cursor: pointer;
+}
+
+.superadmin-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.superadmin-profile-dropdown-container {
+    position: relative;
+}
+
+.superadmin-profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    border: 1px solid #e5e7eb;
+    padding: 0.3rem 0.8rem 0.3rem 0.3rem;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    color: #1f2937;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.superadmin-profile-btn:hover {
+    background: #f9fafb;
+}
+
+.superadmin-profile-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.superadmin-profile-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    width: 150px;
+    overflow: hidden;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    z-index: 100;
+}
+
+.superadmin-profile-dropdown button {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: transparent;
+    border: none;
+    color: #4b5563;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-align: left;
+    transition: all 0.2s;
+}
+
+.superadmin-profile-dropdown button:hover {
+    background: #f3f4f6;
+    color: #1f2937;
+}
+
+.superadmin-content-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.superadmin-white-box {
+    background: white;
+    border-radius: 12px;
+    flex: 1;
+    padding: 2rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* --- MOBILE RESPONSIVENESS --- */
+@media (max-width: 1024px) {
+    .superadmin-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        transform: translateX(-100%);
+    }
+
+    .superadmin-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .superadmin-sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    .superadmin-mobile-menu-btn {
+        display: flex;
+    }
+
+    .superadmin-mobile-close-btn {
+        display: block;
+    }
+
+    .superadmin-header {
+        padding: 0 1rem;
+    }
+
+    .superadmin-content-area {
+        padding: 1rem;
+    }
+
+    .superadmin-white-box {
+        padding: 1.5rem 1rem;
+    }
+
+    .superadmin-profile-name {
+        display: none;
+    }
+    
+    .breadcrumbs {
+        font-size: 0.9rem;
+    }
+}

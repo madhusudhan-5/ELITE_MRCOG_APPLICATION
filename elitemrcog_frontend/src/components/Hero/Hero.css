@@ -1,0 +1,488 @@
+.hero {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #EEF0F8 0%, #E4E8F5 60%, #DCE2F2 100%);
+    display: flex;
+    align-items: center;
+    padding-top: var(--navbar-height);
+    overflow: hidden;
+}
+
+.hero__inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: var(--space-16);
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-10);
+}
+
+/* ---- Left Content ---- */
+.hero__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.hero__headline {
+    font-size: 3.4rem;
+    font-weight: 800;
+    color: var(--color-navy);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+/* The word "MRCOG" in the headline has a purple/navy color (same as rest but bolder visually) */
+.highlight-navy-bold {
+    color: var(--color-purple);
+}
+
+.hero__subtext {
+    font-size: var(--font-size-base);
+    color: var(--color-text-body);
+    line-height: 1.8;
+    max-width: 480px;
+}
+
+.hero__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    flex-wrap: wrap;
+}
+
+.hero__btn-main {
+    font-size: var(--font-size-base);
+    padding: 0.85rem 2.2rem;
+    background-color: var(--color-navy);
+    color: white;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition-base);
+    display: inline-flex;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+}
+
+.hero__btn-main:hover {
+    background-color: var(--color-purple);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.hero__btn-watch {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+}
+
+.hero__btn-play {
+    width: 44px;
+    height: 44px;
+    background: var(--color-white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--color-navy);
+    box-shadow: var(--shadow-md);
+    flex-shrink: 0;
+    padding-left: 3px;
+}
+
+.hero__btn-watch-text {
+    color: var(--color-teal);
+    font-weight: 600;
+}
+
+/* ---- Right Visual ---- */
+.hero__visual {
+    position: relative;
+    height: 520px;
+}
+
+.hero__photo-wrap {
+    position: absolute;
+    right: -20px;
+    top: 0;
+    bottom: 0;
+    width: 90%;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+}
+
+.hero__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+}
+
+.hero__photo--graduate {
+    object-fit: cover;
+    object-position: top center;
+    background: transparent;
+}
+
+/* Floating Cards */
+.hero__card {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    box-shadow: var(--shadow-lg);
+    z-index: 10;
+}
+
+.hero__card-avatars {
+    display: flex;
+    align-items: center;
+}
+
+.hero__avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid white;
+    margin-left: -10px;
+    object-fit: cover;
+}
+
+.hero__avatar:first-child {
+    margin-left: 0;
+}
+
+.hero__avatar-more {
+    background-color: var(--color-navy);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    z-index: 1;
+}
+
+/* 1K+ Satisfied Students — bottom left */
+.hero__card--students {
+    left: -20px;
+    bottom: 40px;
+    animation: float 4s ease-in-out infinite;
+}
+
+/* Video Lessons — middle left */
+.hero__card--video {
+    left: -10px;
+    top: 40%;
+    animation: float 4s ease-in-out 1s infinite;
+}
+
+/* Mock Tests — bottom right */
+.hero__card--mock {
+    right: -10px;
+    bottom: 60px;
+    animation: float 4s ease-in-out 0.5s infinite;
+}
+
+/* Interactive Learning — top right */
+.hero__card--interactive {
+    right: -20px;
+    top: 40px;
+    animation: float 3.5s ease-in-out 0.8s infinite;
+}
+
+.hero__card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--color-navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.hero__card-icon--teal {
+    background: var(--color-teal);
+}
+
+.hero__card-icon--navy {
+    background: var(--color-navy);
+}
+
+.hero__card-icon--pink {
+    background: var(--color-pink);
+}
+
+.hero__card-stat {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-navy);
+}
+
+/* ---- Connect Row (Telegram + WhatsApp) ---- */
+.hero__connect-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    margin-top: var(--space-2);
+}
+
+.hero__connect-label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+}
+
+.hero__connect-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--radius-full);
+    padding: 0.4rem 1rem 0.4rem 0.4rem;
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.hero__connect-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.hero__connect-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.hero__connect-icon--telegram {
+    background: #229ED9;
+}
+
+.hero__connect-icon--whatsapp {
+    background: #25D366;
+}
+
+.hero__connect-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.hero__connect-name {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-navy);
+    line-height: 1.2;
+}
+
+.hero__connect-sub {
+    font-size: 0.65rem;
+    color: var(--color-text-muted);
+    line-height: 1.2;
+}
+
+/* ====================================================
+   RESPONSIVE
+   ==================================================== */
+
+/* ── Tablet (≤1024px) ── */
+@media (max-width: 1024px) {
+    .hero__inner {
+        grid-template-columns: 1fr;
+        gap: var(--space-10);
+        padding-top: var(--space-4);
+        padding-bottom: var(--space-12);
+    }
+
+    .hero__content {
+        text-align: center;
+        align-items: center;
+    }
+
+    .hero__subtext {
+        max-width: 600px;
+    }
+
+    .hero__actions {
+        justify-content: center;
+    }
+
+    .hero__visual {
+        height: 420px;
+        width: 100%;
+        max-width: 560px;
+        margin: 0 auto;
+    }
+
+    .hero__photo-wrap {
+        right: 0;
+        width: 100%;
+    }
+
+    .hero__float-icon {
+        right: 10px;
+    }
+
+    /* Reposition floating cards for tablet */
+    .hero__card--students {
+        left: 0;
+        bottom: 20px;
+    }
+
+    .hero__card--video {
+        left: 0;
+        top: 30%;
+    }
+
+    .hero__card--mock {
+        right: 0;
+        bottom: 20px;
+    }
+
+    .hero__card--interactive {
+        right: 0;
+        top: 20px;
+    }
+}
+
+/* ── Mobile (≤768px) ── */
+@media (max-width: 768px) {
+    .hero {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .hero__headline {
+        font-size: 2.2rem;
+    }
+
+    .hero__subtext {
+        font-size: var(--font-size-sm);
+    }
+
+    .hero__visual {
+        height: 320px;
+        /* clip cards inside the visual area so nothing bleeds out */
+        overflow: hidden;
+        border-radius: var(--radius-xl);
+    }
+
+    /* Floating cards — compact & clipped within visual */
+    .hero__card {
+        padding: 6px 10px;
+        gap: 6px;
+        max-width: calc(50% - 12px);
+        /* never wider than half the container */
+        border-radius: 10px;
+    }
+
+    .hero__card-stat {
+        font-size: 0.75rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .hero__card-label {
+        font-size: 0.58rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* 1K+ Students — bottom-left */
+    .hero__card--students {
+        left: 8px;
+        bottom: 8px;
+        animation: float 4s ease-in-out infinite;
+    }
+
+    /* Video — top-left */
+    .hero__card--video {
+        left: 8px;
+        top: 8px;
+        animation: float 4s ease-in-out 1s infinite;
+    }
+
+    /* Mock — bottom-right */
+    .hero__card--mock {
+        right: 8px;
+        bottom: 8px;
+        animation: float 4s ease-in-out 0.5s infinite;
+    }
+
+    /* Interactive — top-right */
+    .hero__card--interactive {
+        right: 8px;
+        top: 8px;
+        animation: float 3.5s ease-in-out 0.8s infinite;
+    }
+
+    .hero__card-avatar img {
+        width: 28px;
+        height: 28px;
+    }
+
+    .hero__card-join {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.66rem;
+        margin-top: 4px;
+    }
+
+    .hero__card-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+    }
+
+    .hero__float-icon {
+        display: none;
+        /* hide top-right decorative icon on mobile */
+    }
+}
+
+/* ── Small phones (≤480px) ── */
+@media (max-width: 480px) {
+    .hero__headline {
+        font-size: 1.9rem;
+    }
+
+    .hero__btn-main {
+        padding: 0.75rem 1.6rem;
+        font-size: var(--font-size-sm);
+    }
+
+    .hero__visual {
+        height: 260px;
+    }
+
+    .hero__card--students {
+        top: 40%;
+    }
+
+    .hero__card--congrats {
+        top: 6%;
+    }
+}

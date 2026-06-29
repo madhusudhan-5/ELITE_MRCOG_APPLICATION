@@ -1,0 +1,136 @@
+.dashboard-home {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 2rem;
+    animation: fadeIn 0.4s ease;
+}
+
+.loading-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+    color: #3b82f6;
+}
+
+/* Hero Section */
+.dh-hero {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    border-radius: 16px;
+    padding: 3rem;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
+}
+
+.dh-hero-content h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.dh-hero-content p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+    max-width: 500px;
+}
+
+.dh-primary-btn {
+    background: white;
+    color: #1e3a8a;
+    border: none;
+    padding: 0.8rem 1.8rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dh-primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Section Header */
+.dh-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 0.8rem;
+}
+
+.dh-section-header h2 {
+    font-size: 1.4rem;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.section-icon {
+    color: #3b82f6;
+}
+
+.dh-see-all {
+    color: #3b82f6;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.dh-see-all:hover {
+    text-decoration: underline;
+}
+
+/* Carousel / Horizontal Scroll */
+.dh-carousel {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    /* Hide scrollbar for cleanlyness */
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+}
+
+.dh-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.dh-carousel-item {
+    flex: 0 0 calc(25% - 1.125rem); /* Force 4 items since gap is 1.5rem (1.5 * 3 / 4 = 1.125) */
+    min-width: 250px;
+    height: auto;
+}
+
+.dh-empty-state {
+    width: 100%;
+    padding: 3rem;
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    text-align: center;
+    color: #64748b;
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .dh-hero {
+        padding: 2rem;
+        flex-direction: column;
+        text-align: center;
+    }
+    .dh-hero-content p {
+        margin: 0 auto 2rem;
+    }
+    .dh-carousel-item {
+        flex: 0 0 280px;
+    }
+}

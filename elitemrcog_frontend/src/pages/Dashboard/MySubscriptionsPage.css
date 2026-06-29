@@ -1,0 +1,195 @@
+.mysub-page { padding-bottom: 3rem; animation: fadeIn 0.3s ease; }
+
+.mysub-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.mysub-header h1 {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+
+.mysub-upgrade-btn {
+    background: #3b82f6;
+    color: white;
+    padding: 0.55rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+.mysub-upgrade-btn:hover { background: #2563eb; }
+
+.mysub-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 1rem;
+}
+
+.mysub-access-section { margin-bottom: 2.5rem; }
+
+/* Library cards */
+.mysub-libs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.mysub-lib-card {
+    background: var(--lib-bg, #f1f5f9);
+    color: var(--lib-color, #374151);
+    border-radius: 14px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.mysub-lib-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.mysub-lib-icon { opacity: 0.85; }
+
+.mysub-lib-label {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.mysub-lib-cta {
+    font-size: 0.78rem;
+    font-weight: 600;
+    opacity: 0.75;
+    margin-top: auto;
+}
+
+/* Bundle cards */
+.mysub-subs-section { display: flex; flex-direction: column; gap: 1rem; }
+
+.mysub-bundle-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.mysub-bundle-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.mysub-bundle-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.mysub-bundle-title-row h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.mysub-check { color: #22c55e; flex-shrink: 0; }
+
+.mysub-expires {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.78rem;
+    color: #94a3b8;
+    white-space: nowrap;
+}
+
+.mysub-bundle-libs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.mysub-bundle-lib-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.15s;
+}
+.mysub-bundle-lib-chip:hover { opacity: 0.8; }
+
+/* Empty state */
+.mysub-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 40vh;
+    gap: 0.75rem;
+    text-align: center;
+    background: #f8fafc;
+    border-radius: 16px;
+    border: 1px dashed #e2e8f0;
+    padding: 3rem;
+}
+
+.mysub-empty-icon { color: #cbd5e1; }
+.mysub-empty h3 { font-size: 1.2rem; color: #0f172a; margin: 0; }
+.mysub-empty p { color: #64748b; margin: 0; }
+
+.mysub-browse-btn {
+    background: #3b82f6;
+    color: white;
+    padding: 0.7rem 1.75rem;
+    border-radius: 8px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s;
+    margin-top: 0.5rem;
+}
+.mysub-browse-btn:hover { background: #2563eb; }
+
+/* Loading */
+.mysub-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    gap: 1rem;
+    color: #64748b;
+}
+
+.mysub-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid #e2e8f0;
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
