@@ -74,14 +74,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'elitemrcog.wsgi.application'
 
-import dj_database_url
-
-# Use PostgreSQL if DATABASE_URL is in .env, otherwise fallback to SQLite for local development
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 # Custom user model

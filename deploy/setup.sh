@@ -5,9 +5,9 @@ set -e
 echo "Updating system..."
 sudo apt update && sudo apt upgrade -y
 
-# Install Python, pip, virtualenv, Nginx, PostgreSQL, Git, Curl
+# Install Python, pip, virtualenv, Nginx, Git, Curl
 echo "Installing dependencies..."
-sudo apt install -y python3 python3-pip python3-venv nginx postgresql postgresql-contrib git curl supervisor certbot python3-certbot-nginx
+sudo apt install -y python3 python3-pip python3-venv nginx git curl supervisor certbot python3-certbot-nginx
 
 # Install Node.js (v20) and PM2 for Uptime Kuma and Frontend build
 echo "Installing Node.js and PM2..."
@@ -19,18 +19,9 @@ sudo npm install -g pm2
 echo "Installing Netdata..."
 curl -sSL https://get.netdata.cloud/kickstart.sh | bash -s -- --non-interactive
 
-# Setup PostgreSQL Database
-echo "Setting up PostgreSQL Database..."
-sudo -u postgres psql -c "CREATE DATABASE elitemrcog;"
-sudo -u postgres psql -c "CREATE USER elitemrcoguser WITH PASSWORD 'strongpassword123';"
-sudo -u postgres psql -c "ALTER ROLE elitemrcoguser SET client_encoding TO 'utf8';"
-sudo -u postgres psql -c "ALTER ROLE elitemrcoguser SET default_transaction_isolation TO 'read committed';"
-sudo -u postgres psql -c "ALTER ROLE elitemrcoguser SET timezone TO 'UTC';"
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE elitemrcog TO elitemrcoguser;"
-
-# Configure Postgres connection for Django
+# Setup SQLite Database directory permissions
+echo "Setting up SQLite..."
 sudo mkdir -p /var/www/elitemrcog/elitemrcog_backend
-sudo bash -c 'echo "DATABASE_URL=postgres://elitemrcoguser:strongpassword123@127.0.0.1:5432/elitemrcog" >> /var/www/elitemrcog/elitemrcog_backend/.env'
 sudo chown -R $USER:$USER /var/www/elitemrcog
 
 # Install Uptime Kuma

@@ -9,5 +9,3 @@ python-decouple>=3.8
 dj-rest-auth>=7.2.0
 social-auth-app-django>=5.7.0
 social-auth-core>=4.8.5
-dj-database-url>=2.2.0
-psycopg2-binary>=2.9.9
