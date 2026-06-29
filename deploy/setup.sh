@@ -17,7 +17,7 @@ sudo npm install -g pm2
 
 # Install Netdata for monitoring
 echo "Installing Netdata..."
-bash <(curl -Ss https://my-netdata.io/kickstart.sh) --non-interactive
+curl -sSL https://get.netdata.cloud/kickstart.sh | bash -s -- --non-interactive
 
 # Setup PostgreSQL Database
 echo "Setting up PostgreSQL Database..."
