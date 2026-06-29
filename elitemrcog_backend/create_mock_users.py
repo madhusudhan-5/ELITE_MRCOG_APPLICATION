@@ -9,56 +9,40 @@ django.setup()
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
-users_to_create = [
-    {
-        'email': 'superadmin@elitemrcog.com',
+users_to_create = []
+
+# Generate 2 Super Admins
+for i in range(1, 3):
+    users_to_create.append({
+        'email': f'superadmin{i}@elitemrcog.com',
         'first_name': 'Super',
-        'last_name': 'Admin',
+        'last_name': f'Admin {i}',
         'is_staff': True,
         'is_superuser': True,
         'is_verified': True,
-    },
-    {
-        'email': 'admin@elitemrcog.com',
+    })
+
+# Generate 6 Normal Admins
+for i in range(1, 7):
+    users_to_create.append({
+        'email': f'admin{i}@elitemrcog.com',
         'first_name': 'Normal',
-        'last_name': 'Admin',
+        'last_name': f'Admin {i}',
         'is_staff': True,
         'is_superuser': False,
         'is_verified': True,
-    },
-    {
-        'email': 'student1@elitemrcog.com',
+    })
+
+# Generate 10 Students
+for i in range(1, 11):
+    users_to_create.append({
+        'email': f'student{i}@elitemrcog.com',
         'first_name': 'Student',
-        'last_name': 'One',
+        'last_name': str(i),
         'is_staff': False,
         'is_superuser': False,
         'is_verified': True,
-    },
-    {
-        'email': 'student2@elitemrcog.com',
-        'first_name': 'Student',
-        'last_name': 'Two',
-        'is_staff': False,
-        'is_superuser': False,
-        'is_verified': True,
-    },
-    {
-        'email': 'student3@elitemrcog.com',
-        'first_name': 'Student',
-        'last_name': 'Three',
-        'is_staff': False,
-        'is_superuser': False,
-        'is_verified': True,
-    },
-    {
-        'email': 'student4@elitemrcog.com',
-        'first_name': 'Student',
-        'last_name': 'Four',
-        'is_staff': False,
-        'is_superuser': False,
-        'is_verified': True,
-    },
-]
+    })
 
 created_count = 0
 for u_data in users_to_create:
