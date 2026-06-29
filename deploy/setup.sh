@@ -28,6 +28,11 @@ sudo -u postgres psql -c "ALTER ROLE elitemrcoguser SET default_transaction_isol
 sudo -u postgres psql -c "ALTER ROLE elitemrcoguser SET timezone TO 'UTC';"
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE elitemrcog TO elitemrcoguser;"
 
+# Configure Postgres connection for Django
+sudo mkdir -p /var/www/elitemrcog/elitemrcog_backend
+sudo bash -c 'echo "DATABASE_URL=postgres://elitemrcoguser:strongpassword123@127.0.0.1:5432/elitemrcog" >> /var/www/elitemrcog/elitemrcog_backend/.env'
+sudo chown -R $USER:$USER /var/www/elitemrcog
+
 # Install Uptime Kuma
 echo "Setting up Uptime Kuma..."
 cd /opt
