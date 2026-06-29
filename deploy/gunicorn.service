@@ -1,0 +1,17 @@
+[Unit]
+Description=Gunicorn daemon for Elite MRCOG Backend
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/var/www/elitemrcog/elitemrcog_backend
+ExecStart=/var/www/elitemrcog/elitemrcog_backend_env/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind 127.0.0.1:8000 \
+          elitemrcog.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
