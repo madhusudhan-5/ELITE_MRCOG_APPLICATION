@@ -42,11 +42,8 @@ sudo pm2 startup
 sudo mkdir -p /var/www/elitemrcog
 sudo chown -R $USER:$USER /var/www/elitemrcog
 
-# Setup SSL Certificates using Let's Encrypt (Trusted, Auto-Renewing)
-echo "Generating SSL Certificates for elitemrcog.com..."
-# Note: Nginx must be configured with the domains before this runs!
-# The certbot command will automatically configure Nginx for HTTPS.
-sudo certbot --nginx -d elitemrcog.com -d www.elitemrcog.com -d status.elitemrcog.com --non-interactive --agree-tos -m admin@elitemrcog.com
+# Note: SSL Certificate generation has been moved to a manual step 
+# to ensure DNS is properly propagated and Nginx is configured first.
 
 echo "------------------------------------------------------"
 echo "Server Initialization Complete!"
