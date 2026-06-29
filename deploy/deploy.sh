@@ -30,6 +30,8 @@ python manage.py collectstatic --noinput
 
 # 4. Restart Services
 echo "Restarting Services..."
+sudo cp $APP_DIR/deploy/gunicorn.service /etc/systemd/system/gunicorn.service
+sudo systemctl daemon-reload
 sudo systemctl restart gunicorn
 sudo systemctl restart nginx
 

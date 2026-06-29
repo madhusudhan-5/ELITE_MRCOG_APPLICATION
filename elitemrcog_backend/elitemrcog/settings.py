@@ -12,7 +12,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-changeme-in-productio
 
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,elitemrcog.com,www.elitemrcog.com').split(',')
 
 # Application definition
 INSTALLED_APPS = [
@@ -131,7 +131,7 @@ SIMPLE_JWT = {
 # ─── CORS ──────────────────────────────────────────────────────────────────────
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:3000'
+    default='http://localhost:3000,https://elitemrcog.com,https://www.elitemrcog.com'
 ).split(',')
 CORS_ALLOW_CREDENTIALS = True
 
