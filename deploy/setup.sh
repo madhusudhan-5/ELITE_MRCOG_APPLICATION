@@ -27,12 +27,16 @@ sudo chown -R $USER:$USER /var/www/elitemrcog
 # Install Uptime Kuma
 echo "Setting up Uptime Kuma..."
 cd /opt
-sudo git clone https://github.com/louislam/uptime-kuma.git
-cd uptime-kuma
-sudo npm run setup
-sudo pm2 start server/server.js --name uptime-kuma
-sudo pm2 save
-sudo pm2 startup
+if [ ! -d "uptime-kuma" ]; then
+    sudo git clone https://github.com/louislam/uptime-kuma.git
+    cd uptime-kuma
+    sudo npm run setup
+    sudo pm2 start server/server.js --name uptime-kuma
+    sudo pm2 save
+    sudo pm2 startup
+else
+    echo "Uptime Kuma already installed, skipping..."
+fi
 
 # Create application directory
 sudo mkdir -p /var/www/elitemrcog
