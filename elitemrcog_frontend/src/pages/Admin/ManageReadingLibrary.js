@@ -22,7 +22,7 @@ const Toast = ({ msg, type, onClose }) => (
 );
 
 // ─── Article Form Modal ────────────────────────────────────────────────────────
-const ArticleModal = ({ isOpen, onClose, onSave, articleData, modules }) => {
+const ArticleModal = ({ isOpen, onClose, onSave, articleData, modules, showToast }) => {
     const [form, setForm] = useState({
         module: '', title: '', article_type: 'course_material',
         short_description: '', overview_text: '', duration_display: '',
@@ -52,7 +52,7 @@ const ArticleModal = ({ isOpen, onClose, onSave, articleData, modules }) => {
 
     const handleSave = async () => {
         if (!form.module || !form.title || !form.short_description) {
-            alert('Module, Title and Short Description are required.');
+            showToast('Module, Title and Short Description are required.', 'error');
             return;
         }
         setSaving(true);
@@ -70,7 +70,13 @@ const ArticleModal = ({ isOpen, onClose, onSave, articleData, modules }) => {
             onSave(res.data, !!articleData?.id);
         } catch (err) {
             console.error(err);
-            alert('Save failed: ' + (err.response?.data ? JSON.stringify(err.response.data) : err.message));
+            let errMsg = err.response?.data || err.message;
+            if (typeof errMsg === 'string' && errMsg.includes('<html')) {
+                errMsg = errMsg.includes('413 Request Entity Too Large') ? 'File is too large. Max limit is 200MB.' : 'Server error (500). Please try again.';
+            } else if (typeof errMsg === 'object') {
+                errMsg = JSON.stringify(errMsg).substring(0, 100);
+            }
+            showToast('Save failed: ' + errMsg, 'error');
         } finally {
             setSaving(false);
         }
@@ -145,7 +151,7 @@ const ArticleModal = ({ isOpen, onClose, onSave, articleData, modules }) => {
 };
 
 // ─── Station Form Modal ────────────────────────────────────────────────────────
-const StationModal = ({ isOpen, onClose, onSave, stationData, articleId }) => {
+const StationModal = ({ isOpen, onClose, onSave, stationData, articleId, showToast }) => {
     const [form, setForm] = useState({ article: articleId, title: '', page_count: 1, is_free: false, is_active: true, order: 0 });
     const [pdf, setPdf] = useState(null);
     const [saving, setSaving] = useState(false);
@@ -160,7 +166,7 @@ const StationModal = ({ isOpen, onClose, onSave, stationData, articleId }) => {
     }, [stationData, articleId, isOpen]);
 
     const handleSave = async () => {
-        if (!form.title) { alert('Station title is required.'); return; }
+        if (!form.title) { showToast('Station title is required.', 'error'); return; }
         setSaving(true);
         try {
             const fd = new FormData();
@@ -175,7 +181,13 @@ const StationModal = ({ isOpen, onClose, onSave, stationData, articleId }) => {
             }
             onSave(res.data, !!stationData?.id);
         } catch (err) {
-            alert('Save failed: ' + (err.response?.data ? JSON.stringify(err.response.data) : err.message));
+            let errMsg = err.response?.data || err.message;
+            if (typeof errMsg === 'string' && errMsg.includes('<html')) {
+                errMsg = errMsg.includes('413 Request Entity Too Large') ? 'File is too large. Max limit is 200MB.' : 'Server error (500). Please try again.';
+            } else if (typeof errMsg === 'object') {
+                errMsg = JSON.stringify(errMsg).substring(0, 100);
+            }
+            showToast('Save failed: ' + errMsg, 'error');
         } finally {
             setSaving(false);
         }
@@ -321,7 +333,7 @@ const ArticleRow = ({ article, onEditArticle, onDeleteArticle }) => {
                 </div>
             )}
 
-            <StationModal
+            <StationModal showToast={showToast}
                 isOpen={stationModal}
                 onClose={() => { setStationModal(false); setEditStation(null); }}
                 onSave={handleSaveStation}
@@ -470,7 +482,7 @@ const ManageReadingLibrary = () => {
                 </div>
             )}
 
-            <ArticleModal
+            <ArticleModal showToast={showToast}
                 isOpen={articleModal}
                 onClose={() => { setArticleModal(false); setEditArticle(null); }}
                 onSave={handleSaveArticle}

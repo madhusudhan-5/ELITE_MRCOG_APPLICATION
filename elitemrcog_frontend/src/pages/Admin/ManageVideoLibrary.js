@@ -16,7 +16,7 @@ const Toast = ({ msg, type, onClose }) => (
 );
 
 // ─── Video Form Modal ────────────────────────────────────────────────────────
-const VideoModal = ({ isOpen, onClose, onSave, videoData, modules }) => {
+const VideoModal = ({ isOpen, onClose, onSave, videoData, modules, showToast }) => {
     const [form, setForm] = useState({
         module: '', title: '', embed_url: '',
         short_description: '', long_description: '', duration_display: '',
@@ -48,11 +48,11 @@ const VideoModal = ({ isOpen, onClose, onSave, videoData, modules }) => {
 
     const handleSave = async () => {
         if (!form.module || !form.title) {
-            alert('Module and Title are required.');
+            showToast('Module and Title are required.', 'error');
             return;
         }
         if (!form.embed_url && !videoFile && !videoData?.video_file && !videoData?.embed_url) {
-            alert('Please provide an embed URL or upload a video file.');
+            showToast('Please provide an embed URL or upload a video file.', 'error');
             return;
         }
         setSaving(true);
@@ -71,7 +71,13 @@ const VideoModal = ({ isOpen, onClose, onSave, videoData, modules }) => {
             onSave(res.data, !!videoData?.id);
         } catch (err) {
             console.error(err);
-            alert('Save failed: ' + (err.response?.data ? JSON.stringify(err.response.data) : err.message));
+            let errMsg = err.response?.data || err.message;
+            if (typeof errMsg === 'string' && errMsg.includes('<html')) {
+                errMsg = errMsg.includes('413 Request Entity Too Large') ? 'File is too large. Max limit is 200MB.' : 'Server error (500). Please try again.';
+            } else if (typeof errMsg === 'object') {
+                errMsg = JSON.stringify(errMsg).substring(0, 100);
+            }
+            showToast('Save failed: ' + errMsg, 'error');
         } finally {
             setSaving(false);
         }
@@ -296,7 +302,7 @@ const ManageVideoLibrary = () => {
                 </div>
             )}
 
-            <VideoModal
+            <VideoModal showToast={showToast}
                 isOpen={videoModal}
                 onClose={() => { setVideoModal(false); setEditVideo(null); }}
                 onSave={handleSaveVideo}
