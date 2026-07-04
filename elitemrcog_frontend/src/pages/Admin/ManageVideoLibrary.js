@@ -109,9 +109,17 @@ const VideoModal = ({ isOpen, onClose, onSave, videoData, modules, showToast }) 
                     </div>
                     <div className="vl-form-row">
                         <label>OR Upload Video File</label>
-                        <input type="file" accept="video/mp4,video/x-m4v,video/*" onChange={e => setVideoFile(e.target.files[0])} />
+                        <input type="file" accept="video/mp4,video/x-m4v,video/*" onChange={e => {
+                            const file = e.target.files[0];
+                            if (file && file.size > 500 * 1024 * 1024) {
+                                showToast("Video file must be smaller than 500MB.", "error");
+                                e.target.value = "";
+                            } else {
+                                setVideoFile(file);
+                            }
+                        }} />
                         {videoData?.has_video_file && !videoFile && <span className="vl-file-badge">✅ Video file uploaded</span>}
-                        <small>Max file size: 100MB</small>
+                        <small>Max file size: 500MB</small>
                     </div>
                     <div className="vl-form-row two-col">
                         <div>
@@ -137,7 +145,15 @@ const VideoModal = ({ isOpen, onClose, onSave, videoData, modules, showToast }) 
                     </div>
                     <div className="vl-form-row">
                         <label>Thumbnail Image</label>
-                        <input type="file" accept="image/*" onChange={e => setThumb(e.target.files[0])} />
+                        <input type="file" accept="image/*" onChange={e => {
+                            const file = e.target.files[0];
+                            if (file && file.size > 2 * 1024 * 1024) {
+                                showToast("Thumbnail image must be smaller than 2MB.", "error");
+                                e.target.value = "";
+                            } else {
+                                setThumb(file);
+                            }
+                        }} />
                         {videoData?.thumbnail && !thumb && <img src={videoData.thumbnail} alt="thumb" className="vl-thumb-preview" />}
                     </div>
                 </div>

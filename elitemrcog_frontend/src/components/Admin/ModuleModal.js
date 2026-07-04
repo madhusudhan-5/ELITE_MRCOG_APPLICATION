@@ -47,6 +47,11 @@ const ModuleModal = ({ isOpen, onClose, onSave, moduleData, parts = [], defaultP
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            if (file.size > 2 * 1024 * 1024) {
+                showToast("Thumbnail image must be smaller than 2MB.", "error");
+                e.target.value = "";
+                return;
+            }
             setFormData(prev => ({ ...prev, thumbnail: file }));
             setPreviewThumb(URL.createObjectURL(file));
         }
@@ -84,7 +89,7 @@ const ModuleModal = ({ isOpen, onClose, onSave, moduleData, parts = [], defaultP
             console.error("Failed to save module", err);
             let errMsg = err.response?.data || err.message;
             if (typeof errMsg === 'string' && errMsg.includes('<html')) {
-                errMsg = errMsg.includes('413 Request Entity Too Large') ? 'File is too large. Max limit is 500MB.' : 'Server error (500). Please try again.';
+                errMsg = errMsg.includes('413 Request Entity Too Large') ? 'File is too large. Image/Thumbnail limit is 2MB.' : 'Server error (500). Please try again.';
             } else if (typeof errMsg === 'object') {
                 errMsg = JSON.stringify(errMsg).substring(0, 100);
             }

@@ -72,7 +72,7 @@ const ArticleModal = ({ isOpen, onClose, onSave, articleData, modules, showToast
             console.error(err);
             let errMsg = err.response?.data || err.message;
             if (typeof errMsg === 'string' && errMsg.includes('<html')) {
-                errMsg = errMsg.includes('413 Request Entity Too Large') ? 'File is too large. Max limit is 500MB.' : 'Server error (500). Please try again.';
+                errMsg = errMsg.includes('413 Request Entity Too Large') ? 'File is too large. Image/Thumbnail limit is 2MB.' : 'Server error (500). Please try again.';
             } else if (typeof errMsg === 'object') {
                 errMsg = JSON.stringify(errMsg).substring(0, 100);
             }
@@ -134,7 +134,15 @@ const ArticleModal = ({ isOpen, onClose, onSave, articleData, modules, showToast
                     </div>
                     <div className="rl-form-row">
                         <label>Thumbnail Image</label>
-                        <input type="file" accept="image/*" onChange={e => setThumb(e.target.files[0])} />
+                        <input type="file" accept="image/*" onChange={e => {
+                            const file = e.target.files[0];
+                            if (file && file.size > 2 * 1024 * 1024) {
+                                showToast("Thumbnail image must be smaller than 2MB.", "error");
+                                e.target.value = "";
+                            } else {
+                                setThumb(file);
+                            }
+                        }} />
                         {articleData?.thumbnail && !thumb && <img src={articleData.thumbnail} alt="thumb" className="rl-thumb-preview" />}
                     </div>
                 </div>
@@ -183,7 +191,7 @@ const StationModal = ({ isOpen, onClose, onSave, stationData, articleId, showToa
         } catch (err) {
             let errMsg = err.response?.data || err.message;
             if (typeof errMsg === 'string' && errMsg.includes('<html')) {
-                errMsg = errMsg.includes('413 Request Entity Too Large') ? 'File is too large. Max limit is 500MB.' : 'Server error (500). Please try again.';
+                errMsg = errMsg.includes('413 Request Entity Too Large') ? 'File is too large. Image/Thumbnail limit is 2MB.' : 'Server error (500). Please try again.';
             } else if (typeof errMsg === 'object') {
                 errMsg = JSON.stringify(errMsg).substring(0, 100);
             }
