@@ -72,7 +72,7 @@ const ArticleModal = ({ isOpen, onClose, onSave, articleData, modules, showToast
             console.error(err);
             let errMsg = err.response?.data || err.message;
             if (typeof errMsg === 'string' && errMsg.includes('<html')) {
-                errMsg = errMsg.includes('413 Request Entity Too Large') ? 'File is too large. Max limit is 200MB.' : 'Server error (500). Please try again.';
+                errMsg = errMsg.includes('413 Request Entity Too Large') ? 'File is too large. Max limit is 500MB.' : 'Server error (500). Please try again.';
             } else if (typeof errMsg === 'object') {
                 errMsg = JSON.stringify(errMsg).substring(0, 100);
             }
@@ -183,7 +183,7 @@ const StationModal = ({ isOpen, onClose, onSave, stationData, articleId, showToa
         } catch (err) {
             let errMsg = err.response?.data || err.message;
             if (typeof errMsg === 'string' && errMsg.includes('<html')) {
-                errMsg = errMsg.includes('413 Request Entity Too Large') ? 'File is too large. Max limit is 200MB.' : 'Server error (500). Please try again.';
+                errMsg = errMsg.includes('413 Request Entity Too Large') ? 'File is too large. Max limit is 500MB.' : 'Server error (500). Please try again.';
             } else if (typeof errMsg === 'object') {
                 errMsg = JSON.stringify(errMsg).substring(0, 100);
             }

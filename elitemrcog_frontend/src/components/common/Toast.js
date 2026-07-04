@@ -20,7 +20,7 @@ const Toast = ({ msg, type = 'error', onClose, duration = 5000 }) => {
         if (msg.includes('<html')) {
             // For standard Nginx errors, provide a clean message
             if (msg.includes('413 Request Entity Too Large')) {
-                displayMsg = "File is too large. Max limit is 200MB.";
+                displayMsg = "File is too large. Max limit is 500MB.";
             } else {
                 displayMsg = "A server error occurred (500). Please try again.";
             }
