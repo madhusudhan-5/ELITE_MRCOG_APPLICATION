@@ -33,6 +33,7 @@ echo "Restarting Services..."
 sudo cp $APP_DIR/deploy/gunicorn.service /etc/systemd/system/gunicorn.service
 sudo cp $APP_DIR/deploy/nginx.conf /etc/nginx/sites-available/elitemrcog
 sudo ln -sf /etc/nginx/sites-available/elitemrcog /etc/nginx/sites-enabled/
+sudo rm -f /etc/nginx/sites-enabled/default
 sudo systemctl daemon-reload
 sudo systemctl restart gunicorn
 sudo systemctl restart nginx
