@@ -260,7 +260,7 @@ const StationRow = ({ station, onEdit, onDelete }) => (
 );
 
 // ─── Article Row ───────────────────────────────────────────────────────────────
-const ArticleRow = ({ article, onEditArticle, onDeleteArticle }) => {
+const ArticleRow = ({ article, onEditArticle, onDeleteArticle, showToast }) => {
     const [expanded, setExpanded] = useState(false);
     const [stations, setStations] = useState([]);
     const [loadingStations, setLoadingStations] = useState(false);
@@ -474,7 +474,7 @@ const ManageReadingLibrary = () => {
                         <span>{filtered.length} Article{filtered.length !== 1 ? 's' : ''}</span>
                     </div>
                     {filtered.map(a => (
-                        <ArticleRow key={a.id} article={a}
+                        <ArticleRow key={a.id} article={a} showToast={showToast}
                             onEditArticle={art => { setEditArticle(art); setArticleModal(true); }}
                             onDeleteArticle={handleDeleteArticle}
                         />
