@@ -3,7 +3,7 @@ import { X, UploadCloud, Link as LinkIcon, Info } from 'lucide-react';
 import api from '../../services/api';
 import './ModuleModal.css';
 
-const ModuleModal = ({ isOpen, onClose, onSave, moduleData, parts = [], defaultPart }) => {
+const ModuleModal = ({ isOpen, onClose, onSave, moduleData, parts = [], defaultPart, showToast }) => {
     const getDefaultPartId = () => {
         if (parts.length === 0) return '';
         const part = parts.find(p => p.name === defaultPart);
@@ -82,7 +82,17 @@ const ModuleModal = ({ isOpen, onClose, onSave, moduleData, parts = [], defaultP
             }
         } catch (err) {
             console.error("Failed to save module", err);
-            alert("Error saving module check fields and permissions.");
+            let errMsg = err.response?.data || err.message;
+            if (typeof errMsg === 'string' && errMsg.includes('<html')) {
+                errMsg = errMsg.includes('413 Request Entity Too Large') ? 'File is too large. Max limit is 200MB.' : 'Server error (500). Please try again.';
+            } else if (typeof errMsg === 'object') {
+                errMsg = JSON.stringify(errMsg).substring(0, 100);
+            }
+            if (showToast) {
+                showToast('Save failed: ' + errMsg, 'error');
+            } else {
+                alert('Save failed: ' + errMsg);
+            }
         }
     };
 

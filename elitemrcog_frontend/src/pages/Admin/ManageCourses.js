@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Search, Filter, Edit2, Trash2, Tag, BookOpen, Video, Loader } from 'lucide-react';
 import ModuleModal from '../../components/Admin/ModuleModal';
+import Toast from '../../components/common/Toast';
 import api from '../../services/api';
 import './ManageCourses.css';
 
@@ -13,6 +14,9 @@ const ManageCourses = () => {
     const [parts, setParts] = useState([]);
     const [modules, setModules] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [toast, setToast] = useState(null);
+
+    const showToast = (msg, type = 'success') => setToast({ msg, type });
 
     useEffect(() => {
         fetchData();
@@ -33,7 +37,7 @@ const ManageCourses = () => {
             }
         } catch (err) {
             console.error("Failed to load parts or courses:", err);
-            alert("Error loading content. Please ensure you have Admin privileges.");
+            showToast("Error loading content. Please ensure you have Admin privileges.", "error");
         } finally {
             setLoading(false);
         }
@@ -64,7 +68,7 @@ const ManageCourses = () => {
                 setModules(modules.filter(m => m.id !== id));
             } catch (err) {
                 console.error("Delete failed:", err);
-                alert("Failed to delete module.");
+                showToast("Failed to delete module.", "error");
             }
         }
     };
@@ -173,7 +177,9 @@ const ManageCourses = () => {
                 moduleData={editingModule}
                 parts={parts}
                 defaultPart={activeTab}
+                showToast={showToast}
             />
+            {toast && <Toast msg={toast.msg} type={toast.type} onClose={() => setToast(null)} />}
         </div>
     );
 };
