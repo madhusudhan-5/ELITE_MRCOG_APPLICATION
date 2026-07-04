@@ -2,9 +2,7 @@ elitemrcog_backend_env/
 *.pyc
 __pycache__/
 .DS_Store
-*.png
-*.jpg
-*.pdf
+elitemrcog_backend/media/
 .vscode/
 authlayout_grep.txt
 parse_log.py
@@ -13,3 +11,4 @@ recover_files.py
 extract.sh
 node_modules/
 build/
+db.sqlite3
