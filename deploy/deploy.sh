@@ -35,6 +35,8 @@ sudo cp $APP_DIR/deploy/nginx.conf /etc/nginx/sites-available/elitemrcog
 sudo ln -sf /etc/nginx/sites-available/elitemrcog /etc/nginx/sites-enabled/
 sudo rm -f /etc/nginx/sites-enabled/default
 sudo systemctl daemon-reload
+echo "Testing Nginx Configuration..."
+sudo nginx -t
 sudo systemctl restart gunicorn
 sudo systemctl restart nginx
 
