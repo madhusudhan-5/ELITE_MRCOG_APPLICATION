@@ -3,10 +3,12 @@ import api from '../../services/api';
 import { CheckCircle, Loader } from 'lucide-react';
 import './VideoViewer.css';
 import logo from '../../assets/images/logo.jpeg';
+import WatermarkOverlay from './WatermarkOverlay';
 
 const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUpdate }) => {
     const [updating, setUpdating] = useState(false);
     const [isBuffering, setIsBuffering] = useState(true);
+    const [isBlurred, setIsBlurred] = useState(false);
     const videoRef = useRef(null);
     const progressInterval = useRef(null);
     const lastProgress = useRef(0);
@@ -27,8 +29,17 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                 return false;
             }
         };
+        const handleBlur = () => setIsBlurred(true);
+        const handleFocus = () => setIsBlurred(false);
+
         window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
+        window.addEventListener('blur', handleBlur);
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('blur', handleBlur);
+            window.removeEventListener('focus', handleFocus);
+        };
     }, []);
 
     // Auto-update progress for native video player
@@ -96,11 +107,12 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
 
     return (
         <div 
-            className="video-viewer-container" 
+            className={`video-viewer-container ${isBlurred ? 'anti-piracy-blur' : ''}`}
             onContextMenu={(e) => e.preventDefault()}
             style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none' }}
         >
             <div className="video-iframe-wrapper">
+                <WatermarkOverlay />
                 {isBuffering && (
                     <div className="video-buffering-overlay">
                         <Loader size={48} className="animate-spin text-white" />

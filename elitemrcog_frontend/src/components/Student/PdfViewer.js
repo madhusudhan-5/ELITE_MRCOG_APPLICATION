@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import api from '../../services/api';
 import './PdfViewer.css';
+import WatermarkOverlay from './WatermarkOverlay';
 
 // Set up the PDF.js worker — must match installed pdfjs-dist version (5.x)
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -13,6 +14,7 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const [isBlurred, setIsBlurred] = useState(false);
     const viewerRef = useRef(null);
 
     // Fetch PDF as blob via protected API — never exposes direct URL
@@ -39,7 +41,12 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
             }
         };
 
+        const handleBlur = () => setIsBlurred(true);
+        const handleFocus = () => setIsBlurred(false);
+
         window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('blur', handleBlur);
+        window.addEventListener('focus', handleFocus);
 
         api.get(`/api/content/stations/${stationId}/pdf/`, { responseType: 'blob' })
             .then(res => {
@@ -59,6 +66,8 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
         return () => {
             if (pdfBlob) URL.revokeObjectURL(pdfBlob);
             window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('blur', handleBlur);
+            window.removeEventListener('focus', handleFocus);
         };
     }, [stationId]);
 
@@ -166,11 +175,12 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
 
     return (
         <div
-            className="pdf-viewer-wrapper"
+            className={`pdf-viewer-wrapper ${isBlurred ? 'anti-piracy-blur' : ''}`}
             ref={viewerRef}
             onContextMenu={(e) => e.preventDefault()}
-            style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none' }}
+            style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none', position: 'relative' }}
         >
+            <WatermarkOverlay />
             {/* Fullscreen toggle — top right corner only */}
             <div className="pdf-topbar">
                 <button

@@ -1,0 +1,40 @@
+.watermark-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    z-index: 50; /* Ensure it's above the video/pdf but below any controls if possible */
+    pointer-events: none; /* Let clicks pass through to the video/PDF */
+    opacity: 0.15; /* Faint but visible */
+}
+
+.watermark-pattern {
+    display: flex;
+    flex-wrap: wrap;
+    width: 200%;
+    height: 200%;
+    transform: rotate(-30deg) translate(-25%, -25%);
+    pointer-events: none;
+    user-select: none;
+}
+
+.watermark-item {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #000; /* Assuming white background mostly, or #fff for black bg. Let's make it semi-transparent white with text-shadow */
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8); /* Ensures it's visible on both light and dark backgrounds */
+    padding: 2rem 4rem;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* Blur effect class when window loses focus */
+.anti-piracy-blur {
+    filter: blur(20px) !important;
+    opacity: 0.5 !important;
+    pointer-events: none !important;
+    transition: filter 0.1s ease, opacity 0.1s ease;
+}
