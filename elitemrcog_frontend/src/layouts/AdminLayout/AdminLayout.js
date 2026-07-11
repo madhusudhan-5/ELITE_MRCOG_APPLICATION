@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './AdminLayout.css';
+import logo from '../../assets/images/logo.jpeg';
 
 const AdminLayout = () => {
     const { user, logout } = useAuth();
@@ -51,7 +52,7 @@ const AdminLayout = () => {
             
             <aside className={`admin-sidebar ${isSidebarOpen ? 'open' : ''}`}>
                 <div className="admin-sidebar-brand">
-                    <img src="/logo.svg" alt="Elite MRCOG Logo" />
+                    <img src={logo} alt="Elite MRCOG Logo" />
                     <h2>ADMIN PORTAL</h2>
                     <button className="admin-mobile-close-btn" onClick={() => setIsSidebarOpen(false)}>
                         <X size={20} />

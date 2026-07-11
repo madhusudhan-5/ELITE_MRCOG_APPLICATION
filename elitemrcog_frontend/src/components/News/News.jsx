@@ -1,40 +1,44 @@
 import React from 'react';
 import './News.css';
+import featuredNewsImg from '../../assets/images/newimage.png';
+import newsImg1 from '../../assets/images/newsimage1.png';
+import newsImg2 from '../../assets/images/newsimage2.png';
+import newsImg3 from '../../assets/images/newsimage3.png';
 
 const articles = [
     {
         id: 1,
         tag: 'NEWS',
-        title: 'Class adds $30 million to its balance sheet for a Zoom-friendly edtech solution',
-        excerpt: 'Class, launched less than a year ago by Blackboard co-founder Deepika, integrates exclusively...',
-        image: 'https://images.unsplash.com/photo-1588702547919-26089e690ecc?w=800&q=80',
+        title: 'Never Miss an Update from Elite MRCOG',
+        excerpt: 'Discover the latest mentor videos, newly added recall stations, free webinar announcements, podcasts, and platform updates designed to keep your MRCOG Part 3 preparation on track.',
+        image: featuredNewsImg,
         large: true,
         link: '#',
     },
     {
         id: 2,
-        tag: 'PRESS RELEASE',
+        tag: 'MUST-WATCH WEBINAR',
         tagColor: 'teal',
-        title: 'Class Technologies Inc. Closes $30 Million Series A Financing to Meet High Demand',
-        excerpt: 'Class Technologies Inc., the company that created Class,...',
-        image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&q=80',
-        link: '#',
+        title: 'Ethics, Consent & Sexual Assault',
+        excerpt: 'Navigating the Grey Areas in MRCOG Part 3',
+        image: newsImg1,
+        link: 'https://youtu.be/qposcLCtyNg?si=I4KOMktrb7rBD5lg',
     },
     {
         id: 3,
-        tag: 'NEWS',
-        title: "Zoom's earliest investors are betting millions on a better Zoom for schools",
-        excerpt: "Zoom was never created to be a consumer product. Nonetheless, the...",
-        image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&q=80',
-        link: '#',
+        tag: '📢 GUIDELINE UPDATE',
+        title: 'NHS Cervical Screening Pathway (NHCSP)',
+        excerpt: '2025–2026 Updates Explained',
+        image: newsImg2,
+        link: 'https://youtu.be/P9-xFt33t5U?si=1NACMIAOThgEi_0s',
     },
     {
         id: 4,
-        tag: 'NEWS',
-        title: 'Former Blackboard CEO Raises $16M to Bring LMS Features to Zoom Classrooms',
-        excerpt: 'This year, investors have reaped big financial returns from betting on Zoom...',
-        image: 'https://images.unsplash.com/photo-1587731556938-38755b4803a6?w=400&q=80',
-        link: '#',
+        tag: '📚 RECENT RECALL MAY 2026 PART 3 EXAM',
+        title: 'Endometrial Cancer',
+        excerpt: 'FIGO 2023 Staging & Molecular Classification',
+        image: newsImg3,
+        link: 'https://youtu.be/F7No9HAkGGA?si=hoKoesj4xuGwtcur',
     },
 ];
 
@@ -43,10 +47,10 @@ const News = () => {
         <section className="news section" id="news">
             <div className="container">
                 <h2 className="section-heading">
-                    Lastest <span className="highlight-navy">News and Resources</span>
+                    Latest <span className="highlight-navy">News and Resources</span>
                 </h2>
                 <p className="section-subheading">
-                    See the developments that have occurred to <strong>Elite MRCOG</strong> in the world
+                    Never Miss an Update from Elite MRCOG
                 </p>
 
                 <div className="news__grid">
@@ -58,26 +62,30 @@ const News = () => {
                         <span className="news__tag">{articles[0].tag}</span>
                         <h3 className="news__title">{articles[0].title}</h3>
                         <p className="news__excerpt">{articles[0].excerpt}</p>
-                        <a href={articles[0].link} className="news__read-more">Read more</a>
                     </div>
 
                     {/* Right column — 3 smaller */}
                     <div className="news__sidebar">
                         {articles.slice(1).map((art) => (
-                            <div className="news__article news__article--small" key={art.id}>
+                            <a href={art.link} target="_blank" rel="noopener noreferrer" className="news__article news__article--small" key={art.id} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
                                 <div className="news__small-wrap">
                                     <div className="news__small-img-wrap">
                                         <img src={art.image} alt={art.title} className="news__small-img" />
-                                        <span className={`news__tag news__tag--overlay${art.tagColor === 'teal' ? ' news__tag--press' : ''}`}>
+                                    </div>
+                                    <div className="news__small-content" style={{ display: 'flex', flexDirection: 'column', gap: '8px', height: '100%' }}>
+                                        <span className={`news__tag ${art.tagColor === 'teal' ? ' news__tag--press' : ''}`} style={{ alignSelf: 'flex-start', marginBottom: '2px' }}>
                                             {art.tag}
                                         </span>
-                                    </div>
-                                    <div className="news__small-content">
                                         <h3 className="news__small-title">{art.title}</h3>
                                         <p className="news__excerpt">{art.excerpt}</p>
+                                        <div style={{ marginTop: 'auto', paddingTop: '4px' }}>
+                                            <span style={{ color: 'var(--color-teal)', fontWeight: '600', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                ▶ Watch Now
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         ))}
                     </div>
                 </div>

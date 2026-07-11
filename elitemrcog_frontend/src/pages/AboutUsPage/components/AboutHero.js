@@ -15,7 +15,7 @@ const AboutHero = () => {
                 </h1>
                 
                 <p className="about-hero-text">
-                    Excel MRCOG isn't just a course; it's a mentorship sanctuary. We simplify the complex, so you can focus on excellence.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
                 </p>
                 
                 <a href="#modules" className="explore-btn">

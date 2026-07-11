@@ -70,10 +70,7 @@ const Testimonials = () => {
                             Read more reviews
                             <span className="testimonials__action-arrow">→</span>
                         </a>
-                        <a href="/testimonials" className="testimonials__action-btn">
-                            Video Testimonials
-                            <span className="testimonials__action-arrow">→</span>
-                        </a>
+
                     </div>
                 </div>
 

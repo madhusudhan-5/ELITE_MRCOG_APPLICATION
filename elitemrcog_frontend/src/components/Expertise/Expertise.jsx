@@ -1,7 +1,10 @@
 import React from 'react';
 import './Expertise.css';
 import classroomimage from '../../assets/images/teachingexpertise.png';
-import studentImage from '../../assets/images/2f32d3a9082c2e2832481561feec93a5e5c5e8d6.png';
+import mentorImg from '../../assets/images/mentorimage.png';
+import studyMaterialImg from '../../assets/images/extensivestudymaterial.png';
+import interactiveClassImg from '../../assets/images/interactiveliveclass.png';
+import communitySupportImg from '../../assets/images/comunitysupport.png';
 
 const PeopleIcon = () => (
     <span className="expertise__bullet-icon">
@@ -22,7 +25,7 @@ export default function Expertise() {
                         Our <span className="highlight-teal">Features</span>
                     </h2>
                     <p className="section-subheading">
-                        Discover why thousands of students trust Elite MRCOG for their exam preparation.
+                        Discover why hundreds of students trust Elite MRCOG for exam preparation.
                     </p>
                 </div>
             </div>
@@ -31,80 +34,43 @@ export default function Expertise() {
             <div className="expertise__block expertise__block--white">
                 <div className="container">
                     <div className="expertise__inner">
-                        {/* Left – quiz card */}
-                        <div className="expertise__visual" style={{ position: 'relative' }}>
-                            {/* Decorative circles behind card */}
-                            <div style={{
-                                position: 'absolute', top: -20, left: -10,
-                                width: 100, height: 100, borderRadius: '50%',
-                                background: 'var(--color-teal)', opacity: 0.85, zIndex: 0
-                            }}></div>
-                            <div style={{
-                                position: 'absolute', top: 10, left: 70,
-                                width: 36, height: 36, borderRadius: '50%',
-                                background: '#F5A623', zIndex: 0
-                            }}></div>
-                            <div style={{ position: 'relative', zIndex: 1 }}>
-                                <div className="expertise__quiz-card">
-                                    <div className="expertise__quiz-deco">
-                                        <span className="expertise__dot expertise__dot--green"></span>
-                                        <span className="expertise__dot expertise__dot--navy"></span>
-                                        <span className="expertise__dot expertise__dot--orange"></span>
-                                    </div>
-                                    <div className="expertise__quiz-question">
-                                        <span className="expertise__quiz-label">Question 1</span>
-                                        <p className="expertise__quiz-text">
-                                            True or false? This play<br />takes place in Italy
-                                        </p>
-                                    </div>
-                                    <div className="expertise__quiz-img-wrap">
-                                        <img
-                                            src="https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=500&q=80"
-                                            alt="Venice Italy"
-                                            className="expertise__quiz-img"
-                                        />
-                                        <div className="expertise__quiz-dark-circle"></div>
-                                    </div>
-                                    <div className="expertise__quiz-options">
-                                        <button className="expertise__option expertise__option--wrong">✗</button>
-                                        <button className="expertise__option expertise__option--right">✓</button>
-                                    </div>
-                                    <div className="expertise__quiz-success">
-                                        <span className="expertise__quiz-success-icon">🚀</span>
-                                        <span>Your answer was<br /><strong>sent successfully</strong></span>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* Small green dot bottom-left */}
-                            <div style={{
-                                position: 'absolute', bottom: -10, left: 10,
-                                width: 16, height: 16, borderRadius: '50%',
-                                background: 'var(--color-teal)', zIndex: 0
-                            }}></div>
-                            {/* Small pink dot right side */}
-                            <div style={{
-                                position: 'absolute', bottom: '30%', right: -8,
-                                width: 12, height: 12, borderRadius: '50%',
-                                background: 'var(--color-pink)', zIndex: 0
-                            }}></div>
+                        {/* Left – Image */}
+                        <div className="expertise__visual" style={{ textAlign: 'center' }}>
+                            <img 
+                                src={studyMaterialImg} 
+                                alt="Extensive study materials" 
+                                style={{ width: '100%', maxWidth: '420px', margin: '0 auto', display: 'block', borderRadius: '16px', boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }} 
+                            />
                         </div>
                         {/* Right – text */}
                         <div className="expertise__content">
                             <h3 className="expertise__title">
-                                <span style={{ color: 'var(--color-teal)' }}>Extensive</span> study materials
+                                <span style={{ color: 'var(--color-navy)' }}>1. Extensive</span><br />
+                                <span style={{ color: 'var(--color-teal)' }}>Study Materials</span>
                             </h3>
+                            
+                            <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0 25px 0', maxWidth: '300px' }}>
+                                <span style={{ flex: 1, height: '1px', background: '#D9B44A' }}></span>
+                                <span style={{ color: '#D9B44A', fontSize: '1.2rem', margin: '0 15px' }}>⭐</span>
+                                <span style={{ flex: 1, height: '1px', background: '#D9B44A' }}></span>
+                            </div>
+
                             <ul className="expertise__feature-list">
                                 <li className="expertise__feature-item">
-                                    <span style={{color: 'var(--color-teal)', fontWeight: 'bold', marginRight: '8px'}}>✓</span>
-                                    <span>Comprehensive notes for all modules.</span>
+                                    <span style={{color: '#fff', background: 'var(--color-teal)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '12px', fontSize: '0.8rem', flexShrink: 0}}>✓</span>
+                                    <span>300+ Meticulously Written Recall Stations</span>
                                 </li>
                                 <li className="expertise__feature-item">
-                                    <span style={{color: 'var(--color-teal)', fontWeight: 'bold', marginRight: '8px'}}>✓</span>
-                                    <span>Regularly updated with latest guidelines.</span>
+                                    <span style={{color: '#fff', background: 'var(--color-teal)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '12px', fontSize: '0.8rem', flexShrink: 0}}>✓</span>
+                                    <span>Complete Station Templates with Role Player Instructions</span>
                                 </li>
                                 <li className="expertise__feature-item">
-                                    <span style={{color: 'var(--color-teal)', fontWeight: 'bold', marginRight: '8px'}}>✓</span>
-                                    <span>Organized structure for easy learning.</span>
+                                    <span style={{color: '#fff', background: 'var(--color-teal)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '12px', fontSize: '0.8rem', flexShrink: 0}}>✓</span>
+                                    <span>Domain-wise Answer Keys</span>
+                                </li>
+                                <li className="expertise__feature-item">
+                                    <span style={{color: '#fff', background: 'var(--color-teal)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '12px', fontSize: '0.8rem', flexShrink: 0}}>✓</span>
+                                    <span>Regularly Updated with Latest Guidelines & Recent Exam Recalls</span>
                                 </li>
                             </ul>
                         </div>
@@ -112,107 +78,88 @@ export default function Expertise() {
                 </div>
             </div>
 
-            {/* ─── Feature 2: Personalized feedback ─────────── */}
+            {/* ─── Feature 2: Expert Mentor Support ─────────── */}
             <div className="expertise__block expertise__block--light">
                 <div className="container">
                     <div className="expertise__inner">
                         {/* Left – text */}
                         <div className="expertise__content">
                             <h3 className="expertise__title">
-                                <span style={{ color: 'var(--color-navy)' }}>Personalized</span><br />
-                                Doubt <span style={{ color: 'var(--color-teal)' }}>Resolution</span>
+                                <span style={{ color: 'var(--color-navy)' }}>2. Expert</span><br />
+                                <span style={{ color: 'var(--color-teal)' }}>Mentor Support</span>
                             </h3>
+                            <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0 25px 0', maxWidth: '300px' }}>
+                                <span style={{ flex: 1, height: '1px', background: '#D9B44A' }}></span>
+                                <span style={{ color: '#D9B44A', fontSize: '1.2rem', margin: '0 15px' }}>⭐</span>
+                                <span style={{ flex: 1, height: '1px', background: '#D9B44A' }}></span>
+                            </div>
                             <p style={{marginBottom: '1rem', color: 'var(--color-text-body)'}}>
-                                Get your queries resolved by our expert mentors quickly.
+                                Get guidance from mentors who have successfully navigated the MRCOG journey.
                             </p>
                             <ul className="expertise__feature-list">
                                 <li className="expertise__feature-item">
-                                    <span style={{color: '#F5A623', fontSize: '1.2rem', marginRight: '8px'}}>⭐</span>
-                                    <span>Dedicated doubt clearing sessions</span>
+                                    <span style={{color: '#fff', background: 'var(--color-teal)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '12px', fontSize: '0.8rem', flexShrink: 0}}>✓</span>
+                                    <span>Direct access to mentors</span>
                                 </li>
                                 <li className="expertise__feature-item">
-                                    <span style={{color: '#F5A623', fontSize: '1.2rem', marginRight: '8px'}}>⭐</span>
-                                    <span>1-on-1 mentorship available</span>
+                                    <span style={{color: '#fff', background: 'var(--color-teal)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '12px', fontSize: '0.8rem', flexShrink: 0}}>✓</span>
+                                    <span>Personalised feedback</span>
+                                </li>
+                                <li className="expertise__feature-item">
+                                    <span style={{color: '#fff', background: 'var(--color-teal)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '12px', fontSize: '0.8rem', flexShrink: 0}}>✓</span>
+                                    <span>Discussion of difficult stations</span>
+                                </li>
+                                <li className="expertise__feature-item">
+                                    <span style={{color: '#fff', background: 'var(--color-teal)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '12px', fontSize: '0.8rem', flexShrink: 0}}>✓</span>
+                                    <span>Continuous support until exam day</span>
                                 </li>
                             </ul>
                         </div>
-                        {/* Right – student photo with pink circle */}
+                        {/* Right – Image */}
                         <div className="expertise__visual--right">
                             <div className="expertise__student-wrap">
                                 <div className="expertise__pink-circle"></div>
                                 <img
-                                    src={studentImage}
-                                    alt="Student with books"
+                                    src={mentorImg}
+                                    alt="Expert Mentor"
                                     className="expertise__student-img"
                                 />
-                                <div className="expertise__floating-icons">
-                                    {/* <div className="expertise__fi expertise__fi--1"></div> */}
-                                    {/* <div className="expertise__fi expertise__fi--2"></div> */}
-                                    {/* <div className="expertise__fi expertise__fi--3"></div> */}
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* ─── Feature 3: Mentor-led case discussions ────── */}
+            {/* ─── Feature 3: Interactive Live Classes ────── */}
             <div className="expertise__block expertise__block--white">
                 <div className="container">
                     <div className="expertise__inner">
-                        {/* Left – 5-person video call UI */}
-                        <div className="expertise__visual">
-                            <div className="expertise__video-call">
-                                <div className="expertise__vc-header">
-                                    <span className="expertise__vc-dot red"></span>
-                                    <span className="expertise__vc-dot yellow"></span>
-                                    <span className="expertise__vc-dot green"></span>
-                                </div>
-                                <div className="expertise__vc-grid">
-                                    {/* Main: Instructor Deepika */}
-                                    <div className="expertise__vc-cell expertise__vc-cell--main">
-                                        <img
-                                            src="https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?w=400&q=80"
-                                            alt="Instructor Deepika"
-                                        />
-                                        <span className="expertise__vc-label expertise__vc-label--blue">Instructor Deepika</span>
-                                    </div>
-                                    {/* 4 small tiles */}
-                                    <div className="expertise__vc-cell">
-                                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80" alt="Tamara Clarke" />
-                                        <span className="expertise__vc-label">Tamara Clarke</span>
-                                    </div>
-                                    <div className="expertise__vc-cell">
-                                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80" alt="Adam Levin" />
-                                        <span className="expertise__vc-label">Adam Levin</span>
-                                    </div>
-                                    <div className="expertise__vc-cell">
-                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80" alt="Humbert Holland" />
-                                        <span className="expertise__vc-label">Humbert Holland</span>
-                                    </div>
-                                    <div className="expertise__vc-cell" style={{ gridColumn: 'span 2' }}>
-                                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&q=80" alt="Patricia Mendoza" />
-                                        <span className="expertise__vc-label">Patricia Mendoza</span>
-                                    </div>
-                                </div>
-                                <div className="expertise__vc-actions">
-                                    <button className="expertise__vc-btn expertise__vc-btn--blue">Present</button>
-                                    <button className="expertise__vc-btn expertise__vc-btn--red">📞 Call</button>
-                                </div>
-                            </div>
+                        {/* Left – Image */}
+                        <div className="expertise__visual" style={{ textAlign: 'center' }}>
+                            <img 
+                                src={interactiveClassImg} 
+                                alt="Interactive Live Classes" 
+                                style={{ width: '100%', maxWidth: '420px', margin: '0 auto', display: 'block', borderRadius: '16px', boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }} 
+                            />
                         </div>
                         {/* Right – text */}
                         <div className="expertise__content">
                             <h3 className="expertise__title">
-                                <span style={{ color: 'var(--color-teal)' }}>Interactive</span> Live Classes
+                                <span style={{ color: 'var(--color-navy)' }}>3. Interactive</span><br />
+                                <span style={{ color: 'var(--color-teal)' }}>Live Classes</span>
                             </h3>
+                            <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0 25px 0', maxWidth: '300px' }}>
+                                <span style={{ flex: 1, height: '1px', background: '#D9B44A' }}></span>
+                                <span style={{ color: '#D9B44A', fontSize: '1.2rem', margin: '0 15px' }}>⭐</span>
+                                <span style={{ flex: 1, height: '1px', background: '#D9B44A' }}></span>
+                            </div>
                             <ul className="expertise__feature-list">
                                 <li className="expertise__feature-item">
-                                    <span style={{color: 'var(--color-teal)', fontWeight: 'bold', marginRight: '8px'}}>✓</span>
+                                    <span style={{color: '#fff', background: 'var(--color-teal)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '12px', fontSize: '0.8rem', flexShrink: 0}}>✓</span>
                                     <span>Participate in real-time discussions</span>
                                 </li>
                                 <li className="expertise__feature-item">
-                                    <span style={{color: 'var(--color-teal)', fontWeight: 'bold', marginRight: '8px'}}>✓</span>
+                                    <span style={{color: '#fff', background: 'var(--color-teal)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '12px', fontSize: '0.8rem', flexShrink: 0}}>✓</span>
                                     <span>Case-based learning approach</span>
                                 </li>
                             </ul>
@@ -220,73 +167,55 @@ export default function Expertise() {
                     </div>
                 </div>
             </div>
-
-            {/* ─── Feature 4: Access to session recordings ───── */}
+            {/* ─── Feature 4: Join the Elite MRCOG Community ─── */}
             <div className="expertise__block expertise__block--light">
                 <div className="container">
                     <div className="expertise__inner">
                         {/* Left – text */}
                         <div className="expertise__content">
                             <h3 className="expertise__title">
-                                <span style={{ color: 'var(--color-navy)' }}>Mentor and</span><br />
-                                community <span style={{ color: 'var(--color-teal)' }}>support</span>
+                                <span style={{ color: 'var(--color-navy)' }}>4. Join the</span><br />
+                                <span style={{ color: 'var(--color-teal)' }}>Elite MRCOG Community</span>
                             </h3>
+                            <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0 25px 0', maxWidth: '300px' }}>
+                                <span style={{ flex: 1, height: '1px', background: '#D9B44A' }}></span>
+                                <span style={{ color: '#D9B44A', fontSize: '1.2rem', margin: '0 15px' }}>⭐</span>
+                                <span style={{ flex: 1, height: '1px', background: '#D9B44A' }}></span>
+                            </div>
                             <ul className="expertise__feature-list">
                                 <li className="expertise__feature-item">
-                                    <PeopleIcon />
-                                    <span>Join a community of like-minded professionals.</span>
+                                    <span style={{color: '#fff', background: 'var(--color-teal)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '12px', fontSize: '0.8rem', flexShrink: 0}}>✓</span>
+                                    <span>Free WhatsApp Community</span>
                                 </li>
                                 <li className="expertise__feature-item">
-                                    <PeopleIcon />
-                                    <span>Get guidance from mentors who have been there.</span>
+                                    <span style={{color: '#fff', background: 'var(--color-teal)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '12px', fontSize: '0.8rem', flexShrink: 0}}>✓</span>
+                                    <span>Free Telegram Community</span>
                                 </li>
                                 <li className="expertise__feature-item">
-                                    <PeopleIcon />
-                                    <span>Access to exclusive study groups.</span>
+                                    <span style={{color: '#fff', background: 'var(--color-teal)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '12px', fontSize: '0.8rem', flexShrink: 0}}>✓</span>
+                                    <span>Weekly Free Webinar Announcements</span>
+                                </li>
+                                <li className="expertise__feature-item">
+                                    <span style={{color: '#fff', background: 'var(--color-teal)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '12px', fontSize: '0.8rem', flexShrink: 0}}>✓</span>
+                                    <span>Latest Exam Recall Updates</span>
+                                </li>
+                                <li className="expertise__feature-item">
+                                    <span style={{color: '#fff', background: 'var(--color-teal)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '12px', fontSize: '0.8rem', flexShrink: 0}}>✓</span>
+                                    <span>Mentor Announcements & Study Support</span>
+                                </li>
+                                <li className="expertise__feature-item">
+                                    <span style={{color: '#fff', background: 'var(--color-teal)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '12px', fontSize: '0.8rem', flexShrink: 0}}>✓</span>
+                                    <span>Connect with MRCOG Aspirants Worldwide</span>
                                 </li>
                             </ul>
                         </div>
-                        {/* Right – Mock Exam leaderboard (as Timeline placeholder) */}
-                        <div className="expertise__exam-outer">
-                            <div className="expertise__exam-star-wrap">
-                                <span className="expertise__exam-hand">🖐</span>
-                            </div>
-                            <div className="expertise__exam-dots">
-                                <span className="expertise__exam-dot-blue"></span>
-                                <span className="expertise__exam-dot-small"></span>
-                            </div>
-                            <div className="expertise__exam-card">
-                                <div className="expertise__exam-header">
-                                    <span style={{ fontSize: '1.4rem' }}>⭐</span>
-                                    <div className="expertise__exam-title-wrap">
-                                        <span className="expertise__exam-title">Community & Growth</span>
-                                        <span className="expertise__exam-book">📘</span>
-                                    </div>
-                                </div>
-                                <div className="expertise__exam-rows">
-                                    {/* Row 1 */}
-                                    <div className="expertise__exam-row">
-                                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&q=80" alt="User 1" className="expertise__exam-avatar" />
-                                        <div className="expertise__exam-bar-wrap">
-                                            <div className="expertise__exam-bar expertise__exam-bar--sky" style={{ width: '60%' }}></div>
-                                        </div>
-                                    </div>
-                                    {/* Row 2 */}
-                                    <div className="expertise__exam-row" style={{ justifyContent: 'flex-end' }}>
-                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80" alt="User 2" className="expertise__exam-avatar" />
-                                        <div className="expertise__exam-bar-wrap">
-                                            <div className="expertise__exam-bar expertise__exam-bar--blue" style={{ width: '50%' }}></div>
-                                        </div>
-                                    </div>
-                                    {/* Row 3 */}
-                                    <div className="expertise__exam-row">
-                                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&q=80" alt="User 3" className="expertise__exam-avatar" />
-                                        <div className="expertise__exam-bar-wrap">
-                                            <div className="expertise__exam-bar expertise__exam-bar--green" style={{ width: '40%' }}></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        {/* Right – Image */}
+                        <div className="expertise__visual--right" style={{ textAlign: 'center' }}>
+                            <img 
+                                src={communitySupportImg} 
+                                alt="Join the Community" 
+                                style={{ width: '100%', maxWidth: '500px', margin: '0 auto', display: 'block', borderRadius: '16px', boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }} 
+                            />
                         </div>
                     </div>
                 </div>

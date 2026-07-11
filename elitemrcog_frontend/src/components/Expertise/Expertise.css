@@ -150,6 +150,9 @@
 /* ---- Quiz card (section 1) ---- */
 .expertise__visual {
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .expertise__quiz-deco {

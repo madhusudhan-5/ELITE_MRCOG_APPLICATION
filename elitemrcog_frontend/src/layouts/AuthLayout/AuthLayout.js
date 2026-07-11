@@ -3,7 +3,7 @@ import { Outlet, Link } from 'react-router-dom';
 import './AuthLayout.css';
 
 // Import images
-import logo from '../../assets/images/logo.svg';
+import logo from '../../assets/images/logo.jpeg';
 import dummyImage from '../../assets/images/4c6498cce2e253cf38639b4ba215c7df58ce5a53.jpg';
 
 const AuthLayout = () => {
@@ -21,11 +21,7 @@ const AuthLayout = () => {
                     <h3>Welcome to Elite MRCOG</h3>
                     <p>Your journey to professional excellence begins here.</p>
                 </div>
-                <div className="auth-footer-links">
-                    <a href="/privacy">Privacy Policy</a>
-                    <a href="/terms">Terms and Condition</a>
-                    <a href="/refund">Refund policy</a>
-                </div>
+
             </div>
             
             <div className="auth-right-panel">

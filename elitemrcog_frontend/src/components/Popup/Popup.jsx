@@ -24,7 +24,7 @@ const Popup = () => {
     };
 
     const handleJoin = () => {
-        window.open('https://t.me/elitemrcog', '_blank');
+        window.open('https://t.me/ccadk123456', '_blank');
         handleClose();
     };
 

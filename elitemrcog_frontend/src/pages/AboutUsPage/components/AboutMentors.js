@@ -1,23 +1,20 @@
 import React from 'react';
 
+import deepikaImg from '../../../assets/images/DeepikaBabu.jpg';
+import sanaImg from '../../../assets/images/SanaFatima.jpg';
+
 const mentors = [
     {
-        name: "Dr. Uma Kamat",
+        name: "Dr. Deepika Babu-",
         role: "FOUNDER & LEAD MENTOR",
-        bio: "A practicing physician with a vision to simplify medical education. Her teaching philosophy is built on 'The Support System'—ensuring no candidate feels alone in their MRCOG journey.",
-        image: "/images/mentor_uma_1782489109113.png"
+        bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        image: deepikaImg
     },
     {
-        name: "Dr. Ankita Joshi",
+        name: "Dr. Sana Fatima",
         role: "STRATEGIC MENTOR",
-        bio: "Consultant. Dr. Ankita specializes in transforming complex clinical tasks into repeatable templates, having aced the exam on her first attempt through innovation.",
-        image: "/images/mentor_ankita_1782489123096.png"
-    },
-    {
-        name: "Dr. Niranjani Rajachander",
-        role: "CLINICAL MENTOR",
-        bio: "From student to mentor, Niranjani's journey is a testament to the Elite MRCOG methodology. She focuses on confidence-building and structured communication competencies.",
-        image: "/images/mentor_niranjani_1782489133602.png"
+        bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        image: sanaImg
     }
 ];
 
@@ -41,7 +38,7 @@ const AboutMentors = () => {
                         <div className="mentor-info">
                             <h3 className="mentor-name">{mentor.name}</h3>
                             <span className="mentor-role">{mentor.role}</span>
-                            <p className="mentor-bio">{mentor.bio}</p>
+                            <p className="mentor-bio" style={{ color: 'var(--about-text-light)', fontSize: '0.9rem', lineHeight: '1.5' }}>{mentor.bio}</p>
                         </div>
                     </div>
                 ))}

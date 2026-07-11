@@ -4,16 +4,20 @@ import './FAQ.css';
 const FAQ = () => {
     const faqs = [
         {
-            question: "How long do I have access to the materials?",
-            answer: "You will have uninterrupted access for the duration of your chosen subscription plan."
+            question: "Will I receive daily homework stations?",
+            answer: "Yes. You'll receive structured daily homework stations throughout the course to reinforce learning and build exam confidence."
         },
         {
-            question: "Are the mock exams timed?",
-            answer: "Yes, our platform simulates the real exam environment, including strict time limits."
+            question: "Are the recall stations based on recent exams?",
+            answer: "Yes. Our library is continuously updated with the latest exam recalls, together with current GTG, TOG and NICE guidance."
         },
         {
-            question: "Can I access the content on my mobile device?",
-            answer: "Absolutely. Our platform is fully responsive and optimized for all mobile devices."
+            question: "How long will I have access to the course?",
+            answer: "You'll have one year of access from the date of your subscription."
+        },
+        {
+            question: "Are the live classes recorded?",
+            answer: "Yes. All live sessions are recorded and uploaded on the same day, so you can revisit them anytime during your subscription."
         }
     ];
 

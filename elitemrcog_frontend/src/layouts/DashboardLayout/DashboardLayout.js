@@ -23,7 +23,7 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import './DashboardLayout.css';
-import logo from '../../assets/images/logo.svg';
+import logo from '../../assets/images/logo.jpeg';
 import LegalModal from '../../components/Footer/LegalModal';
 import { policies } from '../../constants/policies';
 
@@ -100,7 +100,7 @@ const DashboardLayout = () => {
             
             <aside className={`sidebar ${isSidebarOpen ? 'open' : ''} ${isSidebarCollapsed ? 'collapsed' : ''}`}>
                 <div className="sidebar-brand">
-                    <img src="/logo.svg" alt="Elite MRCOG Logo" />
+                    <img src={logo} alt="Elite MRCOG Logo" />
                     <h2>ELITE MRCOG</h2>
                     <button className="mobile-close-btn" onClick={() => setIsSidebarOpen(false)}>
                         <X size={20} />

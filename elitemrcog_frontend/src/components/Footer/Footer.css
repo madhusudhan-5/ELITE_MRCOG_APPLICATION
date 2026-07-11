@@ -19,10 +19,9 @@
 }
 
 .footer__logo {
-    height: 56px;
+    height: 48px;
     width: auto;
-    /* Invert SVG to show white on dark bg */
-    filter: invert(1) brightness(2);
+    border-radius: 12px;
 }
 
 .footer__tagline {

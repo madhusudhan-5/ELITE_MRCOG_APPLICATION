@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Hero.css';
 import heroGraduate from '../../assets/images/1b70f2b335533974a80fc333011bce813bfbfe3e.png';
 
@@ -10,22 +11,21 @@ const Hero = () => {
                 {/* Left Content */}
                 <div className="hero__content">
                     <h1 className="hero__headline">
-                        Crack <span className="highlight-navy-bold">MRCOG</span>{' '}
-                        <span className="highlight-teal">With</span>
-                        <br />Confidence
+                        Elite <span className="highlight-navy-bold">MRCOG</span> -<br />
+                        <span className="highlight-teal">Guiding You</span> to MRCOG Success
                     </h1>
                     <p className="hero__subtext">
-                        Ready to master the MRCOG?<br />
-                        Unlock elite, mentor-crafted resources designed by those<br />
-                        who've successfully walked the journey before you. Step<br />
-                        in, level up, and start your path to success.
+                        Everything You Need to Pass MRCOG Part 3 — <br />Structured Courses • Recent Exam Recall Discussions • Live OSCE Practice • Personalised Feedback • Continuous mentorship
                     </p>
                     <div className="hero__actions">
-                        <a href="#signup" className="btn btn-primary hero__btn-main">Join for free</a>
-                        <button className="hero__btn-watch">
+                        <Link to="/register" className="btn btn-primary hero__btn-main">Join for free</Link>
+                        <a href="https://www.youtube.com/watch?v=NWUBU9bPAVU" target="_blank" rel="noopener noreferrer" className="hero__btn-watch" style={{ textDecoration: 'none', textAlign: 'left' }}>
                             <span className="hero__btn-play">&#9654;</span>
-                            <span className="hero__btn-watch-text">Watch how it works</span>
-                        </button>
+                            <span className="hero__btn-watch-text">
+                                <div style={{ lineHeight: 1.2 }}>Watch a 10-Minute Demo</div>
+                                <small style={{ fontSize: '0.85em', color: 'var(--color-text-muted)', fontWeight: 'normal' }}>Learn the Elite Way</small>
+                            </span>
+                        </a>
                     </div>
 
                 </div>
@@ -56,35 +56,6 @@ const Hero = () => {
                         </div>
                     </div>
 
-                    {/* Floating Card: Congratulations */}
-                    <div className="hero__card hero__card--congrats">
-                        <div className="hero__card-icon hero__card-icon--orange">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                <rect width="24" height="24" rx="6" fill="#F5A623" />
-                                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="white" />
-                            </svg>
-                        </div>
-                        <div>
-                            <div className="hero__card-stat">Congratulations</div>
-                            <div className="hero__card-label">Your Course completed</div>
-                        </div>
-                    </div>
-
-                    {/* Floating Card: MRCOG Part 3 */}
-                    <div className="hero__card hero__card--exam">
-                        <div className="hero__card-avatar">
-                            <img
-                                src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=40&q=80"
-                                alt="Mentor"
-                            />
-                            <span className="hero__card-dot"></span>
-                        </div>
-                        <div className="hero__card-exam-info">
-                            <div className="hero__card-stat">MRCOG Part 3 Exam</div>
-                            <div className="hero__card-label">Today at 12.00 PM</div>
-                            <button className="hero__card-join">Join Now</button>
-                        </div>
-                    </div>
 
                     {/* Floating icon top-right */}
                     <div className="hero__float-icon">

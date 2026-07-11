@@ -29,7 +29,9 @@
 }
 
 .admin-sidebar-brand img {
-    height: 35px;
+    height: 48px;
+    width: auto;
+    border-radius: 12px;
 }
 
 .admin-sidebar-brand h2 {

@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './SuperAdminLayout.css';
+import logo from '../../assets/images/logo.jpeg';
 
 const SuperAdminLayout = () => {
     const { user, logout } = useAuth();
@@ -48,7 +49,7 @@ const SuperAdminLayout = () => {
             
             <aside className={`superadmin-sidebar ${isSidebarOpen ? 'open' : ''}`}>
                 <div className="superadmin-sidebar-brand">
-                    <img src="/logo.svg" alt="Elite MRCOG Logo" />
+                    <img src={logo} alt="Elite MRCOG Logo" />
                     <h2>SUPER ADMIN</h2>
                     <button className="superadmin-mobile-close-btn" onClick={() => setIsSidebarOpen(false)}>
                         <X size={20} />

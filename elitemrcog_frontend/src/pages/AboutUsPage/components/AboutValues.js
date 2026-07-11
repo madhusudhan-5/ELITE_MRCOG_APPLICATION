@@ -13,7 +13,7 @@ const AboutValues = () => {
                     </div>
                     <h3 className="value-title">Precision</h3>
                     <p className="value-text">
-                        We don't study more; we study smarter. Focusing exactly on Royal College standards.
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.
                     </p>
                 </div>
                 
@@ -23,7 +23,7 @@ const AboutValues = () => {
                     </div>
                     <h3 className="value-title">Real-Time</h3>
                     <p className="value-text">
-                        Recalls and station recordings that reflect the current exam pulse.
+                        Incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
                     </p>
                 </div>
                 
@@ -33,7 +33,7 @@ const AboutValues = () => {
                     </div>
                     <h3 className="value-title">Empathy</h3>
                     <p className="value-text">
-                        We understand the burnout. Our mentors are your emotional anchor.
+                        Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.
                     </p>
                 </div>
             </div>

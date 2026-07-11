@@ -3,32 +3,54 @@ import './Features.css';
 
 const features = [
     {
-        icon: '📄',
+        icon: '💻',
         iconBg: '#5B67CA',
-        title: 'Reading Library',
-        description: 'Access 300+ recall tasks with clear module-wise keys and ready-made revision notes designed to boost your clinical clarity and communication confidence.',
-        link: 'View Once',
+        title: 'Live Online Classes',
+        list: [
+            'TOTAL 30+ LIVE INTERACTIVE CLASSES',
+            '15+ LIVE MODULE-WISE CLASSES',
+            'ACTIVE PARTICIPANT PRESENTATIONS',
+            'PERSONALISED MENTOR FEEDBACK',
+            'DAILY HOMEWORK STATIONS',
+            'PRE-MODULE SELF-ACTIVITY – TIMETABLE'
+        ],
     },
     {
-        icon: '📅',
+        icon: '📄',
         iconBg: '#00CBB8',
-        title: 'Online Course',
-        description: 'A comprehensive MRCOG Part 3 program with live training focused on communication, counselling, and clinical skills. Get mentor-guided practice, personalised feedback, and exam-ready strategies.',
-        link: 'View Once',
-    },
-    {
-        icon: '👥',
-        iconBg: 'var(--color-navy)',
-        title: 'Mock Exam',
-        description: 'Experience true-to-exam MRCOG Part 3 mock stations covering communication, counselling, viva, and more. Get individualised mentor feedback and clear domain-wise improvement strategies.',
-        link: 'View Once',
+        title: 'Reading Library',
+        list: [
+            '300+ Meticulously Written Recall Stations',
+            'Complete Station Templates',
+            'Role Player Instructions',
+            'Domain-wise Answer Keys',
+            'Ready-to-Revise Flashcards & Notes',
+            'GTG | TOG | NICE Summaries'
+        ],
     },
     {
         icon: '▶',
         iconBg: '#E05780',
-        title: 'Video Library',
-        description: 'Experience true-to-exam MRCOG Part 3 mock stations covering communication, counselling, viva, and more. Get individualised mentor feedback and clear domain-wise improvement strategies.',
-        link: 'View Once',
+        title: 'Video & Podcast Library',
+        list: [
+            '150+ Mentor Demonstration Videos',
+            '10-Minute Model Performances',
+            'Watch Anytime, Learn Anywhere',
+            'Exam-Ready Communication Techniques',
+            'Perfect for Daily Revision'
+        ],
+    },
+    {
+        icon: '👥',
+        iconBg: 'var(--color-navy)',
+        title: 'Mock Circuits',
+        list: [
+            '14-Station Online Mock Circuits',
+            '2-Minute Reading + 10-Minute Performance',
+            'Real Exam Simulation',
+            'Domain-wise Marking',
+            'Personalised Mentor Feedback'
+        ],
     },
 ];
 
@@ -37,16 +59,15 @@ const Features = () => {
         <section className="features section" id="features">
             <div className="container">
                 <h2 className="section-heading">
-                    All-In-One <span className="highlight-teal">Elite MRCOG</span>
+                    Everything You Need to <span className="highlight-teal">Pass MRCOG Part 3</span>
                 </h2>
                 <p className="section-subheading">
-                    MRCOG is one powerful online suite that combines all the skills<br />
-                    required to crack the Exam
+                    One platform. One structured pathway. Everything you need to prepare confidently for MRCOG Part 3 - with Elite MRCOG by your side
                 </p>
 
                 <div className="features__grid">
                     {features.map((f, idx) => (
-                        <div className="features__card" key={idx}>
+                        <div className="features__card" key={idx} style={{ borderBottom: `6px solid ${f.iconBg}` }}>
                             <div
                                 className="features__icon-wrap"
                                 style={{ backgroundColor: f.iconBg }}
@@ -56,16 +77,17 @@ const Features = () => {
                             <h3 className="features__card-title" style={{ color: f.iconBg }}>
                                 {f.title}
                             </h3>
-                            <p className="features__card-desc">{f.description}</p>
-                            <a href="#" className="features__link">
-                                <u>{f.link}</u>
-                            </a>
+                            <ul className="features__card-list" style={{ width: '100%', listStyleType: 'disc', paddingLeft: '20px', fontSize: '0.9rem', color: 'var(--color-text-body)', textAlign: 'left', lineHeight: '1.4' }}>
+                                {f.list.map((item, i) => (
+                                    <li key={i} style={{ marginBottom: '8px' }}>{item}</li>
+                                ))}
+                            </ul>
                         </div>
                     ))}
                 </div>
 
                 <div className="features__cta">
-                    <a href="#signup" className="btn btn-teal">Get Started</a>
+                    <a href="#signup" className="btn btn-teal">Explore Plans</a>
                 </div>
             </div>
         </section>

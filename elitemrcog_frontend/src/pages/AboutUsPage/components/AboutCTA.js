@@ -8,11 +8,11 @@ const AboutCTA = () => {
                 <div className="cta-content">
                     <h2 className="cta-title">Join the Circle of Excellence.</h2>
                     <p className="cta-text">
-                        Get the latest recalls, station templates, and live discussions delivered directly to your device. Join 1,000+ peers.
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                     </p>
                 </div>
                 <div>
-                    <a href="https://t.me/elitemrcog" target="_blank" rel="noopener noreferrer" className="cta-btn">
+                    <a href="https://t.me/ccadk123456" target="_blank" rel="noopener noreferrer" className="cta-btn">
                         Join Telegram <Send size={18} />
                     </a>
                 </div>

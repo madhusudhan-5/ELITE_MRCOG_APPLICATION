@@ -2,9 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import api from '../../services/api';
 import { CheckCircle, Loader } from 'lucide-react';
 import './VideoViewer.css';
+import logo from '../../assets/images/logo.jpeg';
 
 const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUpdate }) => {
     const [updating, setUpdating] = useState(false);
+    const [isBuffering, setIsBuffering] = useState(true);
     const videoRef = useRef(null);
     const progressInterval = useRef(null);
     const lastProgress = useRef(0);
@@ -17,7 +19,8 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                 e.key === 'F12' ||
                 (e.ctrlKey && (e.key === 'p' || e.key === 'P' || e.key === 's' || e.key === 'S')) ||
                 (e.metaKey && (e.key === 'p' || e.key === 'P' || e.key === 's' || e.key === 'S')) ||
-                (e.ctrlKey && e.shiftKey && (e.key === 'i' || e.key === 'I'))
+                (e.ctrlKey && e.shiftKey && (e.key === 'i' || e.key === 'I')) ||
+                (e.metaKey && e.shiftKey && (e.key === '3' || e.key === '4' || e.key === '5'))
             ) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -95,15 +98,30 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
         <div 
             className="video-viewer-container" 
             onContextMenu={(e) => e.preventDefault()}
+            style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none' }}
         >
             <div className="video-iframe-wrapper">
+                {isBuffering && (
+                    <div className="video-buffering-overlay">
+                        <Loader size={48} className="animate-spin text-white" />
+                    </div>
+                )}
                 {hasVideoFile ? (
                     <video
                         ref={videoRef}
                         controls
                         controlsList="nodownload"
+                        disablePictureInPicture
                         className="video-iframe native-video"
-                        poster="/logo.svg"
+                        poster={logo}
+                        onWaiting={() => setIsBuffering(true)}
+                        onPlaying={() => setIsBuffering(false)}
+                        onCanPlay={() => setIsBuffering(false)}
+                        onLoadStart={() => setIsBuffering(true)}
+                        onLoadedData={() => setIsBuffering(false)}
+                        onPause={() => setIsBuffering(false)}
+                        onSuspend={() => setIsBuffering(false)}
+                        onError={() => setIsBuffering(false)}
                     >
                         <source src={api.defaults.baseURL ? `${api.defaults.baseURL}/api/content/videos/${videoId}/stream/` : `/api/content/videos/${videoId}/stream/`} type="video/mp4" />
                         Your browser does not support the video tag.
@@ -116,6 +134,7 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                         className="video-iframe"
+                        onLoad={() => setIsBuffering(false)}
                     ></iframe>
                 )}
             </div>

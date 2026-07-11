@@ -47,8 +47,8 @@ const LandingPage = () => {
 
             {/* Fixed Floating Social Buttons — always visible */}
             <FloatingSocial
-                telegramUrl="https://t.me/elitemrcog"
-                whatsappUrl="https://wa.me/1234567890"
+                telegramUrl="https://t.me/ccadk123456"
+                whatsappUrl="https://chat.whatsapp.com/JJz4H90Cgyq2nLnEbDMnod"
             />
         </div>
     );

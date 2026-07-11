@@ -22,6 +22,7 @@ class PartAdminSerializer(serializers.ModelSerializer):
 class AdminPartViewSet(viewsets.ModelViewSet):
     """CRUD for Parts — staff only."""
     permission_classes = [IsAdminUser]
+    pagination_class = None
     queryset = Part.objects.all().order_by('order')
     serializer_class = PartAdminSerializer
 
@@ -41,6 +42,7 @@ class ModuleAdminSerializer(serializers.ModelSerializer):
 class AdminModuleViewSet(viewsets.ModelViewSet):
     """CRUD for Modules — staff only."""
     permission_classes = [IsAdminUser]
+    pagination_class = None
     queryset = Module.objects.all().select_related('part')
     serializer_class = ModuleAdminSerializer
     parser_classes = [parsers.MultiPartParser, parsers.FormParser, parsers.JSONParser]
@@ -70,6 +72,7 @@ class ReadingArticleAdminSerializer(serializers.ModelSerializer):
 class AdminReadingArticleViewSet(viewsets.ModelViewSet):
     """CRUD for ReadingArticles — staff only."""
     permission_classes = [IsAdminUser]
+    pagination_class = None
     queryset = ReadingArticle.objects.all().select_related('module', 'module__part')
     serializer_class = ReadingArticleAdminSerializer
     parser_classes = [parsers.MultiPartParser, parsers.FormParser, parsers.JSONParser]
@@ -108,6 +111,7 @@ class StationAdminSerializer(serializers.ModelSerializer):
 class AdminStationViewSet(viewsets.ModelViewSet):
     """CRUD for Stations — staff only. Handles PDF upload."""
     permission_classes = [IsAdminUser]
+    pagination_class = None
     queryset = Station.objects.all().select_related('article', 'article__module')
     serializer_class = StationAdminSerializer
     parser_classes = [parsers.MultiPartParser, parsers.FormParser, parsers.JSONParser]
@@ -133,6 +137,7 @@ class VideoAdminSerializer(serializers.ModelSerializer):
 class AdminVideoViewSet(viewsets.ModelViewSet):
     """CRUD for Videos — staff only."""
     permission_classes = [IsAdminUser]
+    pagination_class = None
     queryset = Video.objects.all().select_related('module', 'module__part')
     serializer_class = VideoAdminSerializer
     parser_classes = [parsers.MultiPartParser, parsers.FormParser, parsers.JSONParser]

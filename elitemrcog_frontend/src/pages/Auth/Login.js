@@ -3,12 +3,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
+import LegalModal from '../../components/Footer/LegalModal';
+import { policies } from '../../constants/policies';
 import './Auth.css';
 
 const Login = () => {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [activeModal, setActiveModal] = useState(null);
+    const closeModal = () => setActiveModal(null);
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -127,6 +131,33 @@ const Login = () => {
             <p className="auth-switch">
                 Don't have an account? <Link to="/register">Sign up</Link>
             </p>
+
+            <div className="auth-legal-links" style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px', fontSize: '0.8rem', color: '#888' }}>
+                <button onClick={() => setActiveModal('refund')} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit', color: 'inherit', textDecoration: 'underline' }}>Refund Policy</button>
+                <span>|</span>
+                <button onClick={() => setActiveModal('privacy')} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit', color: 'inherit', textDecoration: 'underline' }}>Privacy Policy</button>
+                <span>|</span>
+                <button onClick={() => setActiveModal('terms')} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit', color: 'inherit', textDecoration: 'underline' }}>Terms &amp; Conditions</button>
+            </div>
+
+            <LegalModal
+                isOpen={activeModal === 'privacy'}
+                onClose={closeModal}
+                title="Privacy Policy"
+                content={policies.privacy}
+            />
+            <LegalModal
+                isOpen={activeModal === 'terms'}
+                onClose={closeModal}
+                title="Terms &amp; Conditions"
+                content={policies.terms}
+            />
+            <LegalModal
+                isOpen={activeModal === 'refund'}
+                onClose={closeModal}
+                title="Refund Policy"
+                content={policies.refund}
+            />
         </div>
     );
 };

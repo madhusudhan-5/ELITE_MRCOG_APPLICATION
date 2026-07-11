@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './LoadingScreen.css';
-import logoSvg from '../../assets/images/logo.svg';
+import logoSvg from '../../assets/images/logo.jpeg';
 
 const LoadingScreen = ({ onComplete }) => {
     const [fadeOut, setFadeOut] = useState(false);

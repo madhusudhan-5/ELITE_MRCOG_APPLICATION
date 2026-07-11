@@ -12,7 +12,7 @@ const AboutMission = () => {
                 </h2>
                 
                 <p className="mission-text">
-                    We observed that most candidates failed not because of a lack of knowledge, but due to a lack of structure. MRCOG Part 3 is a performance. Like any performance, it requires rehearsal, timing, and critique.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.
                 </p>
                 
                 <div className="mission-point">
@@ -21,7 +21,7 @@ const AboutMission = () => {
                     </div>
                     <div>
                         <h3 className="mission-point-title">Personalized Trajectory</h3>
-                        <p className="mission-point-text">No two candidates are the same. We tailor the path.</p>
+                        <p className="mission-point-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                     </div>
                 </div>
                 
@@ -31,7 +31,7 @@ const AboutMission = () => {
                     </div>
                     <div>
                         <h3 className="mission-point-title">Station-Focused Mastery</h3>
-                        <p className="mission-point-text">Every station is a module; every module is a win.</p>
+                        <p className="mission-point-text">Sed do eiusmod tempor incididunt ut labore et dolore.</p>
                     </div>
                 </div>
             </div>

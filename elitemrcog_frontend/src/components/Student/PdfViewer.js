@@ -30,7 +30,8 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
                 e.key === 'F12' ||
                 (e.ctrlKey && (e.key === 'p' || e.key === 'P' || e.key === 's' || e.key === 'S')) ||
                 (e.metaKey && (e.key === 'p' || e.key === 'P' || e.key === 's' || e.key === 'S')) ||
-                (e.ctrlKey && e.shiftKey && (e.key === 'i' || e.key === 'I'))
+                (e.ctrlKey && e.shiftKey && (e.key === 'i' || e.key === 'I')) ||
+                (e.metaKey && e.shiftKey && (e.key === '3' || e.key === '4' || e.key === '5'))
             ) {
                 e.preventDefault();
                 e.stopPropagation();
