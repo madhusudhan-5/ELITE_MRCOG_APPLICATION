@@ -97,6 +97,7 @@
     overflow: hidden;
     transition: all 0.2s ease;
     border-left: 4px solid transparent;
+    flex-shrink: 0;
 }
 
 /* Color variants matching the design */

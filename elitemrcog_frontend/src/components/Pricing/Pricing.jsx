@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { ShoppingCart } from 'lucide-react';
 import './Pricing.css';
 import api from '../../services/api';
 
@@ -21,7 +23,7 @@ const Pricing = () => {
         fetchBundles();
     }, []);
 
-    const renderChecklist = (bundle) => {
+    const renderChecklist = (bundle, index) => {
         const features = [];
         if (bundle.includes_reading) features.push('Reading Library');
         if (bundle.includes_video) features.push('Video Library');
@@ -39,13 +41,22 @@ const Pricing = () => {
              features.push('Full Course Access');
         }
 
-        const checkColor = bundle.is_featured ? '#F5A623' : '#00CBB8';
+        let checkBgColor = '#e2e8f0';
+        let checkColor = '#64748b';
+        
+        if (bundle.is_featured) {
+            checkBgColor = '#F5A623';
+            checkColor = '#ffffff';
+        } else if (index % 2 !== 0 || index === 2) {
+            checkBgColor = '#ccfbf1';
+            checkColor = '#0f766e';
+        }
 
         return features.map((item, i) => (
             <li key={i} className="pricing__feature-item">
                 <span
                     className="pricing__check"
-                    style={{ background: checkColor }}
+                    style={{ background: checkBgColor, color: checkColor }}
                 >
                     ✓
                 </span>
@@ -65,10 +76,10 @@ const Pricing = () => {
     return (
         <section className="pricing section" id="pricing">
             <div className="container">
-                <h2 className="pricing__heading">Pick your perfect plan</h2>
+                <h2 className="pricing__heading" style={{ color: '#1e293b' }}>Save more with bundles</h2>
 
                 <div className="pricing__grid">
-                    {bundles.map((bundle) => (
+                    {bundles.map((bundle, index) => (
                         <div
                             key={bundle.id}
                             className={`pricing__card${bundle.is_featured ? ' pricing__card--featured' : ''}`}
@@ -84,15 +95,16 @@ const Pricing = () => {
                             </div>
 
                             <ul className="pricing__features">
-                                {renderChecklist(bundle)}
+                                {renderChecklist(bundle, index)}
                             </ul>
 
-                            <a
-                                href="#signup"
+                            <Link
+                                to="/register"
                                 className={`pricing__cta${bundle.is_featured ? ' pricing__cta--featured' : ''}`}
                             >
-                                Get Started
-                            </a>
+                                <ShoppingCart size={18} />
+                                Buy now
+                            </Link>
                         </div>
                     ))}
                 </div>

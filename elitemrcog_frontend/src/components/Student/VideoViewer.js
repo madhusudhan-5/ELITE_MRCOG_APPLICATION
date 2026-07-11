@@ -110,6 +110,7 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                     <video
                         ref={videoRef}
                         controls
+                        autoPlay={true}
                         controlsList="nodownload"
                         disablePictureInPicture
                         className="video-iframe native-video"
