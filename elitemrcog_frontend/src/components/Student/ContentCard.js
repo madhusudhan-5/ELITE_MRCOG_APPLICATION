@@ -34,11 +34,10 @@ const ContentCard = ({ material, type = 'module', basePath = '/dashboard/modules
                     </div>
                 )}
 
-                {/* Lock Overlay */}
+                {/* Lock Badge in Top Right */}
                 {isLocked && (
-                    <div className="cc-lock-overlay">
-                        <Lock size={24} />
-                        <span>Subscribe to unlock</span>
+                    <div className="cc-lock-badge" title="Subscribe to unlock">
+                        <Lock size={14} />
                     </div>
                 )}
 
@@ -60,6 +59,12 @@ const ContentCard = ({ material, type = 'module', basePath = '/dashboard/modules
                     <span className="cc-subtitle">{material.module_title}</span>
                 )}
                 <h3 className="cc-title">{title}</h3>
+                {isLocked && (
+                    <span className="cc-subscribe-prompt">
+                        <Lock size={12} style={{ display: 'inline-block', marginRight: '4px', verticalAlign: 'middle' }} />
+                        Subscribe to unlock
+                    </span>
+                )}
                 {type !== 'home' && (
                     <p className="cc-desc">{material.short_text || material.short_description || 'Explore this course module in detail.'}</p>
                 )}

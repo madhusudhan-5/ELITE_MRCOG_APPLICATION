@@ -15,6 +15,10 @@ from rest_framework.response import Response
 
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
+from django.contrib.sessions.models import Session
+from django.contrib.auth.signals import user_logged_in
+from django.dispatch import receiver
 
 from .models import User, OTPVerification
 from .serializers import (
@@ -24,12 +28,51 @@ from .serializers import (
 )
 
 
+def clear_other_sessions(user, current_jwt_jti=None, current_session_key=None):
+    """
+    Invalidates all other active sessions (both JWT and Django Admin session) for a user.
+    """
+    # 1. Invalidate other active JWT refresh tokens
+    tokens = OutstandingToken.objects.filter(user=user)
+    if current_jwt_jti:
+        tokens = tokens.exclude(jti=current_jwt_jti)
+    
+    for token in tokens:
+        BlacklistedToken.objects.get_or_create(token=token)
+
+    # 2. Invalidate other active Django database sessions
+    active_sessions = Session.objects.filter(expire_date__gte=timezone.now())
+    for s in active_sessions:
+        try:
+            data = s.get_decoded()
+            if data.get('_auth_user_id') == str(user.id):
+                if current_session_key and s.session_key == current_session_key:
+                    continue
+                s.delete()
+        except Exception:
+            pass
+
+
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
+    
+    # Invalidate all other active sessions for this user
+    clear_other_sessions(user, current_jwt_jti=refresh['jti'])
+    
     return {
         'refresh': str(refresh),
         'access': str(refresh.access_token),
     }
+
+
+@receiver(user_logged_in)
+def on_user_logged_in(sender, request, user, **kwargs):
+    """
+    Signal receiver to clear other sessions when user logs in via standard Django session
+    (e.g., Django admin portal).
+    """
+    session_key = request.session.session_key
+    clear_other_sessions(user, current_session_key=session_key)
 
 
 @api_view(['POST'])
@@ -69,9 +112,27 @@ def register_view(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_view(request):
-    """Login with email + password. Returns JWT tokens."""
+    """Login with email + password. Returns JWT tokens with rate limiting."""
+    from django.core.cache import cache
+
+    email = request.data.get('email', '').strip().lower()
+    ip_address = request.META.get('REMOTE_ADDR', 'unknown')
+
+    # Define cache keys
+    lockout_key = f"lockout_{email}_{ip_address}"
+    attempts_key = f"attempts_{email}_{ip_address}"
+
+    # Check if locked out
+    if cache.get(lockout_key):
+        return Response({
+            'error': 'Too many failed login attempts. Your account has been temporarily locked. Please try again after 15 minutes.'
+        }, status=status.HTTP_429_TOO_MANY_REQUESTS)
+
     serializer = LoginSerializer(data=request.data)
     if serializer.is_valid():
+        # Reset failed attempts on successful login
+        cache.delete(attempts_key)
+
         user = serializer.validated_data['user']
         tokens = get_tokens_for_user(user)
         user.last_login = timezone.now()
@@ -80,6 +141,18 @@ def login_view(request):
             'user': UserSerializer(user).data,
             **tokens,
         })
+
+    # Increment attempts on failure
+    attempts = cache.get(attempts_key, 0) + 1
+    cache.set(attempts_key, attempts, timeout=900)  # 15 minutes timeout
+
+    if attempts >= 5:
+        # Set lockout for 15 minutes
+        cache.set(lockout_key, True, timeout=900)
+        return Response({
+            'error': 'Too many failed login attempts. Your account has been temporarily locked. Please try again after 15 minutes.'
+        }, status=status.HTTP_429_TOO_MANY_REQUESTS)
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

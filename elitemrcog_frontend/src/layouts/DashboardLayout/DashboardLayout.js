@@ -58,35 +58,69 @@ const DashboardLayout = () => {
     // Auto-generate breadcrumbs based on route
     const generateBreadcrumbs = () => {
         const pathnames = location.pathname.split('/').filter(x => x);
-        if (pathnames.length === 0) return 'Home';
         
+        const getLinkPath = (index) => {
+            return '/' + pathnames.slice(0, index + 1).join('/');
+        };
+
+        const formatName = (name) => {
+            if (name === 'dashboard') return 'Dashboard';
+            if (name === 'reading') return 'Reading Library';
+            if (name === 'video') return 'Video Library';
+            if (name === 'modules') return 'Reading Library';
+            if (name === 'video-modules') return 'Video Library';
+            return name.charAt(0).toUpperCase() + name.slice(1).replace('-', ' ');
+        };
+
         if (location.pathname.includes('/modules/')) {
             return (
                 <div className="breadcrumbs">
                     <ChevronLeft size={18} className="breadcrumb-back" onClick={() => navigate('/dashboard/reading')} />
                     <span className="breadcrumb-path">
-                        Home &gt; Reading Library &gt; Module
+                        <span className="breadcrumb-link" onClick={() => navigate('/dashboard')}>Dashboard</span>
+                        {" > "}
+                        <span className="breadcrumb-link" onClick={() => navigate('/dashboard/reading')}>Reading Library</span>
+                        {" > "}
+                        <span className="breadcrumb-current">Module</span>
                     </span>
                 </div>
             );
         }
-        
+
         if (location.pathname.includes('/video-modules/')) {
             return (
                 <div className="breadcrumbs">
                     <ChevronLeft size={18} className="breadcrumb-back" onClick={() => navigate('/dashboard/video')} />
                     <span className="breadcrumb-path">
-                        Home &gt; Video Library &gt; Module
+                        <span className="breadcrumb-link" onClick={() => navigate('/dashboard')}>Dashboard</span>
+                        {" > "}
+                        <span className="breadcrumb-link" onClick={() => navigate('/dashboard/video')}>Video Library</span>
+                        {" > "}
+                        <span className="breadcrumb-current">Module</span>
                     </span>
                 </div>
             );
         }
-        
+
         return (
             <div className="breadcrumbs">
                 <ChevronLeft size={18} className="breadcrumb-back" onClick={() => navigate(-1)} />
                 <span className="breadcrumb-path">
-                    Home &gt; {pathnames.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' > ')}
+                    {pathnames.map((name, index) => {
+                        const isLast = index === pathnames.length - 1;
+                        const formattedName = formatName(name);
+                        const path = getLinkPath(index);
+                        return isLast ? (
+                            <span key={path} className="breadcrumb-current">{formattedName}</span>
+                        ) : (
+                            <React.Fragment key={path}>
+                                <span className="breadcrumb-link" onClick={() => navigate(path)}>
+                                    {formattedName}
+                                </span>
+                                {" > "}
+                            </React.Fragment>
+                        );
+                    })}
                 </span>
             </div>
         );
@@ -174,7 +208,14 @@ const DashboardLayout = () => {
                         <button className="mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}>
                             <Menu size={24} />
                         </button>
-                        {generateBreadcrumbs()}
+                        {location.pathname === '/dashboard' || location.pathname === '/dashboard/' ? (
+                            <div className="header-welcome-greeting">
+                                <span className="header-welcome-title">Welcome, {user?.first_name || user?.name || 'Student'}!</span>
+                                <span className="header-welcome-subtitle">Let's start learning</span>
+                            </div>
+                        ) : (
+                            generateBreadcrumbs()
+                        )}
                     </div>
                     <div className="header-actions">
                         <button className="icon-btn cart-icon-btn" onClick={() => navigate('/dashboard/cart')}>
@@ -213,7 +254,7 @@ const DashboardLayout = () => {
                     </div>
                 </header>
 
-                <div className="dashboard-content-area">
+                <div className={`dashboard-content-area ${location.pathname === '/dashboard' || location.pathname === '/dashboard/' ? 'dashboard-home-content' : ''}`}>
                     {location.pathname === '/dashboard' || location.pathname === '/dashboard/' || location.pathname.includes('/modules/') ? (
                         <Outlet />
                     ) : (

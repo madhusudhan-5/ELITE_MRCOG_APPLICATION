@@ -13,6 +13,7 @@ import DashboardLayout from './layouts/DashboardLayout/DashboardLayout';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import VerifyOTP from './pages/Auth/VerifyOTP';
+import ForgotPassword from './pages/Auth/ForgotPassword';
 import DashboardHome from './pages/Dashboard/DashboardHome';
 import ReadingLibrary from './pages/Dashboard/ReadingLibrary';
 import VideoLibrary from './pages/Dashboard/VideoLibrary';
@@ -72,6 +73,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/verify-otp" element={<VerifyOTP />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
           </Route>
 
           {/* Protected Dashboard Routes (Student) */}

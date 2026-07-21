@@ -1,29 +1,69 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
 import LegalModal from '../../components/Footer/LegalModal';
 import { policies } from '../../constants/policies';
+import { Eye, EyeOff } from 'lucide-react';
+import logo from '../../assets/images/logo.jpeg';
 import './Auth.css';
 
 const Login = () => {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
-    const [error, setError] = useState(null);
+    const [rememberMe, setRememberMe] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [activeModal, setActiveModal] = useState(null);
     const closeModal = () => setActiveModal(null);
     const { login } = useAuth();
     const navigate = useNavigate();
 
+    // Check if email was remembered
+    useEffect(() => {
+        const rememberedEmail = localStorage.getItem('remembered_email');
+        if (rememberedEmail) {
+            setCredentials(prev => ({ ...prev, email: rememberedEmail }));
+            setRememberMe(true);
+        }
+    }, []);
+
     const handleChange = (e) => {
-        setCredentials({...credentials, [e.target.name]: e.target.value});
+        const { name, value } = e.target;
+        setCredentials(prev => ({ ...prev, [name]: value }));
+        // Clear field error as user types
+        if (errors[name]) {
+            setErrors(prev => ({ ...prev, [name]: '' }));
+        }
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!credentials.email.trim()) {
+            newErrors.email = 'Email is required.';
+        } else if (!emailRegex.test(credentials.email)) {
+            newErrors.email = 'Please enter a valid email address.';
+        }
+
+        if (!credentials.password) {
+            newErrors.password = 'Password is required.';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        
+        if (!validateForm()) return;
+
         setIsLoading(true);
-        setError(null);
+        setErrors({});
+        
         try {
             const response = await api.post('/api/auth/login/', credentials);
             const user = response.data.user;
@@ -33,6 +73,13 @@ const Login = () => {
             };
             login(user, tokens);
             
+            // Handle Remember Me
+            if (rememberMe) {
+                localStorage.setItem('remembered_email', credentials.email);
+            } else {
+                localStorage.removeItem('remembered_email');
+            }
+            
             if (user?.role === 'superadmin') {
                 window.location.href = 'http://localhost:8000/admin'; // Redirect explicitly to Django admin
             } else if (user?.role === 'admin') {
@@ -41,7 +88,22 @@ const Login = () => {
                 navigate('/dashboard');
             }
         } catch (err) {
-            setError(err.response?.data?.error || 'Invalid credentials');
+            const responseData = err.response?.data;
+            if (responseData && typeof responseData === 'object') {
+                // Check if specific field validation errors
+                if (responseData.email || responseData.password) {
+                    setErrors({
+                        email: responseData.email?.[0] || responseData.email || '',
+                        password: responseData.password?.[0] || responseData.password || ''
+                    });
+                } else if (responseData.error) {
+                    setErrors({ general: responseData.error });
+                } else {
+                    setErrors({ general: 'Invalid credentials. Please try again.' });
+                }
+            } else {
+                setErrors({ general: 'Server connection failed. Please try again.' });
+            }
         } finally {
             setIsLoading(false);
         }
@@ -49,7 +111,7 @@ const Login = () => {
 
     const handleGoogleSuccess = async (credentialResponse) => {
         setIsLoading(true);
-        setError(null);
+        setErrors({});
         try {
             const response = await api.post('/api/auth/google/', { id_token: credentialResponse.credential });
             const user = response.data.user;
@@ -67,7 +129,7 @@ const Login = () => {
                 navigate('/dashboard');
             }
         } catch (err) {
-            setError(err.response?.data?.error || 'Google login failed');
+            setErrors({ general: err.response?.data?.error || 'Google login failed' });
         } finally {
             setIsLoading(false);
         }
@@ -75,39 +137,75 @@ const Login = () => {
 
     return (
         <div className="auth-form-container">
+            {/* Mobile-only brand header */}
+            <div className="auth-mobile-header">
+                <img src={logo} alt="Elite MRCOG Logo" />
+                <h2>ELITE MRCOG</h2>
+            </div>
+
             <h2>Welcome Back</h2>
             <p className="auth-subtitle">Welcome back! Please enter your details.</p>
             
-            {error && <div className="auth-error">{error}</div>}
+            {errors.general && <div className="auth-error" role="alert">{errors.general}</div>}
 
-            <form onSubmit={handleLogin} className="auth-form">
+            <form onSubmit={handleLogin} className="auth-form" noValidate>
                 <div className="form-group">
-                    <label>Email</label>
+                    <label htmlFor="login-email">Email</label>
                     <input 
+                        id="login-email"
                         type="email" 
                         name="email" 
                         placeholder="Enter your email" 
                         value={credentials.email}
                         onChange={handleChange}
+                        aria-invalid={errors.email ? "true" : "false"}
+                        aria-describedby={errors.email ? "email-error" : undefined}
                         required 
                     />
+                    {errors.email && (
+                        <span className="field-error" id="email-error" role="alert">
+                            {errors.email}
+                        </span>
+                    )}
                 </div>
                 
                 <div className="form-group">
-                    <label>Password</label>
-                    <input 
-                        type="password" 
-                        name="password" 
-                        placeholder="••••••••" 
-                        value={credentials.password}
-                        onChange={handleChange}
-                        required 
-                    />
+                    <label htmlFor="login-password">Password</label>
+                    <div className="password-input-wrapper">
+                        <input 
+                            id="login-password"
+                            type={showPassword ? "text" : "password"} 
+                            name="password" 
+                            placeholder="••••••••" 
+                            value={credentials.password}
+                            onChange={handleChange}
+                            aria-invalid={errors.password ? "true" : "false"}
+                            aria-describedby={errors.password ? "password-error" : undefined}
+                            required 
+                        />
+                        <button 
+                            type="button" 
+                            className="password-toggle-btn"
+                            onClick={() => setShowPassword(!showPassword)}
+                            aria-label={showPassword ? "Hide password" : "Show password"}
+                        >
+                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                    </div>
+                    {errors.password && (
+                        <span className="field-error" id="password-error" role="alert">
+                            {errors.password}
+                        </span>
+                    )}
                 </div>
                 
                 <div className="auth-actions">
                     <label className="remember-me">
-                        <input type="checkbox" /> Remember me
+                        <input 
+                            type="checkbox" 
+                            checked={rememberMe}
+                            onChange={(e) => setRememberMe(e.target.checked)}
+                        /> Remember me
                     </label>
                     <Link to="/forgot-password">Forgot Password?</Link>
                 </div>
@@ -122,7 +220,7 @@ const Login = () => {
                     <GoogleLogin
                         onSuccess={handleGoogleSuccess}
                         onError={() => {
-                            setError('Google Login Failed');
+                            setErrors({ general: 'Google Login Failed' });
                         }}
                     />
                 </div>

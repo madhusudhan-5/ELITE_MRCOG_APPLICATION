@@ -22,6 +22,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from content.admin_views import PM2ErrorLoggingMixin
 
 from .models import Bundle, Plan, Cart, CartItem, UserSubscription, Coupon, PaymentTransaction
 from .serializers import (
@@ -530,7 +531,7 @@ class AdminBundleSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AdminBundleViewSet(viewsets.ModelViewSet):
+class AdminBundleViewSet(PM2ErrorLoggingMixin, viewsets.ModelViewSet):
     """CRUD for Subscription Bundles — staff only."""
     permission_classes = [IsAdminUser]
     queryset = Bundle.objects.all().order_by('order')
@@ -553,7 +554,7 @@ class AdminUserSubscriptionSerializer(serializers.ModelSerializer):
         return f"{obj.user.first_name} {obj.user.last_name}".strip() or obj.user.email
 
 
-class AdminSubscriptionViewSet(viewsets.ModelViewSet):
+class AdminSubscriptionViewSet(PM2ErrorLoggingMixin, viewsets.ModelViewSet):
     """View/manage all user subscriptions — staff only."""
     permission_classes = [IsAdminUser]
     queryset = UserSubscription.objects.all().select_related('user', 'bundle', 'plan').order_by('-created_at')

@@ -10,18 +10,19 @@ const AuthLayout = () => {
     return (
         <div className="auth-layout">
             <div className="auth-left-panel">
-                <div className="auth-brand">
-                    <Link to="/" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <img src={logo} alt="Elite MRCOG Logo" className="auth-logo" />
-                        <h2>ELITE MRCOG</h2>
-                    </Link>
+                <div className="auth-left-content">
+                    <div className="auth-brand">
+                        <Link to="/" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <img src={logo} alt="Elite MRCOG Logo" className="auth-logo" />
+                            <h2>ELITE MRCOG</h2>
+                        </Link>
+                    </div>
+                    <div className="auth-illustration">
+                        <img src={dummyImage} alt="Welcome" className="auth-hero-image" />
+                        <h3>Welcome to Elite MRCOG</h3>
+                        <p>Your journey to professional excellence begins here.</p>
+                    </div>
                 </div>
-                <div className="auth-illustration">
-                    <img src={dummyImage} alt="Welcome" className="auth-hero-image" />
-                    <h3>Welcome to Elite MRCOG</h3>
-                    <p>Your journey to professional excellence begins here.</p>
-                </div>
-
             </div>
             
             <div className="auth-right-panel">

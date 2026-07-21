@@ -70,13 +70,7 @@ const ArticleModal = ({ isOpen, onClose, onSave, articleData, modules, showToast
             onSave(res.data, !!articleData?.id);
         } catch (err) {
             console.error(err);
-            let errMsg = err.response?.data || err.message;
-            if (typeof errMsg === 'string' && errMsg.includes('<html')) {
-                errMsg = errMsg.includes('413 Request Entity Too Large') ? 'File is too large. Image/Thumbnail limit is 2MB.' : 'Server error (500). Please try again.';
-            } else if (typeof errMsg === 'object') {
-                errMsg = JSON.stringify(errMsg).substring(0, 100);
-            }
-            showToast('Save failed: ' + errMsg, 'error');
+            showToast('An unexpected error occurred. Please refresh and try again later.', 'error');
         } finally {
             setSaving(false);
         }
@@ -189,13 +183,8 @@ const StationModal = ({ isOpen, onClose, onSave, stationData, articleId, showToa
             }
             onSave(res.data, !!stationData?.id);
         } catch (err) {
-            let errMsg = err.response?.data || err.message;
-            if (typeof errMsg === 'string' && errMsg.includes('<html')) {
-                errMsg = errMsg.includes('413 Request Entity Too Large') ? 'File is too large. Image/Thumbnail limit is 2MB.' : 'Server error (500). Please try again.';
-            } else if (typeof errMsg === 'object') {
-                errMsg = JSON.stringify(errMsg).substring(0, 100);
-            }
-            showToast('Save failed: ' + errMsg, 'error');
+            console.error(err);
+            showToast('An unexpected error occurred. Please refresh and try again later.', 'error');
         } finally {
             setSaving(false);
         }
@@ -280,8 +269,12 @@ const ArticleRow = ({ article, onEditArticle, onDeleteArticle, showToast }) => {
         try {
             const res = await api.get(`/api/content/manage/stations/?article=${article.id}`);
             setStations(res.data.results || res.data);
-        } catch (e) { console.error(e); }
-        finally { setLoadingStations(false); }
+        } catch (err) {
+            console.error(err);
+            showToast('An unexpected error occurred. Please refresh and try again later.', 'error');
+        } finally {
+            setLoadingStations(false);
+        }
     }, [article.id]);
 
     const handleToggle = () => {
@@ -297,8 +290,14 @@ const ArticleRow = ({ article, onEditArticle, onDeleteArticle, showToast }) => {
 
     const handleDeleteStation = async (id) => {
         if (!window.confirm('Delete this station?')) return;
-        await api.delete(`/api/content/manage/stations/${id}/`);
-        setStations(prev => prev.filter(s => s.id !== id));
+        try {
+            await api.delete(`/api/content/manage/stations/${id}/`);
+            setStations(prev => prev.filter(s => s.id !== id));
+            showToast('Station deleted.');
+        } catch (err) {
+            console.error(err);
+            showToast('An unexpected error occurred. Please refresh and try again later.', 'error');
+        }
     };
 
     return (
@@ -388,7 +387,7 @@ const ManageReadingLibrary = () => {
             setArticles(articlesRes.data.results || articlesRes.data);
         } catch (err) {
             console.error(err);
-            showToast('Failed to load content. Check admin privileges.', 'error');
+            showToast('An unexpected error occurred. Please refresh and try again later.', 'error');
         } finally {
             setLoading(false);
         }
@@ -409,8 +408,9 @@ const ManageReadingLibrary = () => {
             await api.delete(`/api/content/manage/articles/${id}/`);
             setArticles(prev => prev.filter(a => a.id !== id));
             showToast('Article deleted.');
-        } catch {
-            showToast('Delete failed.', 'error');
+        } catch (err) {
+            console.error(err);
+            showToast('An unexpected error occurred. Please refresh and try again later.', 'error');
         }
     };
 

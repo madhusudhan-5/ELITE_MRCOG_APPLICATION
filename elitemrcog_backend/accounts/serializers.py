@@ -32,6 +32,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ['email', 'first_name', 'last_name', 'phone', 'password', 'password2', 'otp']
 
+    def validate_phone(self, value):
+        if value:
+            import re
+            # Regex allows digits, spaces, hyphens, parentheses, and an optional leading plus sign. Length 7-20.
+            if not re.match(r'^\+?[0-9\s\-()]{7,20}$', value):
+                raise serializers.ValidationError('Invalid phone number format.')
+        return value
+
     def validate(self, data):
         if data['password'] != data['password2']:
             raise serializers.ValidationError({'password2': 'Passwords do not match.'})
@@ -49,12 +57,27 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
     def validate(self, data):
-        user = authenticate(email=data['email'], password=data['password'])
-        if not user:
-            raise serializers.ValidationError('Invalid email or password.')
-        if not user.is_active:
-            raise serializers.ValidationError('This account has been deactivated.')
-        data['user'] = user
+        email = data.get('email')
+        password = data.get('password')
+
+        if not email:
+            raise serializers.ValidationError({'email': 'Email is required.'})
+        if not password:
+            raise serializers.ValidationError({'password': 'Password is required.'})
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError({'email': 'This email is not registered.'})
+
+        authenticated_user = authenticate(email=email, password=password)
+        if not authenticated_user:
+            raise serializers.ValidationError({'password': 'Incorrect password.'})
+
+        if not authenticated_user.is_active:
+            raise serializers.ValidationError({'email': 'This account has been deactivated.'})
+
+        data['user'] = authenticated_user
         return data
 
 

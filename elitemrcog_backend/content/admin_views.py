@@ -7,6 +7,36 @@ Accessible via: /api/content/manage/...
 from rest_framework import viewsets, serializers, parsers
 from rest_framework.permissions import IsAdminUser
 from .models import Part, Module, ReadingArticle, Station, Video
+import sys
+import traceback
+from django.utils import timezone
+from rest_framework.response import Response
+from rest_framework import status
+
+class PM2ErrorLoggingMixin:
+    """
+    Mixin to log all view exceptions to sys.stderr (PM2 error log on server)
+    and return a generic error message to the client.
+    """
+    def handle_exception(self, exc):
+        tb = traceback.format_exc()
+        timestamp = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
+        user_info = f"User: {self.request.user.email}" if self.request.user and self.request.user.is_authenticated else "AnonymousUser"
+        
+        # Write directly to stderr so it goes to PM2's error log
+        sys.stderr.write(
+            f"\n--- PM2 ERROR LOG [{timestamp}] ---\n"
+            f"Path: {self.request.path} | Method: {self.request.method}\n"
+            f"{user_info}\n"
+            f"{tb}"
+            f"------------------------------------\n"
+        )
+        sys.stderr.flush()
+        
+        return Response(
+            {"error": "An unexpected error occurred. Please refresh and try again later."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 # ─── Parts ────────────────────────────────────────────────────────────────────
@@ -19,7 +49,7 @@ class PartAdminSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AdminPartViewSet(viewsets.ModelViewSet):
+class AdminPartViewSet(PM2ErrorLoggingMixin, viewsets.ModelViewSet):
     """CRUD for Parts — staff only."""
     permission_classes = [IsAdminUser]
     pagination_class = None
@@ -39,7 +69,7 @@ class ModuleAdminSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AdminModuleViewSet(viewsets.ModelViewSet):
+class AdminModuleViewSet(PM2ErrorLoggingMixin, viewsets.ModelViewSet):
     """CRUD for Modules — staff only."""
     permission_classes = [IsAdminUser]
     pagination_class = None
@@ -69,7 +99,7 @@ class ReadingArticleAdminSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AdminReadingArticleViewSet(viewsets.ModelViewSet):
+class AdminReadingArticleViewSet(PM2ErrorLoggingMixin, viewsets.ModelViewSet):
     """CRUD for ReadingArticles — staff only."""
     permission_classes = [IsAdminUser]
     pagination_class = None
@@ -108,7 +138,7 @@ class StationAdminSerializer(serializers.ModelSerializer):
         return None
 
 
-class AdminStationViewSet(viewsets.ModelViewSet):
+class AdminStationViewSet(PM2ErrorLoggingMixin, viewsets.ModelViewSet):
     """CRUD for Stations — staff only. Handles PDF upload."""
     permission_classes = [IsAdminUser]
     pagination_class = None
@@ -134,7 +164,7 @@ class VideoAdminSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AdminVideoViewSet(viewsets.ModelViewSet):
+class AdminVideoViewSet(PM2ErrorLoggingMixin, viewsets.ModelViewSet):
     """CRUD for Videos — staff only."""
     permission_classes = [IsAdminUser]
     pagination_class = None

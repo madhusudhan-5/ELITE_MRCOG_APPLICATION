@@ -44,18 +44,7 @@ const DashboardHome = () => {
 
     return (
         <div className="dashboard-home">
-            {/* Hero / Greeting Section */}
-            <header className="dh-hero">
-                <div className="dh-hero-content">
-                    <h1>Welcome back, {user?.name || 'Student'}!</h1>
-                    <p>Continue your preparation for the MRCOG exams. You have <strong>3</strong> modules in progress.</p>
-                </div>
-                <div className="dh-hero-image-placeholder">
-                    {/* Placeholder for an illustration */}
-                </div>
-            </header>
-
-            <div className="dashboard-white-box">
+            <div className="dashboard-white-box dashboard-home-box">
                 {/* Featured Reading Modules */}
                 <section className="dh-section">
                     <div className="dh-section-header">
