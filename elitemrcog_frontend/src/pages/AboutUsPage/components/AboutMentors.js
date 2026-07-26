@@ -5,15 +5,15 @@ import sanaImg from '../../../assets/images/SanaFatima.jpg';
 
 const mentors = [
     {
-        name: "Dr. Deepika Babu-",
-        role: "FOUNDER & LEAD MENTOR",
-        bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        name: "Dr. Deepika Babu",
+        role: "Co-founder & Chief Mentor",
+        bio: "Dr. Deepika Babu is passionate about simplifying MRCOG Part 3 through structured teaching, real exam recalls, and personalised mentorship. Her practical, examiner-focused approach helps candidates build confidence, communication skills, and clinical reasoning for exam success.",
         image: deepikaImg
     },
     {
         name: "Dr. Sana Fatima",
-        role: "STRATEGIC MENTOR",
-        bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        role: "Co-founder & Chief Mentor",
+        bio: "Dr. Sana Fathima is dedicated to helping candidates excel through clear communication, supportive mentoring, and evidence-based teaching. Her calm, student-centred approach empowers doctors to perform confidently in the MRCOG Part 3 examination.",
         image: sanaImg
     }
 ];

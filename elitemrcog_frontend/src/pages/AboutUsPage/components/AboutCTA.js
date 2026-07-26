@@ -8,7 +8,7 @@ const AboutCTA = () => {
                 <div className="cta-content">
                     <h2 className="cta-title">Join the Circle of Excellence.</h2>
                     <p className="cta-text">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                        Connect with expert mentors and fellow candidates. Take the next step in your MRCOG Part 3 journey today.
                     </p>
                 </div>
                 <div>

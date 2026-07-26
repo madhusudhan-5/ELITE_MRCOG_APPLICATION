@@ -8,6 +8,7 @@ const UserRoleModal = ({ isOpen, onClose, user, onSave }) => {
         is_superuser: false,
         is_active: true
     });
+    const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
         if (user) {
@@ -35,14 +36,19 @@ const UserRoleModal = ({ isOpen, onClose, user, onSave }) => {
         setFormData({ ...formData, is_active: !formData.is_active });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onSave({
-            ...user,
-            is_staff: formData.is_staff,
-            is_superuser: formData.is_superuser,
-            is_active: formData.is_active
-        });
+        setSubmitting(true);
+        try {
+            await onSave({
+                ...user,
+                is_staff: formData.is_staff,
+                is_superuser: formData.is_superuser,
+                is_active: formData.is_active
+            });
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     // Calculate current UI role state for active styles
@@ -53,7 +59,7 @@ const UserRoleModal = ({ isOpen, onClose, user, onSave }) => {
             <div className="ur-modal-container" onClick={e => e.stopPropagation()}>
                 <div className="ur-header">
                     <h2>Edit User Access</h2>
-                    <button className="ur-close-btn" onClick={onClose}><X size={20} /></button>
+                    <button className="ur-close-btn" onClick={onClose} disabled={submitting}><X size={20} /></button>
                 </div>
 
                 <div className="ur-user-banner">
@@ -85,6 +91,7 @@ const UserRoleModal = ({ isOpen, onClose, user, onSave }) => {
                                 type="button" 
                                 className={`ur-toggle-btn ${formData.is_active ? 'suspend' : 'activate'}`}
                                 onClick={handleStatusToggle}
+                                disabled={submitting}
                             >
                                 {formData.is_active ? 'Suspend User' : 'Restore Access'}
                             </button>
@@ -141,8 +148,10 @@ const UserRoleModal = ({ isOpen, onClose, user, onSave }) => {
                     </div>
 
                     <div className="ur-footer">
-                        <button type="button" className="ur-cancel-btn" onClick={onClose}>Cancel</button>
-                        <button type="submit" className="ur-save-btn">Save Changes</button>
+                        <button type="button" className="ur-cancel-btn" onClick={onClose} disabled={submitting}>Cancel</button>
+                        <button type="submit" className="ur-save-btn" disabled={submitting}>
+                            {submitting ? 'Saving...' : 'Save Changes'}
+                        </button>
                     </div>
                 </form>
             </div>

@@ -144,7 +144,7 @@ const VideoModuleDetail = () => {
                                 >
                                     <div className="vmd-card-top">
                                         <span className="vmd-card-num">{String(idx + 1).padStart(2, '0')}</span>
-                                        <span className="vmd-card-name">{video.title}</span>
+                                        <span className="vmd-card-name" title={video.title}>{video.title}</span>
                                         {videoDetails[video.id]?.locked && <Lock size={13} className="vmd-card-lock" />}
                                         {video.is_free && (
                                             <span className="vmd-card-free-badge">Free</span>

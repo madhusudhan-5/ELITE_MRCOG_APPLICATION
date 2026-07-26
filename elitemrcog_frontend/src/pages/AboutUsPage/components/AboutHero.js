@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import aboutusheroImg from '../../../assets/images/aboutushero.png';
 
 const AboutHero = () => {
     return (
@@ -11,11 +12,13 @@ const AboutHero = () => {
                 </div>
                 
                 <h1 className="about-hero-title">
-                    Empowering the <span>Next Generation</span> of Specialists.
+                    REDEFINING <span>MRCOG PREPARATION</span>
                 </h1>
                 
                 <p className="about-hero-text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+                    We don't just prepare you for an exam—we help you develop the clinical reasoning, communication skills, and confidence expected of a modern specialist.
+                    <br />
+                    Learn with clarity. Practise with confidence. Succeed with mentorship.
                 </p>
                 
                 <a href="#modules" className="explore-btn">
@@ -25,18 +28,18 @@ const AboutHero = () => {
             
             <div className="about-hero-image-container">
                 <img 
-                    src="/images/about_hands_typing_1782489084212.png" 
+                    src={aboutusheroImg} 
                     alt="Mentorship and studying" 
                     className="about-hero-image"
                 />
                 <div className="hero-stats-glass">
                     <div className="stat-item">
-                        <div className="stat-value">85%</div>
-                        <div className="stat-label">PASS RATE AVERAGE</div>
+                        <div className="stat-value">100%</div>
+                        <div className="stat-label">MENTOR SUPPORT</div>
                     </div>
                     <div className="stat-item">
-                        <div className="stat-value">49+</div>
-                        <div className="stat-label">GLOBAL PASS OUTS</div>
+                        <div className="stat-value">300+</div>
+                        <div className="stat-label">HIGH-YIELD STATIONS</div>
                     </div>
                 </div>
             </div>

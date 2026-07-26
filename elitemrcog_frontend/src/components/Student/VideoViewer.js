@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import api from '../../services/api';
-import { CheckCircle, Loader } from 'lucide-react';
+import { CheckCircle, Loader, RotateCcw, RotateCw } from 'lucide-react';
 import './VideoViewer.css';
 import logo from '../../assets/images/logo.jpeg';
 import WatermarkOverlay from './WatermarkOverlay';
@@ -10,10 +10,45 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
     const [isBuffering, setIsBuffering] = useState(true);
     const [isBlurred, setIsBlurred] = useState(false);
     const videoRef = useRef(null);
-    const progressInterval = useRef(null);
+    const wrapperRef = useRef(null);
     const lastProgress = useRef(0);
 
-    // Anti-piracy: Block keyboard shortcuts
+    const seekRelative = useCallback((seconds) => {
+        if (videoRef.current) {
+            const current = videoRef.current.currentTime || 0;
+            const duration = videoRef.current.duration || 0;
+            const target = Math.min(duration, Math.max(0, current + seconds));
+            videoRef.current.currentTime = target;
+        }
+    }, []);
+
+    // Intercept native video tag fullscreen to make wrapper element fullscreen instead (keeping watermark visible)
+    useEffect(() => {
+        const videoEl = videoRef.current;
+        const wrapperEl = wrapperRef.current;
+        if (!videoEl || !wrapperEl) return;
+
+        const handleVideoFullscreen = () => {
+            if (document.fullscreenElement === videoEl || document.webkitFullscreenElement === videoEl) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().then(() => {
+                        if (wrapperEl.requestFullscreen) wrapperEl.requestFullscreen();
+                        else if (wrapperEl.webkitRequestFullscreen) wrapperEl.webkitRequestFullscreen();
+                    }).catch(() => {});
+                }
+            }
+        };
+
+        videoEl.addEventListener('fullscreenchange', handleVideoFullscreen);
+        videoEl.addEventListener('webkitfullscreenchange', handleVideoFullscreen);
+
+        return () => {
+            videoEl.removeEventListener('fullscreenchange', handleVideoFullscreen);
+            videoEl.removeEventListener('webkitfullscreenchange', handleVideoFullscreen);
+        };
+    }, [hasVideoFile]);
+
+    // Anti-piracy & Keyboard Seek controls (Left/Right arrow, J/L keys)
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (
@@ -28,6 +63,23 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                 e.stopPropagation();
                 return false;
             }
+
+            // Keyboard navigation for video seek/forward/backward
+            if (document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+                if (e.key === 'ArrowRight' || e.key === 'l' || e.key === 'L') {
+                    e.preventDefault();
+                    seekRelative(10);
+                } else if (e.key === 'ArrowLeft' || e.key === 'j' || e.key === 'J') {
+                    e.preventDefault();
+                    seekRelative(-10);
+                } else if (e.key === ' ' || e.key === 'k' || e.key === 'K') {
+                    if (videoRef.current) {
+                        e.preventDefault();
+                        if (videoRef.current.paused) videoRef.current.play();
+                        else videoRef.current.pause();
+                    }
+                }
+            }
         };
         const handleBlur = () => setIsBlurred(true);
         const handleFocus = () => setIsBlurred(false);
@@ -40,7 +92,7 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
             window.removeEventListener('blur', handleBlur);
             window.removeEventListener('focus', handleFocus);
         };
-    }, []);
+    }, [seekRelative]);
 
     // Auto-update progress for native video player
     useEffect(() => {
@@ -111,7 +163,7 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
             onContextMenu={(e) => e.preventDefault()}
             style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none' }}
         >
-            <div className="video-iframe-wrapper">
+            <div className="video-iframe-wrapper" ref={wrapperRef}>
                 <WatermarkOverlay />
                 {isBuffering && (
                     <div className="video-buffering-overlay">
@@ -152,6 +204,24 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                 )}
             </div>
             <div className="video-viewer-controls">
+                <div className="video-seek-btn-group">
+                    <button 
+                        type="button"
+                        className="video-seek-btn" 
+                        onClick={() => seekRelative(-10)}
+                        title="Rewind 10 seconds (← or J)"
+                    >
+                        <RotateCcw size={16} /> -10s
+                    </button>
+                    <button 
+                        type="button"
+                        className="video-seek-btn" 
+                        onClick={() => seekRelative(10)}
+                        title="Forward 10 seconds (→ or L)"
+                    >
+                        +10s <RotateCw size={16} />
+                    </button>
+                </div>
                 <button 
                     className="mark-complete-btn" 
                     onClick={markAsComplete}

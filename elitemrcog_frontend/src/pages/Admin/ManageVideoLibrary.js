@@ -79,11 +79,11 @@ const VideoModal = ({ isOpen, onClose, onSave, videoData, modules, showToast }) 
 
     if (!isOpen) return null;
     return (
-        <div className="vl-modal-overlay" onClick={onClose}>
+        <div className="vl-modal-overlay" onClick={saving ? undefined : onClose}>
             <div className="vl-modal" onClick={e => e.stopPropagation()}>
                 <div className="vl-modal-header">
                     <h3>{videoData?.id ? 'Edit Video' : 'New Video'}</h3>
-                    <button onClick={onClose}><X size={20} /></button>
+                    <button onClick={onClose} disabled={saving}><X size={20} /></button>
                 </div>
                 <div className="vl-modal-body">
                     <div className="vl-form-row">
@@ -152,7 +152,7 @@ const VideoModal = ({ isOpen, onClose, onSave, videoData, modules, showToast }) 
                     </div>
                 </div>
                 <div className="vl-modal-footer">
-                    <button className="vl-btn-cancel" onClick={onClose}>Cancel</button>
+                    <button className="vl-btn-cancel" onClick={onClose} disabled={saving}>Cancel</button>
                     <button className="vl-btn-save" onClick={handleSave} disabled={saving}>
                         {saving ? <Loader size={16} className="spin" /> : <Check size={16} />}
                         {saving ? 'Saving...' : 'Save Video'}
@@ -169,7 +169,7 @@ const VideoRow = ({ video, onEdit, onDelete }) => (
         <div className="vl-video-info">
             <Video size={16} className="vl-video-icon"/>
             <div className="vl-video-meta">
-                <span className="vl-video-title">{video.title}</span>
+                <span className="vl-video-title" title={video.title}>{video.title}</span>
                 <span className="vl-video-module">{video.module_title}</span>
             </div>
             <div className="vl-video-badges">

@@ -60,8 +60,9 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 };
 
 function App() {
+  const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || "";
   return (
-    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID"}>
+    <GoogleOAuthProvider clientId={googleClientId}>
       <CartProvider>
         <SessionManager>
         <Routes>

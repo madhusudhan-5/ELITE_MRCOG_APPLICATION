@@ -22,6 +22,7 @@ const ModuleModal = ({ isOpen, onClose, onSave, moduleData, parts = [], defaultP
 
     const [formData, setFormData] = useState(defaultState);
     const [previewThumb, setPreviewThumb] = useState(null);
+    const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
         if (moduleData) {
@@ -59,6 +60,7 @@ const ModuleModal = ({ isOpen, onClose, onSave, moduleData, parts = [], defaultP
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSubmitting(true);
         
         try {
             const formDataToSubmit = new FormData();
@@ -98,16 +100,18 @@ const ModuleModal = ({ isOpen, onClose, onSave, moduleData, parts = [], defaultP
             } else {
                 alert('Save failed: ' + errMsg);
             }
+        } finally {
+            setSubmitting(false);
         }
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
+        <div className="modal-overlay" onClick={submitting ? undefined : onClose}>
             <div className="modal-container module-modal" onClick={e => e.stopPropagation()}>
                 
                 <div className="modal-header">
                     <h2>{moduleData ? 'Edit Module' : 'Create New Module'}</h2>
-                    <button className="modal-close-btn" onClick={onClose}><X size={24} /></button>
+                    <button className="modal-close-btn" onClick={onClose} disabled={submitting}><X size={24} /></button>
                 </div>
 
                 <form className="modal-form" onSubmit={handleSubmit}>
@@ -224,9 +228,9 @@ const ModuleModal = ({ isOpen, onClose, onSave, moduleData, parts = [], defaultP
                     </div>
 
                     <div className="modal-footer">
-                        <button type="button" className="modal-cancel-btn" onClick={onClose}>Cancel</button>
-                        <button type="submit" className="modal-save-btn">
-                            {moduleData ? 'Save Changes' : 'Create Module'}
+                        <button type="button" className="modal-cancel-btn" onClick={onClose} disabled={submitting}>Cancel</button>
+                        <button type="submit" className="modal-save-btn" disabled={submitting}>
+                            {submitting ? 'Saving...' : (moduleData ? 'Save Changes' : 'Create Module')}
                         </button>
                     </div>
                 </form>

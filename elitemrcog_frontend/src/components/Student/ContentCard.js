@@ -58,7 +58,7 @@ const ContentCard = ({ material, type = 'module', basePath = '/dashboard/modules
                 {material.module_title && (
                     <span className="cc-subtitle">{material.module_title}</span>
                 )}
-                <h3 className="cc-title">{title}</h3>
+                <h3 className="cc-title" title={title}>{title}</h3>
                 {isLocked && (
                     <span className="cc-subscribe-prompt">
                         <Lock size={12} style={{ display: 'inline-block', marginRight: '4px', verticalAlign: 'middle' }} />

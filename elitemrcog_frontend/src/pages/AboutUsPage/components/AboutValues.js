@@ -13,7 +13,7 @@ const AboutValues = () => {
                     </div>
                     <h3 className="value-title">Precision</h3>
                     <p className="value-text">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.
+                        Targeted, station-specific guidance aligned with RCOG guidelines and scoring rubrics.
                     </p>
                 </div>
                 
@@ -23,7 +23,7 @@ const AboutValues = () => {
                     </div>
                     <h3 className="value-title">Real-Time</h3>
                     <p className="value-text">
-                        Incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
+                        Interactive practice sessions, instant examiner feedback, and real exam scenario simulation.
                     </p>
                 </div>
                 
@@ -33,7 +33,7 @@ const AboutValues = () => {
                     </div>
                     <h3 className="value-title">Empathy</h3>
                     <p className="value-text">
-                        Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.
+                        Supportive, student-centred mentoring designed to reduce exam stress and build lasting confidence.
                     </p>
                 </div>
             </div>

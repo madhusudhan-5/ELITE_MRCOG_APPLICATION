@@ -48,3 +48,12 @@ class AdminUserViewSet(viewsets.ModelViewSet):
         elif role_filter == 'student':
             qs = qs.filter(is_staff=False, is_superuser=False)
         return qs
+
+    def perform_update(self, serializer):
+        user_to_update = serializer.instance
+        if user_to_update == self.request.user:
+            if 'is_superuser' in serializer.validated_data and not serializer.validated_data['is_superuser']:
+                raise serializers.ValidationError({"is_superuser": "You cannot revoke your own SuperAdmin status."})
+            if 'is_active' in serializer.validated_data and not serializer.validated_data['is_active']:
+                raise serializers.ValidationError({"is_active": "You cannot suspend your own account."})
+        serializer.save()

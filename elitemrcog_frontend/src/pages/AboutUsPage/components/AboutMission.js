@@ -1,5 +1,6 @@
 import React from 'react';
 import { Award, Target } from 'lucide-react';
+import aboutus2Img from '../../../assets/images/aboutus2.png';
 
 const AboutMission = () => {
     return (
@@ -8,11 +9,11 @@ const AboutMission = () => {
             
             <div className="mission-content">
                 <h2 className="mission-title">
-                    Your Journey, <span>Perfectly Planned.</span>
+                    Your MRCOG Journey, <span>Perfectly Planned.</span>
                 </h2>
                 
                 <p className="mission-text">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.
+                    Most candidates don't struggle because they lack knowledge—they struggle because they lack a structured approach. MRCOG Part 3 is a performance-based examination that demands preparation, deliberate practice, constructive feedback, and repeated refinement. That's exactly what we help you achieve.
                 </p>
                 
                 <div className="mission-point">
@@ -20,8 +21,8 @@ const AboutMission = () => {
                         <Target size={24} />
                     </div>
                     <div>
-                        <h3 className="mission-point-title">Personalized Trajectory</h3>
-                        <p className="mission-point-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        <h3 className="mission-point-title">Structured Learning Path</h3>
+                        <p className="mission-point-text">A step-by-step roadmap from preparation to exam day.</p>
                     </div>
                 </div>
                 
@@ -30,16 +31,16 @@ const AboutMission = () => {
                         <Award size={24} />
                     </div>
                     <div>
-                        <h3 className="mission-point-title">Station-Focused Mastery</h3>
-                        <p className="mission-point-text">Sed do eiusmod tempor incididunt ut labore et dolore.</p>
+                        <h3 className="mission-point-title">Personalised Mentorship</h3>
+                        <p className="mission-point-text">Individual feedback to help you improve with every session.</p>
                     </div>
                 </div>
             </div>
             
             <div className="mission-images">
                 <img 
-                    src="/images/about_surgery_1782489094770.png" 
-                    alt="Surgical Team" 
+                    src={aboutus2Img} 
+                    alt="MRCOG Journey" 
                     className="mission-img" 
                 />
             </div>

@@ -140,11 +140,18 @@
 .vl-video-meta {
     display: flex;
     flex-direction: column;
+    min-width: 0;
 }
 
 .vl-video-title {
     font-weight: 600;
     color: #111827;
+    word-break: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .vl-video-module {

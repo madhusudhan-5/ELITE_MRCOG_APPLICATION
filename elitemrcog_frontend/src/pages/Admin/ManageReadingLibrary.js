@@ -78,11 +78,11 @@ const ArticleModal = ({ isOpen, onClose, onSave, articleData, modules, showToast
 
     if (!isOpen) return null;
     return (
-        <div className="rl-modal-overlay" onClick={onClose}>
+        <div className="rl-modal-overlay" onClick={saving ? undefined : onClose}>
             <div className="rl-modal" onClick={e => e.stopPropagation()}>
                 <div className="rl-modal-header">
                     <h3>{articleData?.id ? 'Edit Article' : 'New Reading Article'}</h3>
-                    <button onClick={onClose}><X size={20} /></button>
+                    <button onClick={onClose} disabled={saving}><X size={20} /></button>
                 </div>
                 <div className="rl-modal-body">
                     <div className="rl-form-row">
@@ -141,7 +141,7 @@ const ArticleModal = ({ isOpen, onClose, onSave, articleData, modules, showToast
                     </div>
                 </div>
                 <div className="rl-modal-footer">
-                    <button className="rl-btn-cancel" onClick={onClose}>Cancel</button>
+                    <button className="rl-btn-cancel" onClick={onClose} disabled={saving}>Cancel</button>
                     <button className="rl-btn-save" onClick={handleSave} disabled={saving}>
                         {saving ? <Loader size={16} className="spin" /> : <Check size={16} />}
                         {saving ? 'Saving...' : 'Save Article'}
@@ -192,11 +192,11 @@ const StationModal = ({ isOpen, onClose, onSave, stationData, articleId, showToa
 
     if (!isOpen) return null;
     return (
-        <div className="rl-modal-overlay" onClick={onClose}>
+        <div className="rl-modal-overlay" onClick={saving ? undefined : onClose}>
             <div className="rl-modal rl-modal--sm" onClick={e => e.stopPropagation()}>
                 <div className="rl-modal-header">
                     <h3>{stationData?.id ? 'Edit Station' : 'New Station'}</h3>
-                    <button onClick={onClose}><X size={20} /></button>
+                    <button onClick={onClose} disabled={saving}><X size={20} /></button>
                 </div>
                 <div className="rl-modal-body">
                     <div className="rl-form-row">
@@ -228,7 +228,7 @@ const StationModal = ({ isOpen, onClose, onSave, stationData, articleId, showToa
                     </div>
                 </div>
                 <div className="rl-modal-footer">
-                    <button className="rl-btn-cancel" onClick={onClose}>Cancel</button>
+                    <button className="rl-btn-cancel" onClick={onClose} disabled={saving}>Cancel</button>
                     <button className="rl-btn-save" onClick={handleSave} disabled={saving}>
                         {saving ? <Loader size={16} className="spin" /> : <Check size={16} />}
                         {saving ? 'Saving...' : 'Save Station'}
