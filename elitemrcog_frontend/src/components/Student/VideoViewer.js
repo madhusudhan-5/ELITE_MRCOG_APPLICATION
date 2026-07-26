@@ -234,7 +234,7 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                         ref={videoRef}
                         controls
                         autoPlay={true}
-                        controlsList="nodownload"
+                        controlsList="nofullscreen nodownload"
                         disablePictureInPicture
                         className="video-iframe native-video"
                         poster={logo}
