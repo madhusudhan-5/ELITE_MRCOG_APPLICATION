@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import api from '../../services/api';
-import { CheckCircle, Loader, RotateCcw, RotateCw } from 'lucide-react';
+import { CheckCircle, Loader, RotateCcw, RotateCw, Maximize, Minimize } from 'lucide-react';
 import './VideoViewer.css';
 import logo from '../../assets/images/logo.jpeg';
 import WatermarkOverlay from './WatermarkOverlay';
@@ -9,53 +9,104 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
     const [updating, setUpdating] = useState(false);
     const [isBuffering, setIsBuffering] = useState(true);
     const [isBlurred, setIsBlurred] = useState(false);
-    const [isScrubbing, setIsScrubbing] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(false);
     const videoRef = useRef(null);
     const wrapperRef = useRef(null);
     const lastProgress = useRef(0);
-    const startXRef = useRef(0);
-    const startTimeRef = useRef(0);
 
+    // Guaranteed safe seek relative (never NaN)
     const seekRelative = useCallback((seconds) => {
-        if (videoRef.current) {
-            const current = videoRef.current.currentTime || 0;
-            const duration = videoRef.current.duration || 0;
-            const target = Math.min(duration, Math.max(0, current + seconds));
-            videoRef.current.currentTime = target;
-        }
+        const video = videoRef.current;
+        if (!video) return;
+        const current = video.currentTime || 0;
+        const dur = video.duration;
+        const duration = Number.isFinite(dur) && dur > 0 ? dur : 999999;
+        const target = Math.min(duration, Math.max(0, current + seconds));
+        video.currentTime = target;
     }, []);
 
-    // Mouse / Touchpad Drag-to-Seek handling
-    const handleMouseDown = (e) => {
-        if (!videoRef.current || e.button !== 0) return;
-        setIsScrubbing(true);
-        startXRef.current = e.clientX;
-        startTimeRef.current = videoRef.current.currentTime || 0;
+    // Fullscreen state tracking & toggle
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!(document.fullscreenElement || document.webkitFullscreenElement));
+        };
+
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+
+        return () => {
+            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+            document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+        };
+    }, []);
+
+    const toggleFullscreen = () => {
+        const target = wrapperRef.current || videoRef.current;
+        if (!target) return;
+        try {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                if (target.requestFullscreen) {
+                    target.requestFullscreen().catch(err => console.warn("Fullscreen permission:", err));
+                } else if (target.webkitRequestFullscreen) {
+                    target.webkitRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(err => console.warn("Exit fullscreen permission:", err));
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+            }
+        } catch (err) {
+            console.warn("Fullscreen toggle caught:", err);
+        }
     };
 
-    const handleMouseMove = useCallback((e) => {
-        if (!isScrubbing || !videoRef.current) return;
-        const deltaX = e.clientX - startXRef.current;
-        const sensitivity = 0.15; // 0.15 seconds per pixel dragged
-        const duration = videoRef.current.duration || 0;
-        const targetTime = Math.min(duration, Math.max(0, startTimeRef.current + deltaX * sensitivity));
-        videoRef.current.currentTime = targetTime;
-    }, [isScrubbing]);
-
-    const handleMouseUp = useCallback(() => {
-        setIsScrubbing(false);
-    }, []);
-
+    // Pointer Drag-to-Seek directly attached to video element
     useEffect(() => {
-        if (isScrubbing) {
-            window.addEventListener('mousemove', handleMouseMove);
-            window.addEventListener('mouseup', handleMouseUp);
-        }
-        return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('mouseup', handleMouseUp);
+        const video = videoRef.current;
+        if (!video) return;
+
+        let isDragging = false;
+        let startX = 0;
+        let startTime = 0;
+
+        const onPointerDown = (e) => {
+            if (e.button !== 0) return;
+            const rect = video.getBoundingClientRect();
+            const clickY = e.clientY - rect.top;
+            // Trigger drag on top 80% of video player frame
+            if (clickY < rect.height - 45) {
+                isDragging = true;
+                startX = e.clientX;
+                startTime = video.currentTime || 0;
+            }
         };
-    }, [isScrubbing, handleMouseMove, handleMouseUp]);
+
+        const onPointerMove = (e) => {
+            if (!isDragging || !video) return;
+            const deltaX = e.clientX - startX;
+            const sensitivity = 0.2; // 0.2 seconds per pixel dragged
+            const dur = video.duration;
+            const duration = Number.isFinite(dur) && dur > 0 ? dur : 999999;
+            const targetTime = Math.min(duration, Math.max(0, startTime + deltaX * sensitivity));
+            video.currentTime = targetTime;
+        };
+
+        const onPointerUp = () => {
+            isDragging = false;
+        };
+
+        video.addEventListener('pointerdown', onPointerDown);
+        window.addEventListener('pointermove', onPointerMove);
+        window.addEventListener('pointerup', onPointerUp);
+
+        return () => {
+            video.removeEventListener('pointerdown', onPointerDown);
+            window.removeEventListener('pointermove', onPointerMove);
+            window.removeEventListener('pointerup', onPointerUp);
+        };
+    }, [hasVideoFile]);
 
     // Anti-piracy & Keyboard Seek controls (Left/Right arrow, J/L keys)
     useEffect(() => {
@@ -110,7 +161,6 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
         const updateBackendProgress = async (currentTime, duration) => {
             if (!duration) return;
             const percent = Math.min(100, Math.round((currentTime / duration) * 100));
-            // Only update if progress increased by > 2% or reached 100% to save API calls
             if (percent >= 100 || percent - lastProgress.current >= 2) {
                 lastProgress.current = percent;
                 try {
@@ -172,12 +222,7 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
             onContextMenu={(e) => e.preventDefault()}
             style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none' }}
         >
-            <div 
-                className="video-iframe-wrapper" 
-                ref={wrapperRef}
-                onMouseDown={handleMouseDown}
-                style={{ cursor: isScrubbing ? 'ew-resize' : 'default' }}
-            >
+            <div className="video-iframe-wrapper" ref={wrapperRef}>
                 <WatermarkOverlay />
                 {isBuffering && (
                     <div className="video-buffering-overlay">
@@ -189,7 +234,7 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                         ref={videoRef}
                         controls
                         autoPlay={true}
-                        controlsList="nofullscreen nodownload"
+                        controlsList="nodownload"
                         disablePictureInPicture
                         className="video-iframe native-video"
                         poster={logo}
@@ -234,6 +279,15 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                         title="Forward 10 seconds (→ or L)"
                     >
                         +10s <RotateCw size={16} />
+                    </button>
+                    <button 
+                        type="button"
+                        className="video-seek-btn" 
+                        onClick={toggleFullscreen}
+                        title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen (Watermarked)'}
+                    >
+                        {isFullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
+                        {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
                     </button>
                 </div>
                 <button 
