@@ -75,12 +75,12 @@ const VideoModuleDetail = () => {
         }
     };
 
-    const handleProgressUpdate = (progressData) => {
+    const handleProgressUpdate = useCallback((progressData) => {
         setVideoProgress(prev => ({
             ...prev,
             [progressData.video]: progressData
         }));
-    };
+    }, []);
 
     const getVideoColor = (video) => {
         const progress = videoProgress[video.id];

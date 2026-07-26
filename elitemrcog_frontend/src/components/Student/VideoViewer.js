@@ -232,6 +232,7 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                 {hasVideoFile ? (
                     <video
                         ref={videoRef}
+                        src={api.defaults.baseURL ? `${api.defaults.baseURL}/api/content/videos/${videoId}/stream/` : `/api/content/videos/${videoId}/stream/`}
                         controls
                         autoPlay={true}
                         controlsList="nofullscreen nodownload"
@@ -247,7 +248,6 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                         onSuspend={() => setIsBuffering(false)}
                         onError={() => setIsBuffering(false)}
                     >
-                        <source src={api.defaults.baseURL ? `${api.defaults.baseURL}/api/content/videos/${videoId}/stream/` : `/api/content/videos/${videoId}/stream/`} type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
                 ) : (
