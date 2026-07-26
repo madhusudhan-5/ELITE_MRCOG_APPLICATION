@@ -78,6 +78,14 @@ const ModuleDetail = () => {
 
     return (
         <div className="module-detail">
+            {/* Breadcrumb */}
+            <nav className="vmd-breadcrumb" style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem' }}>
+                <Link to="/dashboard" style={{ textDecoration: 'none', color: '#111827', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Home size={14} /> Home</Link>
+                <span style={{ color: '#6b7280' }}>›</span>
+                <Link to="/dashboard/reading" style={{ textDecoration: 'none', color: '#111827', fontWeight: 500 }}>Reading Library</Link>
+                <span style={{ color: '#6b7280' }}>›</span>
+                <span style={{ fontWeight: 600, color: '#2563eb' }}>{article.title}</span>
+            </nav>
 
             <div className="md-body">
                 {/* Left: Station List */}

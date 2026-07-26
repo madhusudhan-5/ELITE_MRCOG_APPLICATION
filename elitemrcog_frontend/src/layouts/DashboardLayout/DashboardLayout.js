@@ -64,7 +64,7 @@ const DashboardLayout = () => {
         };
 
         const formatName = (name) => {
-            if (name === 'dashboard') return 'Dashboard';
+            if (name === 'dashboard') return 'Home';
             if (name === 'reading') return 'Reading Library';
             if (name === 'video') return 'Video Library';
             if (name === 'modules') return 'Reading Library';
@@ -77,11 +77,9 @@ const DashboardLayout = () => {
                 <div className="breadcrumbs">
                     <ChevronLeft size={18} className="breadcrumb-back" onClick={() => navigate('/dashboard/reading')} />
                     <span className="breadcrumb-path">
-                        <span className="breadcrumb-link" onClick={() => navigate('/dashboard')}>Dashboard</span>
-                        {" > "}
+                        <span className="breadcrumb-link" onClick={() => navigate('/dashboard')}>Home</span>
+                        {" › "}
                         <span className="breadcrumb-link" onClick={() => navigate('/dashboard/reading')}>Reading Library</span>
-                        {" > "}
-                        <span className="breadcrumb-current">Module</span>
                     </span>
                 </div>
             );
@@ -92,11 +90,9 @@ const DashboardLayout = () => {
                 <div className="breadcrumbs">
                     <ChevronLeft size={18} className="breadcrumb-back" onClick={() => navigate('/dashboard/video')} />
                     <span className="breadcrumb-path">
-                        <span className="breadcrumb-link" onClick={() => navigate('/dashboard')}>Dashboard</span>
-                        {" > "}
+                        <span className="breadcrumb-link" onClick={() => navigate('/dashboard')}>Home</span>
+                        {" › "}
                         <span className="breadcrumb-link" onClick={() => navigate('/dashboard/video')}>Video Library</span>
-                        {" > "}
-                        <span className="breadcrumb-current">Module</span>
                     </span>
                 </div>
             );
@@ -117,7 +113,7 @@ const DashboardLayout = () => {
                                 <span className="breadcrumb-link" onClick={() => navigate(path)}>
                                     {formattedName}
                                 </span>
-                                {" > "}
+                                {" › "}
                             </React.Fragment>
                         );
                     })}
