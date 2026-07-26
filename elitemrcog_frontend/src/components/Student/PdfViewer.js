@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
+import { Maximize, Minimize } from 'lucide-react';
 import api from '../../services/api';
 import './PdfViewer.css';
 import WatermarkOverlay from './WatermarkOverlay';
@@ -226,37 +227,57 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
 
             {/* Bottom Navigation Bar */}
             <div className="pdf-bottom-bar">
-                {!isFullscreen && (
-                    <div className="pdf-nav-controls">
+                {!isFullscreen ? (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                        <div className="pdf-nav-controls">
+                            <button 
+                                className="pdf-nav-btn" 
+                                disabled={currentPage <= 1} 
+                                onClick={handlePrev}
+                            >
+                                Previous
+                            </button>
+                            <span className="pdf-page-info">
+                                Page {currentPage} of {total}
+                            </span>
+                            <button 
+                                className="pdf-nav-btn" 
+                                disabled={currentPage >= total} 
+                                onClick={handleNext}
+                            >
+                                Next
+                            </button>
+                        </div>
                         <button 
-                            className="pdf-nav-btn" 
-                            disabled={currentPage <= 1} 
-                            onClick={handlePrev}
+                            type="button"
+                            className="pdf-fullscreen-btn-styled" 
+                            onClick={toggleFullscreen}
+                            title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen (Watermarked)'}
                         >
-                            Previous
-                        </button>
-                        <span className="pdf-page-info">
-                            Page {currentPage} of {total}
-                        </span>
-                        <button 
-                            className="pdf-nav-btn" 
-                            disabled={currentPage >= total} 
-                            onClick={handleNext}
-                        >
-                            Next
+                            {isFullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
+                            {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
                         </button>
                     </div>
-                )}
-                {isFullscreen && (
+                ) : (
                     <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                         <span className="pdf-page-info">Total Pages: {total}</span>
-                        <button 
-                            className="pdf-subscribe-btn" 
-                            style={{ margin: 0, padding: '0.4rem 1rem', fontSize: '0.85rem' }}
-                            onClick={() => saveProgress(total, total)}
-                        >
-                            Mark as Complete ✓
-                        </button>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <button 
+                                type="button"
+                                className="pdf-fullscreen-btn-styled" 
+                                onClick={toggleFullscreen}
+                                title="Exit Fullscreen"
+                            >
+                                <Minimize size={16} /> Exit Fullscreen
+                            </button>
+                            <button 
+                                className="pdf-subscribe-btn" 
+                                style={{ margin: 0, padding: '0.4rem 1rem', fontSize: '0.85rem' }}
+                                onClick={() => saveProgress(total, total)}
+                            >
+                                Mark as Complete ✓
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>
