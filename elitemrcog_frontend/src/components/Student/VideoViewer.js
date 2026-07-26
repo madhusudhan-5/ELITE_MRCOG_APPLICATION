@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import api from '../../services/api';
-import { CheckCircle, Loader, RotateCcw, RotateCw } from 'lucide-react';
+import { CheckCircle, Loader, RotateCcw, RotateCw, Maximize, Minimize } from 'lucide-react';
 import './VideoViewer.css';
 import logo from '../../assets/images/logo.jpeg';
 import WatermarkOverlay from './WatermarkOverlay';
@@ -9,6 +9,7 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
     const [updating, setUpdating] = useState(false);
     const [isBuffering, setIsBuffering] = useState(true);
     const [isBlurred, setIsBlurred] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(false);
     const videoRef = useRef(null);
     const wrapperRef = useRef(null);
     const lastProgress = useRef(0);
@@ -22,31 +23,41 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
         }
     }, []);
 
-    // Intercept native video tag fullscreen to make wrapper element fullscreen instead (keeping watermark visible)
+    // Fullscreen state tracking
     useEffect(() => {
-        const videoEl = videoRef.current;
-        const wrapperEl = wrapperRef.current;
-        if (!videoEl || !wrapperEl) return;
-
-        const handleVideoFullscreen = () => {
-            if (document.fullscreenElement === videoEl || document.webkitFullscreenElement === videoEl) {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen().then(() => {
-                        if (wrapperEl.requestFullscreen) wrapperEl.requestFullscreen();
-                        else if (wrapperEl.webkitRequestFullscreen) wrapperEl.webkitRequestFullscreen();
-                    }).catch(() => {});
-                }
-            }
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!(document.fullscreenElement || document.webkitFullscreenElement));
         };
 
-        videoEl.addEventListener('fullscreenchange', handleVideoFullscreen);
-        videoEl.addEventListener('webkitfullscreenchange', handleVideoFullscreen);
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 
         return () => {
-            videoEl.removeEventListener('fullscreenchange', handleVideoFullscreen);
-            videoEl.removeEventListener('webkitfullscreenchange', handleVideoFullscreen);
+            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+            document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
         };
-    }, [hasVideoFile]);
+    }, []);
+
+    const toggleFullscreen = () => {
+        try {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                const target = wrapperRef.current || videoRef.current;
+                if (target?.requestFullscreen) {
+                    target.requestFullscreen().catch(err => console.warn("Fullscreen permission:", err));
+                } else if (target?.webkitRequestFullscreen) {
+                    target.webkitRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(err => console.warn("Exit fullscreen permission:", err));
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+            }
+        } catch (err) {
+            console.warn("Fullscreen toggle caught:", err);
+        }
+    };
 
     // Anti-piracy & Keyboard Seek controls (Left/Right arrow, J/L keys)
     useEffect(() => {
@@ -220,6 +231,15 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                         title="Forward 10 seconds (→ or L)"
                     >
                         +10s <RotateCw size={16} />
+                    </button>
+                    <button 
+                        type="button"
+                        className="video-seek-btn" 
+                        onClick={toggleFullscreen}
+                        title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen (Watermarked)'}
+                    >
+                        {isFullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
+                        {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
                     </button>
                 </div>
                 <button 
