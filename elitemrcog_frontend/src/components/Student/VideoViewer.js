@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import api from '../../services/api';
-import { CheckCircle, Loader, RotateCcw, RotateCw, Maximize, Minimize } from 'lucide-react';
+import { CheckCircle, Loader, RotateCcw, RotateCw } from 'lucide-react';
 import './VideoViewer.css';
 import logo from '../../assets/images/logo.jpeg';
 import WatermarkOverlay from './WatermarkOverlay';
@@ -9,10 +9,12 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
     const [updating, setUpdating] = useState(false);
     const [isBuffering, setIsBuffering] = useState(true);
     const [isBlurred, setIsBlurred] = useState(false);
-    const [isFullscreen, setIsFullscreen] = useState(false);
+    const [isScrubbing, setIsScrubbing] = useState(false);
     const videoRef = useRef(null);
     const wrapperRef = useRef(null);
     const lastProgress = useRef(0);
+    const startXRef = useRef(0);
+    const startTimeRef = useRef(0);
 
     const seekRelative = useCallback((seconds) => {
         if (videoRef.current) {
@@ -23,41 +25,37 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
         }
     }, []);
 
-    // Fullscreen state tracking
-    useEffect(() => {
-        const handleFullscreenChange = () => {
-            setIsFullscreen(!!(document.fullscreenElement || document.webkitFullscreenElement));
-        };
+    // Mouse / Touchpad Drag-to-Seek handling
+    const handleMouseDown = (e) => {
+        if (!videoRef.current || e.button !== 0) return;
+        setIsScrubbing(true);
+        startXRef.current = e.clientX;
+        startTimeRef.current = videoRef.current.currentTime || 0;
+    };
 
-        document.addEventListener('fullscreenchange', handleFullscreenChange);
-        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    const handleMouseMove = useCallback((e) => {
+        if (!isScrubbing || !videoRef.current) return;
+        const deltaX = e.clientX - startXRef.current;
+        const sensitivity = 0.15; // 0.15 seconds per pixel dragged
+        const duration = videoRef.current.duration || 0;
+        const targetTime = Math.min(duration, Math.max(0, startTimeRef.current + deltaX * sensitivity));
+        videoRef.current.currentTime = targetTime;
+    }, [isScrubbing]);
 
-        return () => {
-            document.removeEventListener('fullscreenchange', handleFullscreenChange);
-            document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
-        };
+    const handleMouseUp = useCallback(() => {
+        setIsScrubbing(false);
     }, []);
 
-    const toggleFullscreen = () => {
-        try {
-            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                const target = wrapperRef.current || videoRef.current;
-                if (target?.requestFullscreen) {
-                    target.requestFullscreen().catch(err => console.warn("Fullscreen permission:", err));
-                } else if (target?.webkitRequestFullscreen) {
-                    target.webkitRequestFullscreen();
-                }
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen().catch(err => console.warn("Exit fullscreen permission:", err));
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                }
-            }
-        } catch (err) {
-            console.warn("Fullscreen toggle caught:", err);
+    useEffect(() => {
+        if (isScrubbing) {
+            window.addEventListener('mousemove', handleMouseMove);
+            window.addEventListener('mouseup', handleMouseUp);
         }
-    };
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseup', handleMouseUp);
+        };
+    }, [isScrubbing, handleMouseMove, handleMouseUp]);
 
     // Anti-piracy & Keyboard Seek controls (Left/Right arrow, J/L keys)
     useEffect(() => {
@@ -174,7 +172,12 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
             onContextMenu={(e) => e.preventDefault()}
             style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none' }}
         >
-            <div className="video-iframe-wrapper" ref={wrapperRef}>
+            <div 
+                className="video-iframe-wrapper" 
+                ref={wrapperRef}
+                onMouseDown={handleMouseDown}
+                style={{ cursor: isScrubbing ? 'ew-resize' : 'default' }}
+            >
                 <WatermarkOverlay />
                 {isBuffering && (
                     <div className="video-buffering-overlay">
@@ -186,7 +189,7 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                         ref={videoRef}
                         controls
                         autoPlay={true}
-                        controlsList="nodownload"
+                        controlsList="nofullscreen nodownload"
                         disablePictureInPicture
                         className="video-iframe native-video"
                         poster={logo}
@@ -231,15 +234,6 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                         title="Forward 10 seconds (→ or L)"
                     >
                         +10s <RotateCw size={16} />
-                    </button>
-                    <button 
-                        type="button"
-                        className="video-seek-btn" 
-                        onClick={toggleFullscreen}
-                        title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen (Watermarked)'}
-                    >
-                        {isFullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
-                        {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
                     </button>
                 </div>
                 <button 

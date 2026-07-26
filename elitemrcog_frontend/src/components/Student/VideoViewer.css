@@ -95,3 +95,9 @@
     background: rgba(0, 0, 0, 0.5);
     z-index: 10;
 }
+
+video::-webkit-media-controls-fullscreen-button,
+video::-moz-media-controls-fullscreen-button,
+video::-ms-media-controls-fullscreen-button {
+    display: none !important;
+}
