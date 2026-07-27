@@ -177,6 +177,7 @@ class StationPdfView(APIView):
         # Prevent caching of protected content
         response['Cache-Control'] = 'no-store, no-cache, must-revalidate'
         response['X-Content-Type-Options'] = 'nosniff'
+        return response
 import os
 import re
 from django.http import FileResponse, Http404, StreamingHttpResponse
