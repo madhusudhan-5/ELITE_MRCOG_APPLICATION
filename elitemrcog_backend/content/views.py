@@ -177,16 +177,71 @@ class StationPdfView(APIView):
         # Prevent caching of protected content
         response['Cache-Control'] = 'no-store, no-cache, must-revalidate'
         response['X-Content-Type-Options'] = 'nosniff'
-        return response
+import os
+import re
+from django.http import FileResponse, Http404, StreamingHttpResponse
+
+def get_ranged_video_response(request, video_file_path):
+    size = os.path.getsize(video_file_path)
+    range_header = request.META.get('HTTP_RANGE', '').strip()
+    range_match = re.match(r'bytes=(\d+)-(\d*)', range_header)
+
+    if range_match:
+        first_byte, last_byte = range_match.groups()
+        first_byte = int(first_byte) if first_byte else 0
+        last_byte = int(last_byte) if last_byte else size - 1
+        if last_byte >= size:
+            last_byte = size - 1
+
+        length = last_byte - first_byte + 1
+
+        def file_iterator(file_name, offset, length, chunk_size=65536):
+            with open(file_name, 'rb') as f:
+                f.seek(offset)
+                remaining = length
+                while remaining > 0:
+                    read_size = min(chunk_size, remaining)
+                    data = f.read(read_size)
+                    if not data:
+                        break
+                    remaining -= len(data)
+                    yield data
+
+        response = StreamingHttpResponse(
+            file_iterator(video_file_path, first_byte, length),
+            status=206,
+            content_type='video/mp4'
+        )
+        response['Content-Range'] = f'bytes {first_byte}-{last_byte}/{size}'
+        response['Accept-Ranges'] = 'bytes'
+        response['Content-Length'] = str(length)
+    else:
+        def full_file_iterator(file_name, chunk_size=65536):
+            with open(file_name, 'rb') as f:
+                while True:
+                    data = f.read(chunk_size)
+                    if not data:
+                        break
+                    yield data
+
+        response = StreamingHttpResponse(
+            full_file_iterator(video_file_path),
+            status=200,
+            content_type='video/mp4'
+        )
+        response['Accept-Ranges'] = 'bytes'
+        response['Content-Length'] = str(size)
+
+    response['Content-Disposition'] = 'inline'
+    response['Cache-Control'] = 'no-cache'
+    return response
 
 
 # ─── Video File View (Protected Stream) ───────────────────────────────────────
 
 class VideoFileView(APIView):
     """
-    Serve a video file securely.
-    - Free videos: accessible to all authenticated users.
-    - Paid videos: require an active subscription.
+    Serve a video file securely with HTTP Range support for video seeking/slider.
     """
     permission_classes = [IsAuthenticatedOrReadOnly]
 
@@ -213,15 +268,16 @@ class VideoFileView(APIView):
                 defaults={'progress_percent': 0, 'current_time': 0}
             )
 
-        # Stream the video inline
-        response = FileResponse(
-            video.video_file.open('rb'),
-            content_type='video/mp4'
-        )
-        response['Content-Disposition'] = f'inline; filename="video_{video.id}.mp4"'
-        response['Cache-Control'] = 'no-store, no-cache, must-revalidate'
-        # FileResponse in newer Django natively supports range requests
-        return response
+        # Stream the video with Range support
+        if hasattr(video.video_file, 'path') and os.path.exists(video.video_file.path):
+            return get_ranged_video_response(request, video.video_file.path)
+        else:
+            response = FileResponse(
+                video.video_file.open('rb'),
+                content_type='video/mp4'
+            )
+            response['Content-Disposition'] = f'inline; filename="video_{video.id}.mp4"'
+            return response
 
 
 # ─── Video Library ────────────────────────────────────────────────────────────

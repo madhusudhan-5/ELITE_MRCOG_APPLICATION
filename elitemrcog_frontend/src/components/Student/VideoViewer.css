@@ -94,6 +94,7 @@
     align-items: center;
     background: rgba(0, 0, 0, 0.5);
     z-index: 10;
+    pointer-events: none;
 }
 
 video::-webkit-media-controls-fullscreen-button,

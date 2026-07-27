@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import PdfViewer from '../../components/Student/PdfViewer';
-import { Lock, CheckCircle, ChevronRight, Home } from 'lucide-react';
+import { Lock, BookOpen } from 'lucide-react';
 import './ModuleDetail.css';
 
 const ModuleDetail = () => {
@@ -50,13 +50,10 @@ const ModuleDetail = () => {
         }));
     };
 
-    const getStationColor = (station, idx) => {
-        const progress = stationProgress[station.id];
-        if (progress?.completed) return 'station-complete';
-        if (station.is_locked) return 'station-locked';
-        if (progress?.percent > 0) return 'station-progress';
-        if (station.is_free) return 'station-free';
-        return 'station-locked';
+const COLOR_PALETTE = ['#49BBBD', '#F48C06', '#9DCCFF', '#EE645B', '#BF9A72'];
+
+    const getStationColor = (idx) => {
+        return COLOR_PALETTE[idx % COLOR_PALETTE.length];
     };
 
     if (loading) {
@@ -78,14 +75,6 @@ const ModuleDetail = () => {
 
     return (
         <div className="module-detail">
-            {/* Breadcrumb */}
-            <nav className="vmd-breadcrumb" style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem' }}>
-                <Link to="/dashboard" style={{ textDecoration: 'none', color: '#111827', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Home size={14} /> Home</Link>
-                <span style={{ color: '#6b7280' }}>›</span>
-                <Link to="/dashboard/reading" style={{ textDecoration: 'none', color: '#111827', fontWeight: 500 }}>Reading Library</Link>
-                <span style={{ color: '#6b7280' }}>›</span>
-                <span style={{ fontWeight: 600, color: '#2563eb' }}>{article.title}</span>
-            </nav>
 
             <div className="md-body">
                 {/* Left: Station List */}
@@ -101,17 +90,24 @@ const ModuleDetail = () => {
                             const isActive = selectedStation?.id === station.id;
                             const isCompleted = progress?.completed;
                             const isLocked = station.is_locked;
-                            const colorClass = getStationColor(station, idx);
+                            const cardColor = getStationColor(idx);
 
                             return (
                                 <button
                                     key={station.id}
-                                    className={`md-station-card ${colorClass} ${isActive ? 'active' : ''}`}
+                                    className={`md-station-card ${isActive ? 'active' : ''} ${isLocked ? 'locked' : ''}`}
+                                    style={{
+                                        '--card-accent': cardColor,
+                                        borderLeftColor: cardColor,
+                                        backgroundColor: isActive ? `${cardColor}22` : `${cardColor}0F`
+                                    }}
                                     onClick={() => !isLocked && setSelectedStation(station)}
                                     disabled={isLocked}
                                 >
                                     <div className="md-card-top">
-                                        <span className="md-card-num">{String(idx + 1).padStart(2, '0')}</span>
+                                        <span className="md-card-num" style={{ backgroundColor: cardColor, color: '#ffffff' }}>
+                                            {String(idx + 1).padStart(2, '0')}
+                                        </span>
                                         <span className="md-card-name">{station.title}</span>
                                         {isLocked && <Lock size={13} className="md-card-lock" />}
                                         {station.is_free && !isLocked && (
@@ -139,7 +135,7 @@ const ModuleDetail = () => {
                                         <div className="md-card-progress-bar">
                                             <div
                                                 className="md-card-progress-fill"
-                                                style={{ width: `${progress.percent}%` }}
+                                                style={{ width: `${progress.percent}%`, backgroundColor: cardColor }}
                                             />
                                         </div>
                                     )}

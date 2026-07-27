@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { 
     Home, 
     Users, 
     Settings,
-    ChevronLeft,
     ChevronDown,
     Power,
     Menu,
@@ -16,7 +15,6 @@ import logo from '../../assets/images/logo.jpeg';
 
 const SuperAdminLayout = () => {
     const { user, logout } = useAuth();
-    const location = useLocation();
     const navigate = useNavigate();
     
     const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -27,19 +25,7 @@ const SuperAdminLayout = () => {
         navigate('/login');
     };
 
-    const generateBreadcrumbs = () => {
-        const pathnames = location.pathname.split('/').filter(x => x);
-        if (pathnames.length === 0) return 'Super Admin Home';
-        
-        return (
-            <div className="breadcrumbs">
-                <ChevronLeft size={18} className="breadcrumb-back" onClick={() => navigate(-1)} />
-                <span className="breadcrumb-path">
-                    Super Admin &gt; {pathnames.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' > ')}
-                </span>
-            </div>
-        );
-    };
+
 
     return (
         <div className="superadmin-layout">
@@ -82,7 +68,6 @@ const SuperAdminLayout = () => {
                         <button className="superadmin-mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}>
                             <Menu size={24} />
                         </button>
-                        {generateBreadcrumbs()}
                     </div>
                     <div className="superadmin-header-actions">
                         <div className="superadmin-profile-dropdown-container">

@@ -79,58 +79,52 @@
 .md-station-list {
     flex: 1;
     overflow-y: auto;
-    padding: 0.75rem;
+    padding: 0.75rem 0.6rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
+.md-station-list::-webkit-scrollbar {
+    width: 5px;
+}
+.md-station-list::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+.md-station-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
 /* ─── Station Cards ────────────────────────────── */
 .md-station-card {
     width: 100%;
-    border: none;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid var(--card-accent, #49BBBD);
     border-radius: 10px;
-    padding: 0.7rem 0.85rem;
+    padding: 0.65rem 0.85rem;
     cursor: pointer;
     text-align: left;
     position: relative;
     overflow: hidden;
     transition: all 0.2s ease;
-    border-left: 4px solid transparent;
     flex-shrink: 0;
 }
 
-/* Color variants matching the design */
-.md-station-card.station-complete {
-    background: #e8f5f0;
-    border-left-color: #10b981;
-}
-
-.md-station-card.station-progress {
-    background: #fef9e8;
-    border-left-color: #f59e0b;
-}
-
-.md-station-card.station-free {
-    background: #eff6ff;
-    border-left-color: #3b82f6;
-}
-
-.md-station-card.station-locked {
-    background: #f8f0f5;
-    border-left-color: #e879a0;
-    opacity: 0.8;
+.md-station-card.locked {
+    opacity: 0.75;
     cursor: not-allowed;
 }
 
 .md-station-card.active {
-    box-shadow: 0 2px 12px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+    border-color: var(--card-accent, #49BBBD);
     opacity: 1 !important;
 }
 
 .md-station-card:hover:not(:disabled) {
     transform: translateX(2px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .md-card-top {

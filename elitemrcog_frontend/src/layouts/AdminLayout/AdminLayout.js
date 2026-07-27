@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { 
     Home, 
     BookOpen, 
     BookMarked,
     DollarSign,
     CreditCard,
-    ChevronLeft,
     ChevronDown,
     Power,
     Menu,
@@ -19,7 +18,6 @@ import logo from '../../assets/images/logo.jpeg';
 
 const AdminLayout = () => {
     const { user, logout } = useAuth();
-    const location = useLocation();
     const navigate = useNavigate();
     
     const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -30,19 +28,7 @@ const AdminLayout = () => {
         navigate('/login');
     };
 
-    const generateBreadcrumbs = () => {
-        const pathnames = location.pathname.split('/').filter(x => x);
-        if (pathnames.length === 0) return 'Admin Home';
-        
-        return (
-            <div className="breadcrumbs">
-                <ChevronLeft size={18} className="breadcrumb-back" onClick={() => navigate(-1)} />
-                <span className="breadcrumb-path">
-                    Admin &gt; {pathnames.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' > ')}
-                </span>
-            </div>
-        );
-    };
+
 
     return (
         <div className="admin-layout">
@@ -94,7 +80,6 @@ const AdminLayout = () => {
                         <button className="admin-mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}>
                             <Menu size={24} />
                         </button>
-                        {generateBreadcrumbs()}
                     </div>
                     <div className="admin-header-actions">
                         <div className="admin-profile-dropdown-container">

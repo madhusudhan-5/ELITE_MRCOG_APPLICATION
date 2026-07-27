@@ -6,11 +6,8 @@ import {
     Video, 
     FileText, 
     ShoppingCart, 
-    Settings,
     CalendarCheck, 
-    HelpCircle,
     Bell,
-    ChevronLeft,
     ChevronDown,
     CheckCircle,
     Power,
@@ -18,8 +15,13 @@ import {
     X,
     Star,
     ShieldCheck,
-    RefreshCcw
+    RefreshCcw,
+    BookMarked,
+    CreditCard,
+    User,
+    PlayCircle
 } from 'lucide-react';
+import Breadcrumbs from '../../components/common/Breadcrumbs';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import './DashboardLayout.css';
@@ -55,72 +57,82 @@ const DashboardLayout = () => {
         navigate('/login');
     };
 
-    // Auto-generate breadcrumbs based on route
-    const generateBreadcrumbs = () => {
-        const pathnames = location.pathname.split('/').filter(x => x);
-        
-        const getLinkPath = (index) => {
-            return '/' + pathnames.slice(0, index + 1).join('/');
-        };
+    const getBreadcrumbItems = (pathname) => {
+        const pathnames = pathname.split('/').filter(x => x);
+        if (pathnames.length <= 1) return null;
 
-        const formatName = (name) => {
-            if (name === 'dashboard') return 'Home';
-            if (name === 'reading') return 'Reading Library';
-            if (name === 'video') return 'Video Library';
-            if (name === 'modules') return 'Reading Library';
-            if (name === 'video-modules') return 'Video Library';
-            return name.charAt(0).toUpperCase() + name.slice(1).replace('-', ' ');
-        };
+        const items = [
+            { label: 'Home', path: '/dashboard', icon: Home }
+        ];
 
-        if (location.pathname.includes('/modules/')) {
-            return (
-                <div className="breadcrumbs">
-                    <ChevronLeft size={18} className="breadcrumb-back" onClick={() => navigate('/dashboard/reading')} />
-                    <span className="breadcrumb-path">
-                        <span className="breadcrumb-link" onClick={() => navigate('/dashboard')}>Home</span>
-                        {" › "}
-                        <span className="breadcrumb-link" onClick={() => navigate('/dashboard/reading')}>Reading Library</span>
-                    </span>
-                </div>
-            );
+        if (pathname.includes('/modules/')) {
+            items.push({ label: 'Reading Library', path: '/dashboard/reading', icon: BookOpen });
+            items.push({ label: 'Reading Material', icon: BookMarked });
+            return items;
         }
 
-        if (location.pathname.includes('/video-modules/')) {
-            return (
-                <div className="breadcrumbs">
-                    <ChevronLeft size={18} className="breadcrumb-back" onClick={() => navigate('/dashboard/video')} />
-                    <span className="breadcrumb-path">
-                        <span className="breadcrumb-link" onClick={() => navigate('/dashboard')}>Home</span>
-                        {" › "}
-                        <span className="breadcrumb-link" onClick={() => navigate('/dashboard/video')}>Video Library</span>
-                    </span>
-                </div>
-            );
+        if (pathname.includes('/video-modules/')) {
+            items.push({ label: 'Video Library', path: '/dashboard/video', icon: PlayCircle });
+            items.push({ label: 'Video Lecture', icon: Video });
+            return items;
         }
 
-        return (
-            <div className="breadcrumbs">
-                <ChevronLeft size={18} className="breadcrumb-back" onClick={() => navigate(-1)} />
-                <span className="breadcrumb-path">
-                    {pathnames.map((name, index) => {
-                        const isLast = index === pathnames.length - 1;
-                        const formattedName = formatName(name);
-                        const path = getLinkPath(index);
-                        return isLast ? (
-                            <span key={path} className="breadcrumb-current">{formattedName}</span>
-                        ) : (
-                            <React.Fragment key={path}>
-                                <span className="breadcrumb-link" onClick={() => navigate(path)}>
-                                    {formattedName}
-                                </span>
-                                {" › "}
-                            </React.Fragment>
-                        );
-                    })}
-                </span>
-            </div>
-        );
+        if (pathname.includes('/reading')) {
+            items.push({ label: 'Reading Library', icon: BookOpen });
+            return items;
+        }
+
+        if (pathname.includes('/video')) {
+            items.push({ label: 'Video Library', icon: PlayCircle });
+            return items;
+        }
+
+        if (pathname.includes('/cart')) {
+            items.push({ label: 'Cart', icon: ShoppingCart });
+            return items;
+        }
+
+        if (pathname.includes('/checkout')) {
+            items.push({ label: 'Cart', path: '/dashboard/cart', icon: ShoppingCart });
+            items.push({ label: 'Checkout', icon: CreditCard });
+            return items;
+        }
+
+        if (pathname.includes('/my-subscriptions')) {
+            items.push({ label: 'My Subscriptions', icon: Star });
+            return items;
+        }
+
+        if (pathname.includes('/subscription')) {
+            items.push({ label: 'Subscription', icon: CalendarCheck });
+            return items;
+        }
+
+        if (pathname.includes('/profile')) {
+            items.push({ label: 'Profile', icon: User });
+            return items;
+        }
+
+        if (pathname.includes('/mock-exam')) {
+            items.push({ label: 'Mock Exam', icon: FileText });
+            return items;
+        }
+
+        pathnames.slice(1).forEach((name, idx) => {
+            const path = '/dashboard/' + pathnames.slice(1, idx + 2).join('/');
+            const isLast = idx === pathnames.length - 2;
+            const formatted = name.charAt(0).toUpperCase() + name.slice(1).replace('-', ' ');
+            items.push({
+                label: formatted,
+                path: isLast ? null : path,
+                icon: isLast ? FileText : BookOpen
+            });
+        });
+
+        return items;
     };
+
+
 
     return (
         <div className="dashboard-layout">
@@ -210,7 +222,7 @@ const DashboardLayout = () => {
                                 <span className="header-welcome-subtitle">Let's start learning</span>
                             </div>
                         ) : (
-                            generateBreadcrumbs()
+                            <Breadcrumbs items={getBreadcrumbItems(location.pathname)} />
                         )}
                     </div>
                     <div className="header-actions">

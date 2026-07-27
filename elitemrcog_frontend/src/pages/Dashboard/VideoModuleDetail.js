@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import VideoViewer from '../../components/Student/VideoViewer';
-import { Lock, Home, PlayCircle, Clock } from 'lucide-react';
+import { Lock, PlayCircle, Clock } from 'lucide-react';
 import './VideoModuleDetail.css';
 
 const VideoModuleDetail = () => {
@@ -82,12 +82,10 @@ const VideoModuleDetail = () => {
         }));
     }, []);
 
-    const getVideoColor = (video) => {
-        const progress = videoProgress[video.id];
-        if (progress?.progress_percent >= 100) return 'video-complete';
-        if (videoDetails[video.id]?.locked) return 'video-locked';
-        if (video.is_free) return 'video-free';
-        return 'video-locked'; // Default to locked styling if not free, actual lock state is verified on click
+const COLOR_PALETTE = ['#49BBBD', '#F48C06', '#9DCCFF', '#EE645B', '#BF9A72'];
+
+    const getVideoColor = (idx) => {
+        return COLOR_PALETTE[idx % COLOR_PALETTE.length];
     };
 
     if (loading) {
@@ -111,14 +109,6 @@ const VideoModuleDetail = () => {
 
     return (
         <div className="video-module-detail">
-            {/* Breadcrumb */}
-            <nav className="vmd-breadcrumb">
-                <Link to="/dashboard"><Home size={14} /> Home</Link>
-                <span>›</span>
-                <Link to="/dashboard/video">Video Library</Link>
-                <span>›</span>
-                <span className="vmd-breadcrumb-current">{moduleData.title}</span>
-            </nav>
 
             <div className="vmd-body">
                 {/* Left: Video List Sidebar */}
@@ -133,17 +123,23 @@ const VideoModuleDetail = () => {
                             const progress = videoProgress[video.id];
                             const isActive = selectedVideo?.id === video.id;
                             const isCompleted = progress?.progress_percent >= 100;
-                            const isLocked = currentDetail?.locked && isActive ? true : (!video.is_free && !currentDetail);
-                            const colorClass = getVideoColor(video);
+                            const cardColor = getVideoColor(idx);
 
                             return (
                                 <button
                                     key={video.id}
-                                    className={`vmd-card ${colorClass} ${isActive ? 'active' : ''}`}
+                                    className={`vmd-card ${isActive ? 'active' : ''}`}
+                                    style={{
+                                        '--card-accent': cardColor,
+                                        borderLeftColor: cardColor,
+                                        backgroundColor: isActive ? `${cardColor}22` : `${cardColor}0F`
+                                    }}
                                     onClick={() => handleSelectVideo(video)}
                                 >
                                     <div className="vmd-card-top">
-                                        <span className="vmd-card-num">{String(idx + 1).padStart(2, '0')}</span>
+                                        <span className="vmd-card-num" style={{ backgroundColor: cardColor, color: '#ffffff' }}>
+                                            {String(idx + 1).padStart(2, '0')}
+                                        </span>
                                         <span className="vmd-card-name" title={video.title}>{video.title}</span>
                                         {videoDetails[video.id]?.locked && <Lock size={13} className="vmd-card-lock" />}
                                         {video.is_free && (

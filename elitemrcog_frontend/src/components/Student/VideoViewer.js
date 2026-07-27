@@ -14,15 +14,34 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
     const wrapperRef = useRef(null);
     const lastProgress = useRef(0);
 
-    // Guaranteed safe seek relative (never NaN)
+    const targetSeekRef = useRef(null);
+    const targetSeekTimer = useRef(null);
+
+    // Guaranteed safe seek relative (never NaN, supports rapid repeated clicks)
     const seekRelative = useCallback((seconds) => {
         const video = videoRef.current;
         if (!video) return;
-        const current = video.currentTime || 0;
-        const dur = video.duration;
-        const duration = Number.isFinite(dur) && dur > 0 ? dur : 999999;
-        const target = Math.min(duration, Math.max(0, current + seconds));
-        video.currentTime = target;
+
+        try {
+            const baseTime = targetSeekRef.current !== null ? targetSeekRef.current : (video.currentTime || 0);
+            const dur = video.duration;
+            const duration = (Number.isFinite(dur) && dur > 0) ? dur : (baseTime + 3600);
+            const target = Math.min(duration, Math.max(0, baseTime + seconds));
+
+            targetSeekRef.current = target;
+            if (targetSeekTimer.current) clearTimeout(targetSeekTimer.current);
+            targetSeekTimer.current = setTimeout(() => {
+                targetSeekRef.current = null;
+            }, 800);
+
+            if (typeof video.fastSeek === 'function') {
+                video.fastSeek(target);
+            } else {
+                video.currentTime = target;
+            }
+        } catch (err) {
+            console.warn("Relative seek error:", err);
+        }
     }, []);
 
     // Fullscreen state tracking & toggle
@@ -62,51 +81,7 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
         }
     };
 
-    // Pointer Drag-to-Seek directly attached to video element
-    useEffect(() => {
-        const video = videoRef.current;
-        if (!video) return;
 
-        let isDragging = false;
-        let startX = 0;
-        let startTime = 0;
-
-        const onPointerDown = (e) => {
-            if (e.button !== 0) return;
-            const rect = video.getBoundingClientRect();
-            const clickY = e.clientY - rect.top;
-            // Trigger drag on top 80% of video player frame
-            if (clickY < rect.height - 45) {
-                isDragging = true;
-                startX = e.clientX;
-                startTime = video.currentTime || 0;
-            }
-        };
-
-        const onPointerMove = (e) => {
-            if (!isDragging || !video) return;
-            const deltaX = e.clientX - startX;
-            const sensitivity = 0.2; // 0.2 seconds per pixel dragged
-            const dur = video.duration;
-            const duration = Number.isFinite(dur) && dur > 0 ? dur : 999999;
-            const targetTime = Math.min(duration, Math.max(0, startTime + deltaX * sensitivity));
-            video.currentTime = targetTime;
-        };
-
-        const onPointerUp = () => {
-            isDragging = false;
-        };
-
-        video.addEventListener('pointerdown', onPointerDown);
-        window.addEventListener('pointermove', onPointerMove);
-        window.addEventListener('pointerup', onPointerUp);
-
-        return () => {
-            video.removeEventListener('pointerdown', onPointerDown);
-            window.removeEventListener('pointermove', onPointerMove);
-            window.removeEventListener('pointerup', onPointerUp);
-        };
-    }, [hasVideoFile]);
 
     // Anti-piracy & Keyboard Seek controls (Left/Right arrow, J/L keys)
     useEffect(() => {
@@ -235,6 +210,8 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                         src={api.defaults.baseURL ? `${api.defaults.baseURL}/api/content/videos/${videoId}/stream/` : `/api/content/videos/${videoId}/stream/`}
                         controls
                         autoPlay={true}
+                        preload="metadata"
+                        playsInline
                         controlsList="nofullscreen nodownload"
                         disablePictureInPicture
                         className="video-iframe native-video"
@@ -242,6 +219,10 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                         onWaiting={() => setIsBuffering(true)}
                         onPlaying={() => setIsBuffering(false)}
                         onCanPlay={() => setIsBuffering(false)}
+                        onSeeked={() => {
+                            setIsBuffering(false);
+                            targetSeekRef.current = null;
+                        }}
                         onLoadStart={() => setIsBuffering(true)}
                         onLoadedData={() => setIsBuffering(false)}
                         onPause={() => setIsBuffering(false)}
