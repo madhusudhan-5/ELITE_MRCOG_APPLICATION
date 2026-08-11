@@ -5,7 +5,15 @@
     font-size: 0.875rem;
     color: var(--text-muted, #6b7280);
     margin-bottom: 1.25rem;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+    width: 100%;
+}
+
+.page-breadcrumbs::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome/Safari */
 }
 
 .header-breadcrumbs .page-breadcrumbs {
@@ -43,4 +51,20 @@
 
 .page-breadcrumbs .breadcrumb-icon {
     flex-shrink: 0;
+}
+
+/* --- RESPONSIVE ADAPTATION --- */
+@media (max-width: 768px) {
+    /* Hide the first item (Home) and its separator to save space on tablets */
+    .page-breadcrumbs > *:nth-child(1),
+    .page-breadcrumbs > *:nth-child(2) {
+        display: none !important;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Hide all parent breadcrumb items and separators, showing only the current page title on mobile */
+    .page-breadcrumbs > *:not(:last-child) {
+        display: none !important;
+    }
 }

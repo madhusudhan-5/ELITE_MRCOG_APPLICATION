@@ -206,6 +206,8 @@
     gap: 0.5rem;
     color: #2a2a72;
     font-weight: 600;
+    flex: 1;
+    min-width: 0;
 }
 
 .breadcrumb-link {

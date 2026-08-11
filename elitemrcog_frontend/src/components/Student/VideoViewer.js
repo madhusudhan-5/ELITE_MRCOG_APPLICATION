@@ -225,6 +225,16 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                         <Loader size={48} className="animate-spin text-white" />
                     </div>
                 )}
+                {isFullscreen && (
+                    <button
+                        type="button"
+                        className="video-fullscreen-exit-overlay-btn"
+                        onClick={toggleFullscreen}
+                        title="Exit Fullscreen"
+                    >
+                        <Minimize size={18} />
+                    </button>
+                )}
                 {hasVideoFile ? (
                     <video
                         ref={videoRef}
