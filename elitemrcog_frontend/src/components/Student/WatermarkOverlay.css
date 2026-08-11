@@ -59,3 +59,27 @@
     pointer-events: none !important;
     transition: filter 0.1s ease, opacity 0.1s ease;
 }
+
+/* Center watermark logo */
+.watermark-center-logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.08; /* Very faint so it does not interfere with video watching or document reading */
+    width: 35%;
+    max-width: 260px;
+    min-width: 125px;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.watermark-center-logo img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}

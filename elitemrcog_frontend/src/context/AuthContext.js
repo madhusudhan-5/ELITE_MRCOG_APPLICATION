@@ -12,17 +12,12 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const loadUser = async () => {
-            const token = localStorage.getItem('access_token');
-            if (token) {
-                try {
-                    const res = await api.get('/api/auth/me/');
-                    setUser(res.data);
-                    setIsAuthenticated(true);
-                } catch (error) {
-                    setIsAuthenticated(false);
-                    setUser(null);
-                }
-            }
+            // Logout on refresh by removing tokens
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            
+            setUser(null);
+            setIsAuthenticated(false);
             setLoading(false);
         };
         

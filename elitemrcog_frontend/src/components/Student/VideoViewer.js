@@ -47,7 +47,23 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
     // Fullscreen state tracking & toggle
     useEffect(() => {
         const handleFullscreenChange = () => {
-            setIsFullscreen(!!(document.fullscreenElement || document.webkitFullscreenElement));
+            const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+            setIsFullscreen(isFS);
+            try {
+                if (isFS) {
+                    if (window.screen && window.screen.orientation && typeof window.screen.orientation.lock === 'function') {
+                        window.screen.orientation.lock('landscape').catch(err => {
+                            console.warn("Screen orientation lock failed:", err);
+                        });
+                    }
+                } else {
+                    if (window.screen && window.screen.orientation && typeof window.screen.orientation.unlock === 'function') {
+                        window.screen.orientation.unlock();
+                    }
+                }
+            } catch (err) {
+                console.warn("Fullscreen orientation lock caught error:", err);
+            }
         };
 
         document.addEventListener('fullscreenchange', handleFullscreenChange);
@@ -116,7 +132,12 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                 }
             }
         };
-        const handleBlur = () => setIsBlurred(true);
+        const handleBlur = () => {
+            const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+            if (!isMobile) {
+                setIsBlurred(true);
+            }
+        };
         const handleFocus = () => setIsBlurred(false);
 
         window.addEventListener('keydown', handleKeyDown);

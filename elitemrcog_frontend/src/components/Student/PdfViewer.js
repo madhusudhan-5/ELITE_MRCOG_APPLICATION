@@ -42,7 +42,12 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
             }
         };
 
-        const handleBlur = () => setIsBlurred(true);
+        const handleBlur = () => {
+            const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+            if (!isMobile) {
+                setIsBlurred(true);
+            }
+        };
         const handleFocus = () => setIsBlurred(false);
 
         window.addEventListener('keydown', handleKeyDown);

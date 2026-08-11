@@ -88,14 +88,13 @@ const SubscriptionPage = () => {
             setFeedback(prev => ({ ...prev, [bundle.id]: 'added' }));
             refreshCart();
             setSelectedBundle(null);
-            setTimeout(() => setFeedback(prev => ({ ...prev, [bundle.id]: null })), 2500);
         } catch (err) {
-            if (err.response?.status === 200) {
+            if (err.response?.status === 200 || err.response?.status === 400) {
                 setFeedback(prev => ({ ...prev, [bundle.id]: 'already' }));
             } else {
                 setFeedback(prev => ({ ...prev, [bundle.id]: 'error' }));
+                setTimeout(() => setFeedback(prev => ({ ...prev, [bundle.id]: null })), 2500);
             }
-            setTimeout(() => setFeedback(prev => ({ ...prev, [bundle.id]: null })), 2500);
         } finally {
             setAddingId(null);
         }
@@ -165,14 +164,12 @@ const SubscriptionPage = () => {
                                         <Info size={15} /> Details
                                     </button>
                                     <button
-                                        className={`sub-add-btn ${fb === 'added' ? 'success' : ''}`}
+                                        className={`sub-add-btn ${fb === 'added' || fb === 'already' ? 'success' : ''}`}
                                         onClick={() => handleAddToCart(bundle)}
-                                        disabled={addingId === bundle.id}
+                                        disabled={addingId === bundle.id || fb === 'added' || fb === 'already'}
                                     >
-                                        {fb === 'added'
-                                            ? '✓ Added!'
-                                            : fb === 'already'
-                                            ? 'In Cart'
+                                        {fb === 'added' || fb === 'already'
+                                            ? 'Added to Cart'
                                             : addingId === bundle.id
                                             ? 'Adding...'
                                             : <><ShoppingCart size={14} /> Add to Cart</>}
