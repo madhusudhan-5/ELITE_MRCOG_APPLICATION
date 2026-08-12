@@ -10,6 +10,8 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
     const [isBuffering, setIsBuffering] = useState(true);
     const [isBlurred, setIsBlurred] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const [isPseudoFullscreen, setIsPseudoFullscreen] = useState(false);
+    const isFullscreenActive = isFullscreen || isPseudoFullscreen;
     const videoRef = useRef(null);
     const wrapperRef = useRef(null);
     const lastProgress = useRef(0);
@@ -47,8 +49,11 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
     // Fullscreen state tracking & toggle
     useEffect(() => {
         const handleFullscreenChange = () => {
-            const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+            const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
             setIsFullscreen(isFS);
+            if (!isFS) {
+                setIsPseudoFullscreen(false);
+            }
             try {
                 if (isFS) {
                     if (window.screen && window.screen.orientation && typeof window.screen.orientation.lock === 'function') {
@@ -68,10 +73,14 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
 
         document.addEventListener('fullscreenchange', handleFullscreenChange);
         document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+        document.addEventListener('MSFullscreenChange', handleFullscreenChange);
 
         return () => {
             document.removeEventListener('fullscreenchange', handleFullscreenChange);
             document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+            document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
         };
     }, []);
 
@@ -79,23 +88,39 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
         const target = wrapperRef.current || videoRef.current;
         if (!target) return;
         try {
-            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                if (target.requestFullscreen) {
-                    target.requestFullscreen().catch(err => console.warn("Fullscreen permission:", err));
-                } else if (target.webkitRequestFullscreen) {
-                    target.webkitRequestFullscreen();
+            if (!isFullscreenActive) {
+                const requestFS = target.requestFullscreen || target.webkitRequestFullscreen || target.mozRequestFullScreen || target.msRequestFullscreen;
+                if (requestFS) {
+                    requestFS.call(target).catch(err => {
+                        console.warn("Fullscreen request failed, using pseudo-fullscreen:", err);
+                        setIsPseudoFullscreen(true);
+                    });
+                } else {
+                    setIsPseudoFullscreen(true);
                 }
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen().catch(err => console.warn("Exit fullscreen permission:", err));
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
+                if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+                    const exitFS = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+                    if (exitFS) {
+                        exitFS.call(document).catch(err => console.warn(err));
+                    }
                 }
+                setIsPseudoFullscreen(false);
             }
         } catch (err) {
             console.warn("Fullscreen toggle caught:", err);
         }
     };
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape' && isPseudoFullscreen) {
+                setIsPseudoFullscreen(false);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isPseudoFullscreen]);
 
 
 
@@ -218,14 +243,14 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
             onContextMenu={(e) => e.preventDefault()}
             style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none' }}
         >
-            <div className="video-iframe-wrapper" ref={wrapperRef}>
+            <div className={`video-iframe-wrapper ${isPseudoFullscreen ? 'pseudo-fullscreen' : ''}`} ref={wrapperRef}>
                 <WatermarkOverlay />
                 {isBuffering && (
                     <div className="video-buffering-overlay">
                         <Loader size={48} className="animate-spin text-white" />
                     </div>
                 )}
-                {isFullscreen && (
+                {isFullscreenActive && (
                     <button
                         type="button"
                         className="video-fullscreen-exit-overlay-btn"
@@ -296,10 +321,10 @@ const VideoViewer = ({ videoId, embedUrl, hasVideoFile, videoTitle, onProgressUp
                         type="button"
                         className="video-seek-btn" 
                         onClick={toggleFullscreen}
-                        title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen (Watermarked)'}
+                        title={isFullscreenActive ? 'Exit Fullscreen' : 'Fullscreen (Watermarked)'}
                     >
-                        {isFullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
-                        {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+                        {isFullscreenActive ? <Minimize size={16} /> : <Maximize size={16} />}
+                        {isFullscreenActive ? 'Exit Fullscreen' : 'Fullscreen'}
                     </button>
                 </div>
                 <button 

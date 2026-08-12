@@ -3,7 +3,7 @@
     background: linear-gradient(135deg, #EEF0F8 0%, #E4E8F5 60%, #DCE2F2 100%);
     display: flex;
     align-items: center;
-    padding-top: var(--navbar-height);
+    padding-top: calc(var(--navbar-height) + env(safe-area-inset-top));
     overflow: hidden;
 }
 

@@ -45,7 +45,7 @@ button {
 .container {
   max-width: var(--container-max);
   margin: 0 auto;
-  padding: 0 var(--space-6);
+  padding: 0 calc(var(--space-6) + env(safe-area-inset-right)) 0 calc(var(--space-6) + env(safe-area-inset-left));
   width: 100%;
 }
 

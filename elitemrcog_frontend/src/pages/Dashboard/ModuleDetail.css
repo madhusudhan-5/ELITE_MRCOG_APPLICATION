@@ -321,11 +321,42 @@
 
 /* ─── Responsive ────────────────────────────────── */
 @media (max-width: 900px) {
-    .md-body {
-        grid-template-columns: 1fr;
-        overflow: auto;
+    .module-detail {
+        height: auto;
     }
+
+    .md-body {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        height: auto;
+        min-height: auto;
+        overflow: visible;
+    }
+
+    .md-content-area {
+        display: contents; /* Promotes nested children to be direct flex items of .md-body */
+    }
+
+    .pdf-viewer-wrapper,
+    .md-viewer-placeholder {
+        order: 1;
+        width: 100%;
+        min-height: 350px;
+    }
+
     .md-station-sidebar {
+        order: 2;
+        width: 100%;
         max-height: 45vh;
+        overflow-y: auto;
+        border-radius: 12px;
+        flex-shrink: 0;
+    }
+
+    .md-description-section {
+        order: 3;
+        width: 100%;
+        padding: 1.25rem;
     }
 }

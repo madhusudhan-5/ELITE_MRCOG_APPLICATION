@@ -4,7 +4,10 @@
     left: 0;
     right: 0;
     z-index: var(--z-navbar);
-    height: var(--navbar-height);
+    height: calc(var(--navbar-height) + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
     background: transparent;
     transition: background var(--transition-base), box-shadow var(--transition-base);
 }

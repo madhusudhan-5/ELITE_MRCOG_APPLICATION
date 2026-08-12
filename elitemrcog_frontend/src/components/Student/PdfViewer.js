@@ -85,6 +85,8 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
     const [containerWidth, setContainerWidth] = useState(700);
     const [containerHeight, setContainerHeight] = useState(500);
     const canvasAreaRef = useRef(null);
+    const [isPseudoFullscreen, setIsPseudoFullscreen] = useState(false);
+    const isFullscreenActive = isFullscreen || isPseudoFullscreen;
 
     useEffect(() => {
         const updateSize = () => {
@@ -92,8 +94,9 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
                 let newWidth = canvasAreaRef.current.clientWidth - 40;
                 let newHeight = canvasAreaRef.current.clientHeight - 40;
 
-                if (isFullscreen) {
-                    newWidth = window.innerWidth - 100;
+                if (isFullscreenActive) {
+                    const isMobile = window.innerWidth < 768;
+                    newWidth = window.innerWidth - (isMobile ? 20 : 100);
                 }
 
                 setContainerWidth(Math.max(300, newWidth));
@@ -109,7 +112,7 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
             window.removeEventListener('resize', updateSize);
             clearTimeout(timeout);
         };
-    }, [isFullscreen, pdfBlob]);
+    }, [isFullscreenActive, pdfBlob]);
 
     const saveProgress = useCallback((page, total) => {
         if (!stationId || !total) return;
@@ -122,20 +125,59 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
     }, [stationId, onProgressUpdate]);
 
     const toggleFullscreen = () => {
-        if (!isFullscreen) {
-            viewerRef.current?.requestFullscreen?.();
+        const docEl = viewerRef.current;
+        if (!docEl) return;
+
+        if (!isFullscreenActive) {
+            const requestFS = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
+            if (requestFS) {
+                requestFS.call(docEl).catch((err) => {
+                    console.warn("Fullscreen request failed, using pseudo-fullscreen:", err);
+                    setIsPseudoFullscreen(true);
+                });
+            } else {
+                setIsPseudoFullscreen(true);
+            }
         } else {
-            document.exitFullscreen?.();
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+                const exitFS = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+                if (exitFS) {
+                    exitFS.call(document).catch((err) => console.warn(err));
+                }
+            }
+            setIsPseudoFullscreen(false);
         }
     };
 
     useEffect(() => {
         const handler = () => {
-            setIsFullscreen(!!document.fullscreenElement);
+            const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+            setIsFullscreen(isFS);
+            if (!isFS) {
+                setIsPseudoFullscreen(false);
+            }
         };
         document.addEventListener('fullscreenchange', handler);
-        return () => document.removeEventListener('fullscreenchange', handler);
+        document.addEventListener('webkitfullscreenchange', handler);
+        document.addEventListener('mozfullscreenchange', handler);
+        document.addEventListener('MSFullscreenChange', handler);
+        return () => {
+            document.removeEventListener('fullscreenchange', handler);
+            document.removeEventListener('webkitfullscreenchange', handler);
+            document.removeEventListener('mozfullscreenchange', handler);
+            document.removeEventListener('MSFullscreenChange', handler);
+        };
     }, []);
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape' && isPseudoFullscreen) {
+                setIsPseudoFullscreen(false);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isPseudoFullscreen]);
 
     const total = numPages || initialPageCount || 1;
 
@@ -181,7 +223,7 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
 
     return (
         <div
-            className={`pdf-viewer-wrapper ${isBlurred ? 'anti-piracy-blur' : ''}`}
+            className={`pdf-viewer-wrapper ${isBlurred ? 'anti-piracy-blur' : ''} ${isPseudoFullscreen ? 'pseudo-fullscreen' : ''}`}
             ref={viewerRef}
             onContextMenu={(e) => e.preventDefault()}
             style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none', position: 'relative' }}
@@ -192,20 +234,20 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
                 <button
                     className="pdf-fullscreen-btn"
                     onClick={toggleFullscreen}
-                    title={isFullscreen ? 'Exit fullscreen (Esc)' : 'Fullscreen'}
+                    title={isFullscreenActive ? 'Exit fullscreen (Esc)' : 'Fullscreen'}
                 >
-                    {isFullscreen ? '⤡' : '⤢'}
+                    {isFullscreenActive ? '⤡' : '⤢'}
                 </button>
             </div>
 
             {/* PDF Canvas */}
-            <div className={`pdf-canvas-area ${isFullscreen ? 'scrollable' : ''}`} ref={canvasAreaRef}>
+            <div className={`pdf-canvas-area ${isFullscreenActive ? 'scrollable' : ''}`} ref={canvasAreaRef}>
                 <Document
                     file={pdfBlob}
                     onLoadSuccess={onDocumentLoadSuccess}
                     loading={<div className="pdf-loading"><div className="pdf-spinner" /></div>}
                 >
-                    {isFullscreen ? (
+                    {isFullscreenActive ? (
                         Array.from(new Array(total), (el, index) => (
                             <div key={`page_${index + 1}`} className="pdf-page-container">
                                 <Page
@@ -232,7 +274,7 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
 
             {/* Bottom Navigation Bar */}
             <div className="pdf-bottom-bar">
-                {!isFullscreen ? (
+                {!isFullscreenActive ? (
                     <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                         <div className="pdf-nav-controls">
                             <button 
@@ -257,10 +299,10 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
                             type="button"
                             className="pdf-fullscreen-btn-styled" 
                             onClick={toggleFullscreen}
-                            title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen (Watermarked)'}
+                            title={isFullscreenActive ? 'Exit Fullscreen' : 'Fullscreen (Watermarked)'}
                         >
-                            {isFullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
-                            {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+                            {isFullscreenActive ? <Minimize size={16} /> : <Maximize size={16} />}
+                            {isFullscreenActive ? 'Exit Fullscreen' : 'Fullscreen'}
                         </button>
                     </div>
                 ) : (

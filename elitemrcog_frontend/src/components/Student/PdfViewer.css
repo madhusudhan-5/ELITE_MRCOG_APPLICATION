@@ -273,3 +273,29 @@
 .pdf-viewer-wrapper:fullscreen .pdf-canvas-area {
     padding: 2rem;
 }
+
+/* Pseudo Fullscreen Fallback (e.g. for iOS / Mobile devices) */
+.pdf-viewer-wrapper.pseudo-fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 999999 !important;
+    background: #0f172a !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    border: none !important;
+}
+
+.pdf-viewer-wrapper.pseudo-fullscreen .pdf-canvas-area {
+    padding: 1rem;
+    background: #0f172a !important;
+    flex: 1;
+    min-height: 0;
+}
+
+.pdf-viewer-wrapper.pseudo-fullscreen .pdf-canvas-area.scrollable {
+    overflow-y: auto !important;
+}

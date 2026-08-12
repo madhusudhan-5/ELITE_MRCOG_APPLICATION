@@ -9,17 +9,18 @@
     overflow: hidden;
     z-index: 99999; /* Higher than PDF canvas / Video player elements */
     pointer-events: none; /* Let clicks pass through to the video/PDF */
-    opacity: 0.22; /* Faint but clearly visible for security */
+    opacity: 0.35; /* Faint but clearly visible for security */
 }
 
-/* Fullscreen watermark override across all browsers */
+/* Fullscreen and pseudo-fullscreen watermark override across all browsers */
 :fullscreen .watermark-overlay,
 :-webkit-full-screen .watermark-overlay,
 :-moz-full-screen .watermark-overlay,
 :-ms-fullscreen .watermark-overlay,
 *:fullscreen .watermark-overlay,
 *:-webkit-full-screen .watermark-overlay,
-*:-moz-full-screen .watermark-overlay {
+*:-moz-full-screen .watermark-overlay,
+.pseudo-fullscreen .watermark-overlay {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -45,8 +46,8 @@
 .watermark-item {
     font-size: 1.3rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.85);
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9), -1px -1px 3px rgba(0, 0, 0, 0.9);
+    color: rgba(148, 163, 184, 0.35); /* Slate gray for high visibility on both light & dark backgrounds */
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6), -1px -1px 2px rgba(0, 0, 0, 0.5);
     padding: 2.5rem 5rem;
     white-space: nowrap;
     pointer-events: none;
@@ -68,11 +69,11 @@
     transform: translate(-50%, -50%);
     pointer-events: none;
     user-select: none;
-    opacity: 0.08; /* Very faint so it does not interfere with video watching or document reading */
+    opacity: 0.25; /* Change from 0.08 to 0.25 for clear visibility in centre */
     width: 35%;
     max-width: 260px;
     min-width: 125px;
-    z-index: 1;
+    z-index: 1000;
     display: flex;
     justify-content: center;
     align-items: center;

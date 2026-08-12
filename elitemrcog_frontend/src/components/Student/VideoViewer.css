@@ -126,6 +126,22 @@ video::-ms-media-controls-fullscreen-button {
     background: #000;
 }
 
+/* Pseudo Fullscreen Fallback */
+.video-iframe-wrapper.pseudo-fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 999999 !important;
+    background: #000 !important;
+    border-radius: 0 !important;
+    max-height: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* Mobile responsive styles for video viewer controls */
 @media (max-width: 768px) {
     .video-viewer-controls {
