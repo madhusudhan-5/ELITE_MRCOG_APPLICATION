@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import { Maximize, Minimize } from 'lucide-react';
+import { Maximize, Minimize, ZoomIn, ZoomOut } from 'lucide-react';
 import api from '../../services/api';
 import './PdfViewer.css';
 import WatermarkOverlay from './WatermarkOverlay';
@@ -16,7 +16,43 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
     const [error, setError] = useState(null);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [isBlurred, setIsBlurred] = useState(false);
+    const [zoomScale, setZoomScale] = useState(1.0);
     const viewerRef = useRef(null);
+
+    // Orientation lock helpers
+    const lockLandscape = () => {
+        try {
+            if (window.screen && window.screen.orientation && typeof window.screen.orientation.lock === 'function') {
+                window.screen.orientation.lock('landscape').catch(err => {
+                    console.warn("Screen orientation lock error:", err);
+                });
+            } else if (window.screen?.lockOrientation) {
+                window.screen.lockOrientation('landscape');
+            } else if (window.screen?.mozLockOrientation) {
+                window.screen.mozLockOrientation('landscape');
+            } else if (window.screen?.msLockOrientation) {
+                window.screen.msLockOrientation('landscape');
+            }
+        } catch (err) {
+            console.warn("Orientation lock error:", err);
+        }
+    };
+
+    const unlockOrientation = () => {
+        try {
+            if (window.screen && window.screen.orientation && typeof window.screen.orientation.unlock === 'function') {
+                window.screen.orientation.unlock();
+            } else if (window.screen?.unlockOrientation) {
+                window.screen.unlockOrientation();
+            } else if (window.screen?.mozUnlockOrientation) {
+                window.screen.mozUnlockOrientation();
+            } else if (window.screen?.msUnlockOrientation) {
+                window.screen.msUnlockOrientation();
+            }
+        } catch (err) {
+            console.warn("Orientation unlock error:", err);
+        }
+    };
 
     // Fetch PDF as blob via protected API — never exposes direct URL
     useEffect(() => {
@@ -25,7 +61,7 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
         setError(null);
         setPdfBlob(null);
 
-        // Anti-piracy: Block keyboard shortcuts
+        // Anti-piracy: Block keyboard shortcuts on desktop
         const handleKeyDown = (e) => {
             // Block Print Screen, F12, Ctrl+P, Ctrl+S, Ctrl+Shift+I, Cmd+S, Cmd+P
             if (
@@ -43,7 +79,9 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
         };
 
         const handleBlur = () => {
-            const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+            // Reliably detect mobile devices including iPadOS desktop mode
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const isMobile = isIOS || /Mobi|Android/i.test(navigator.userAgent) || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
             if (!isMobile) {
                 setIsBlurred(true);
             }
@@ -83,7 +121,6 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
 
     // Tracks container size for responsive PDF sizing
     const [containerWidth, setContainerWidth] = useState(700);
-    const [containerHeight, setContainerHeight] = useState(500);
     const canvasAreaRef = useRef(null);
     const [isPseudoFullscreen, setIsPseudoFullscreen] = useState(false);
     const isFullscreenActive = isFullscreen || isPseudoFullscreen;
@@ -91,28 +128,72 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
     useEffect(() => {
         const updateSize = () => {
             if (canvasAreaRef.current) {
-                let newWidth = canvasAreaRef.current.clientWidth - 40;
-                let newHeight = canvasAreaRef.current.clientHeight - 40;
+                let newWidth = canvasAreaRef.current.clientWidth - 32;
 
                 if (isFullscreenActive) {
                     const isMobile = window.innerWidth < 768;
-                    newWidth = window.innerWidth - (isMobile ? 20 : 100);
+                    newWidth = window.innerWidth - (isMobile ? 20 : 80);
                 }
 
-                setContainerWidth(Math.max(300, newWidth));
-                setContainerHeight(Math.max(300, newHeight));
+                setContainerWidth(Math.max(280, newWidth));
             }
         };
 
         updateSize();
         window.addEventListener('resize', updateSize);
-        const timeout = setTimeout(updateSize, 100); // Hack for initial render layout shift
+        const timeout = setTimeout(updateSize, 100);
 
         return () => {
             window.removeEventListener('resize', updateSize);
             clearTimeout(timeout);
         };
     }, [isFullscreenActive, pdfBlob]);
+
+    // Pinch to zoom support
+    const touchStartDistRef = useRef(null);
+    const touchStartScaleRef = useRef(1.0);
+
+    const handleTouchStart = (e) => {
+        setIsBlurred(false);
+        if (e.touches.length === 2) {
+            const dist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            touchStartDistRef.current = dist;
+            touchStartScaleRef.current = zoomScale;
+        }
+    };
+
+    const handleTouchMove = (e) => {
+        if (e.touches.length === 2 && touchStartDistRef.current) {
+            const dist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            const factor = dist / touchStartDistRef.current;
+            const newScale = Math.min(2.5, Math.max(0.6, +(touchStartScaleRef.current * factor).toFixed(2)));
+            setZoomScale(newScale);
+        }
+    };
+
+    const handleTouchEnd = (e) => {
+        if (e.touches.length < 2) {
+            touchStartDistRef.current = null;
+        }
+    };
+
+    const handleZoomIn = () => {
+        setZoomScale(prev => Math.min(2.5, +(prev + 0.2).toFixed(2)));
+    };
+
+    const handleZoomOut = () => {
+        setZoomScale(prev => Math.max(0.6, +(prev - 0.2).toFixed(2)));
+    };
+
+    const handleResetZoom = () => {
+        setZoomScale(1.0);
+    };
 
     const saveProgress = useCallback((page, total) => {
         if (!stationId || !total) return;
@@ -129,6 +210,7 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
         if (!docEl) return;
 
         if (!isFullscreenActive) {
+            lockLandscape();
             const requestFS = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
             if (requestFS) {
                 requestFS.call(docEl).catch((err) => {
@@ -139,6 +221,7 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
                 setIsPseudoFullscreen(true);
             }
         } else {
+            unlockOrientation();
             if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
                 const exitFS = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
                 if (exitFS) {
@@ -155,6 +238,9 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
             setIsFullscreen(isFS);
             if (!isFS) {
                 setIsPseudoFullscreen(false);
+                unlockOrientation();
+            } else {
+                lockLandscape();
             }
         };
         document.addEventListener('fullscreenchange', handler);
@@ -173,6 +259,7 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
         const handleKeyDown = (e) => {
             if (e.key === 'Escape' && isPseudoFullscreen) {
                 setIsPseudoFullscreen(false);
+                unlockOrientation();
             }
         };
         window.addEventListener('keydown', handleKeyDown);
@@ -221,27 +308,39 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
         }
     };
 
+    // Calculate effective page width
+    const effectiveWidth = Math.min(containerWidth, isFullscreenActive ? containerWidth : 750);
+    const pixelRatio = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2.5) : 1;
+
     return (
         <div
             className={`pdf-viewer-wrapper ${isBlurred ? 'anti-piracy-blur' : ''} ${isPseudoFullscreen ? 'pseudo-fullscreen' : ''}`}
             ref={viewerRef}
+            onClick={() => setIsBlurred(false)}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
             onContextMenu={(e) => e.preventDefault()}
             style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none', position: 'relative' }}
         >
             <WatermarkOverlay />
-            {/* Fullscreen toggle — top right corner only */}
+            
+            {/* Topbar — fullscreen toggle */}
             <div className="pdf-topbar">
                 <button
                     className="pdf-fullscreen-btn"
                     onClick={toggleFullscreen}
-                    title={isFullscreenActive ? 'Exit fullscreen (Esc)' : 'Fullscreen'}
+                    title={isFullscreenActive ? 'Exit fullscreen (Esc)' : 'Fullscreen (Landscape)'}
                 >
                     {isFullscreenActive ? '⤡' : '⤢'}
                 </button>
             </div>
 
-            {/* PDF Canvas */}
-            <div className={`pdf-canvas-area ${isFullscreenActive ? 'scrollable' : ''}`} ref={canvasAreaRef}>
+            {/* PDF Canvas with pinch & scroll */}
+            <div 
+                className={`pdf-canvas-area ${isFullscreenActive ? 'scrollable' : ''}`} 
+                ref={canvasAreaRef}
+            >
                 <Document
                     file={pdfBlob}
                     onLoadSuccess={onDocumentLoadSuccess}
@@ -252,7 +351,9 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
                             <div key={`page_${index + 1}`} className="pdf-page-container">
                                 <Page
                                     pageNumber={index + 1}
-                                    width={containerWidth}
+                                    width={effectiveWidth}
+                                    scale={zoomScale}
+                                    devicePixelRatio={pixelRatio}
                                     renderTextLayer={false}
                                     renderAnnotationLayer={false}
                                 />
@@ -263,7 +364,9 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
                         <div className="pdf-page-container">
                             <Page
                                 pageNumber={currentPage}
-                                height={containerHeight}
+                                width={effectiveWidth}
+                                scale={zoomScale}
+                                devicePixelRatio={pixelRatio}
                                 renderTextLayer={false}
                                 renderAnnotationLayer={false}
                             />
@@ -272,10 +375,11 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
                 </Document>
             </div>
 
-            {/* Bottom Navigation Bar */}
+            {/* Bottom Navigation & Zoom Controls Bar */}
             <div className="pdf-bottom-bar">
                 {!isFullscreenActive ? (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                    <div className="pdf-bottom-bar-inner">
+                        {/* Page navigation */}
                         <div className="pdf-nav-controls">
                             <button 
                                 className="pdf-nav-btn" 
@@ -295,19 +399,82 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
                                 Next
                             </button>
                         </div>
+
+                        {/* Zoom controls */}
+                        <div className="pdf-zoom-controls">
+                            <button 
+                                type="button" 
+                                className="pdf-zoom-btn" 
+                                onClick={handleZoomOut} 
+                                disabled={zoomScale <= 0.6}
+                                title="Zoom Out"
+                            >
+                                <ZoomOut size={16} />
+                            </button>
+                            <button 
+                                type="button" 
+                                className="pdf-zoom-level" 
+                                onClick={handleResetZoom}
+                                title="Reset Zoom to 100%"
+                            >
+                                {Math.round(zoomScale * 100)}%
+                            </button>
+                            <button 
+                                type="button" 
+                                className="pdf-zoom-btn" 
+                                onClick={handleZoomIn} 
+                                disabled={zoomScale >= 2.5}
+                                title="Zoom In"
+                            >
+                                <ZoomIn size={16} />
+                            </button>
+                        </div>
+
+                        {/* Fullscreen button */}
                         <button 
                             type="button"
                             className="pdf-fullscreen-btn-styled" 
                             onClick={toggleFullscreen}
-                            title={isFullscreenActive ? 'Exit Fullscreen' : 'Fullscreen (Watermarked)'}
+                            title="Fullscreen (Turns to Landscape)"
                         >
                             {isFullscreenActive ? <Minimize size={16} /> : <Maximize size={16} />}
-                            {isFullscreenActive ? 'Exit Fullscreen' : 'Fullscreen'}
+                            <span className="pdf-fs-text">{isFullscreenActive ? 'Exit Fullscreen' : 'Fullscreen'}</span>
                         </button>
                     </div>
                 ) : (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                    <div className="pdf-bottom-bar-inner">
                         <span className="pdf-page-info">Total Pages: {total}</span>
+                        
+                        {/* Zoom controls in fullscreen */}
+                        <div className="pdf-zoom-controls">
+                            <button 
+                                type="button" 
+                                className="pdf-zoom-btn" 
+                                onClick={handleZoomOut} 
+                                disabled={zoomScale <= 0.6}
+                                title="Zoom Out"
+                            >
+                                <ZoomOut size={16} />
+                            </button>
+                            <button 
+                                type="button" 
+                                className="pdf-zoom-level" 
+                                onClick={handleResetZoom}
+                                title="Reset Zoom"
+                            >
+                                {Math.round(zoomScale * 100)}%
+                            </button>
+                            <button 
+                                type="button" 
+                                className="pdf-zoom-btn" 
+                                onClick={handleZoomIn} 
+                                disabled={zoomScale >= 2.5}
+                                title="Zoom In"
+                            >
+                                <ZoomIn size={16} />
+                            </button>
+                        </div>
+
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                             <button 
                                 type="button"
@@ -315,14 +482,14 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
                                 onClick={toggleFullscreen}
                                 title="Exit Fullscreen"
                             >
-                                <Minimize size={16} /> Exit Fullscreen
+                                <Minimize size={16} /> <span className="pdf-fs-text">Exit Fullscreen</span>
                             </button>
                             <button 
                                 className="pdf-subscribe-btn" 
                                 style={{ margin: 0, padding: '0.4rem 1rem', fontSize: '0.85rem' }}
                                 onClick={() => saveProgress(total, total)}
                             >
-                                Mark as Complete ✓
+                                Mark Complete ✓
                             </button>
                         </div>
                     </div>

@@ -41,8 +41,14 @@ const DashboardLayout = () => {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [activeModal, setActiveModal] = useState(null);
 
-    // Auto-hide sidebar on module pages
+    const profileDropdownRef = React.useRef(null);
+    const sidebarRef = React.useRef(null);
+    const mobileMenuBtnRef = React.useRef(null);
+
+    // Auto-hide sidebar on module pages and close mobile menu on route change
     React.useEffect(() => {
+        setIsSidebarOpen(false);
+        setIsProfileOpen(false);
         if (location.pathname.includes('/modules/') || location.pathname.includes('/video-modules/')) {
             setIsSidebarCollapsed(true);
         } else {
@@ -50,9 +56,56 @@ const DashboardLayout = () => {
         }
     }, [location.pathname]);
 
+    // Close profile dropdown on outside click / tap
+    React.useEffect(() => {
+        const handleProfileOutsideClick = (event) => {
+            if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
+                setIsProfileOpen(false);
+            }
+        };
+
+        if (isProfileOpen) {
+            document.addEventListener('mousedown', handleProfileOutsideClick);
+            document.addEventListener('touchstart', handleProfileOutsideClick);
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleProfileOutsideClick);
+            document.removeEventListener('touchstart', handleProfileOutsideClick);
+        };
+    }, [isProfileOpen]);
+
+    // Close mobile sidebar on outside click / tap
+    React.useEffect(() => {
+        const handleSidebarOutsideClick = (event) => {
+            if (
+                isSidebarOpen &&
+                sidebarRef.current &&
+                !sidebarRef.current.contains(event.target) &&
+                (!mobileMenuBtnRef.current || !mobileMenuBtnRef.current.contains(event.target))
+            ) {
+                setIsSidebarOpen(false);
+            }
+        };
+
+        if (isSidebarOpen) {
+            document.addEventListener('mousedown', handleSidebarOutsideClick);
+            document.addEventListener('touchstart', handleSidebarOutsideClick);
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleSidebarOutsideClick);
+            document.removeEventListener('touchstart', handleSidebarOutsideClick);
+        };
+    }, [isSidebarOpen]);
+
+    const closeSidebarOnMobile = () => {
+        setIsSidebarOpen(false);
+    };
+
     const closeModal = () => setActiveModal(null);
 
     const handleLogout = () => {
+        setIsSidebarOpen(false);
+        setIsProfileOpen(false);
         logout();
         navigate('/login');
     };
@@ -140,7 +193,7 @@ const DashboardLayout = () => {
                 <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>
             )}
             
-            <aside className={`sidebar ${isSidebarOpen ? 'open' : ''} ${isSidebarCollapsed ? 'collapsed' : ''}`}>
+            <aside ref={sidebarRef} className={`sidebar ${isSidebarOpen ? 'open' : ''} ${isSidebarCollapsed ? 'collapsed' : ''}`}>
                 <div className="sidebar-brand">
                     <img src={logo} alt="Elite MRCOG Logo" />
                     <h2>ELITE MRCOG</h2>
@@ -163,45 +216,45 @@ const DashboardLayout = () => {
                 </div>
 
                 <nav className="sidebar-nav">
-                    <NavLink to="/dashboard" end className={({isActive}) => isActive ? 'nav-item active' : 'nav-item'}>
+                    <NavLink to="/dashboard" end onClick={closeSidebarOnMobile} className={({isActive}) => isActive ? 'nav-item active' : 'nav-item'}>
                         <Home size={20} /> Home
                     </NavLink>
-                    <NavLink to="/dashboard/reading" className={({isActive}) => isActive ? 'nav-item active' : 'nav-item'}>
+                    <NavLink to="/dashboard/reading" onClick={closeSidebarOnMobile} className={({isActive}) => isActive ? 'nav-item active' : 'nav-item'}>
                         <BookOpen size={20} /> Reading Library
                     </NavLink>
-                    <NavLink to="/dashboard/video" className={({isActive}) => isActive ? 'nav-item active' : 'nav-item'}>
+                    <NavLink to="/dashboard/video" onClick={closeSidebarOnMobile} className={({isActive}) => isActive ? 'nav-item active' : 'nav-item'}>
                         <Video size={20} /> Video Library
                     </NavLink>
-                    <NavLink to="/dashboard/mock-exam" className={({isActive}) => isActive ? 'nav-item active' : 'nav-item'}>
+                    <NavLink to="/dashboard/mock-exam" onClick={closeSidebarOnMobile} className={({isActive}) => isActive ? 'nav-item active' : 'nav-item'}>
                         <FileText size={20} /> Mock Exam
                     </NavLink>
                     
                     <div className="nav-divider"></div>
                     
-                    <NavLink to="/dashboard/cart" className={({isActive}) => isActive ? 'nav-item active' : 'nav-item'}>
+                    <NavLink to="/dashboard/cart" onClick={closeSidebarOnMobile} className={({isActive}) => isActive ? 'nav-item active' : 'nav-item'}>
                         <span className="nav-icon-wrap">
                             <ShoppingCart size={20} />
                             {cartCount > 0 && <span className="nav-badge">{cartCount}</span>}
                         </span>
                         Cart
                     </NavLink>
-                    <NavLink to="/dashboard/subscription" className={({isActive}) => isActive ? 'nav-item active' : 'nav-item'}>
+                    <NavLink to="/dashboard/subscription" onClick={closeSidebarOnMobile} className={({isActive}) => isActive ? 'nav-item active' : 'nav-item'}>
                         <CalendarCheck size={20} /> Subscription
                     </NavLink>
-                    <NavLink to="/dashboard/my-subscriptions" className={({isActive}) => isActive ? 'nav-item active' : 'nav-item'}>
+                    <NavLink to="/dashboard/my-subscriptions" onClick={closeSidebarOnMobile} className={({isActive}) => isActive ? 'nav-item active' : 'nav-item'}>
                         <Star size={20} /> My Subscriptions
                     </NavLink>
                 </nav>
 
                 <div className="sidebar-bottom">
                     <div className="nav-divider"></div>
-                    <button className="nav-item" onClick={() => setActiveModal('terms')} style={{ background: 'transparent', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', fontSize: '1rem' }}>
+                    <button className="nav-item" onClick={() => { closeSidebarOnMobile(); setActiveModal('terms'); }} style={{ background: 'transparent', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', fontSize: '1rem' }}>
                         <FileText size={20} /> Terms &amp; Conditions
                     </button>
-                    <button className="nav-item" onClick={() => setActiveModal('privacy')} style={{ background: 'transparent', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', fontSize: '1rem' }}>
+                    <button className="nav-item" onClick={() => { closeSidebarOnMobile(); setActiveModal('privacy'); }} style={{ background: 'transparent', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', fontSize: '1rem' }}>
                         <ShieldCheck size={20} /> Privacy Policy
                     </button>
-                    <button className="nav-item" onClick={() => setActiveModal('refund')} style={{ background: 'transparent', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', fontSize: '1rem' }}>
+                    <button className="nav-item" onClick={() => { closeSidebarOnMobile(); setActiveModal('refund'); }} style={{ background: 'transparent', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', fontSize: '1rem' }}>
                         <RefreshCcw size={20} /> Refund Policy
                     </button>
                 </div>
@@ -213,7 +266,7 @@ const DashboardLayout = () => {
                         <button className="desktop-menu-btn" onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}>
                             <Menu size={24} />
                         </button>
-                        <button className="mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}>
+                        <button ref={mobileMenuBtnRef} className="mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}>
                             <Menu size={24} />
                         </button>
                         {location.pathname === '/dashboard' || location.pathname === '/dashboard/' ? (
@@ -234,7 +287,7 @@ const DashboardLayout = () => {
                             <Bell size={20} />
                         </button>
                         
-                        <div className="profile-dropdown-container">
+                        <div ref={profileDropdownRef} className="profile-dropdown-container">
                             <button 
                                 className="profile-btn" 
                                 onClick={() => setIsProfileOpen(!isProfileOpen)}

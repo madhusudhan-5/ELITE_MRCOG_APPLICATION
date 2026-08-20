@@ -23,7 +23,54 @@ const AdminLayout = () => {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+    const profileDropdownRef = React.useRef(null);
+    const sidebarRef = React.useRef(null);
+    const mobileMenuBtnRef = React.useRef(null);
+
+    // Close profile dropdown on outside click / tap
+    React.useEffect(() => {
+        const handleProfileOutsideClick = (event) => {
+            if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
+                setIsProfileOpen(false);
+            }
+        };
+
+        if (isProfileOpen) {
+            document.addEventListener('mousedown', handleProfileOutsideClick);
+            document.addEventListener('touchstart', handleProfileOutsideClick);
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleProfileOutsideClick);
+            document.removeEventListener('touchstart', handleProfileOutsideClick);
+        };
+    }, [isProfileOpen]);
+
+    // Close sidebar on outside click / tap
+    React.useEffect(() => {
+        const handleSidebarOutsideClick = (event) => {
+            if (
+                isSidebarOpen &&
+                sidebarRef.current &&
+                !sidebarRef.current.contains(event.target) &&
+                (!mobileMenuBtnRef.current || !mobileMenuBtnRef.current.contains(event.target))
+            ) {
+                setIsSidebarOpen(false);
+            }
+        };
+
+        if (isSidebarOpen) {
+            document.addEventListener('mousedown', handleSidebarOutsideClick);
+            document.addEventListener('touchstart', handleSidebarOutsideClick);
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleSidebarOutsideClick);
+            document.removeEventListener('touchstart', handleSidebarOutsideClick);
+        };
+    }, [isSidebarOpen]);
+
     const handleLogout = () => {
+        setIsSidebarOpen(false);
+        setIsProfileOpen(false);
         logout();
         navigate('/login');
     };
@@ -36,7 +83,7 @@ const AdminLayout = () => {
                 <div className="admin-sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>
             )}
             
-            <aside className={`admin-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+            <aside ref={sidebarRef} className={`admin-sidebar ${isSidebarOpen ? 'open' : ''}`}>
                 <div className="admin-sidebar-brand">
                     <img src={logo} alt="Elite MRCOG Logo" />
                     <h2>ADMIN PORTAL</h2>
@@ -77,12 +124,12 @@ const AdminLayout = () => {
             <main className="admin-main">
                 <header className="admin-header">
                     <div className="admin-header-breadcrumbs">
-                        <button className="admin-mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}>
+                        <button ref={mobileMenuBtnRef} className="admin-mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}>
                             <Menu size={24} />
                         </button>
                     </div>
                     <div className="admin-header-actions">
-                        <div className="admin-profile-dropdown-container">
+                        <div ref={profileDropdownRef} className="admin-profile-dropdown-container">
                             <button 
                                 className="admin-profile-btn" 
                                 onClick={() => setIsProfileOpen(!isProfileOpen)}
