@@ -5,6 +5,12 @@ APP_DIR="/var/www/elitemrcog"
 
 echo "Starting Deployment..."
 
+# 0. Automatic Database Backup
+if [ -f "$APP_DIR/elitemrcog_backend/db.sqlite3" ]; then
+    echo "Creating safety backup of database..."
+    cp "$APP_DIR/elitemrcog_backend/db.sqlite3" "$APP_DIR/elitemrcog_backend/db_backup_$(date +%Y%m%d_%H%M%S).sqlite3"
+fi
+
 # 1. Pull Latest Code
 cd $APP_DIR
 git fetch origin main
