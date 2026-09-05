@@ -69,8 +69,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 def generate_otp():
-    # Hardcoded OTP for development/testing ease
-    return '123456'
+    return ''.join(random.choices(string.digits, k=6))
 
 
 class OTPVerification(models.Model):
