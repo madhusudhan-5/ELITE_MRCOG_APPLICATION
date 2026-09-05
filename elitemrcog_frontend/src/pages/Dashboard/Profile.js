@@ -35,13 +35,17 @@ const Profile = () => {
         setIsLoading(true);
         setMessage(null);
         try {
-            // Wait, we need an endpoint for updating profile.
-            // But we can hit /api/auth/me/ if we set it up to accept PUT/PATCH
             const response = await api.patch('/api/auth/me/', formData);
             setUser(response.data);
             setMessage({ type: 'success', text: 'Profile updated successfully!' });
         } catch (err) {
-            setMessage({ type: 'error', text: 'Failed to update profile.' });
+            const errorText = err.response?.data?.detail || 
+                              err.response?.data?.error || 
+                              (err.response?.data && typeof err.response.data === 'object' 
+                                  ? Object.entries(err.response.data).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(' ') : v}`).join(' | ') 
+                                  : null) || 
+                              'Failed to update profile. Please try again.';
+            setMessage({ type: 'error', text: errorText });
         } finally {
             setIsLoading(false);
         }

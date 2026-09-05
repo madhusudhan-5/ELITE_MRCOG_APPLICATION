@@ -255,10 +255,17 @@ def password_reset_view(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT', 'PATCH'])
 @permission_classes([IsAuthenticated])
 def me_view(request):
-    """Get current logged-in user profile."""
+    """Get or update current logged-in user profile."""
+    if request.method in ['PUT', 'PATCH']:
+        partial = request.method == 'PATCH'
+        serializer = UserSerializer(request.user, data=request.data, partial=partial)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return Response(UserSerializer(request.user).data)
 
 
