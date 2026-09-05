@@ -227,6 +227,18 @@
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
+.superadmin-footer {
+    text-align: center;
+    padding: 1.25rem 0 0.25rem 0;
+    color: #64748b;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.superadmin-footer p {
+    margin: 0;
+}
+
 /* --- MOBILE RESPONSIVENESS --- */
 @media (max-width: 1024px) {
     .superadmin-sidebar {

@@ -1,23 +1,25 @@
 .profile-container {
     display: flex;
-    gap: 4rem;
-    padding: 1rem;
+    gap: 3.5rem;
+    padding: 0.5rem;
 }
 
 .profile-left {
-    width: 280px;
+    width: 260px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    flex-shrink: 0;
 }
 
 .profile-avatar-large {
-    width: 150px;
-    height: 150px;
+    width: 140px;
+    height: 140px;
     border-radius: 50%;
     overflow: hidden;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-bottom: 1.25rem;
+    border: 4px solid #ffffff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 0 0 1px #cbd5e1;
 }
 
 .profile-avatar-large img {
@@ -27,50 +29,56 @@
 }
 
 .profile-name-large {
-    color: #2a2a72;
-    font-size: 1.5rem;
+    color: #0f172a;
+    font-size: 1.4rem;
     font-weight: 700;
-    margin-bottom: 2rem;
+    margin: 0 0 1.5rem 0;
 }
 
 .profile-info-block {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.25rem;
     width: 100%;
 }
 
 .info-item {
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    gap: 0.25rem;
 }
 
 .info-label {
-    font-size: 0.85rem;
-    color: #666;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
 }
 
 .info-value {
     font-weight: 600;
-    color: #333;
+    color: #1e293b;
+    font-size: 0.95rem;
 }
 
-/* Right Side */
+/* ─── Right Side Form ─────────────────────────── */
 .profile-right {
     flex: 1;
+    min-width: 0;
 }
 
 .profile-right h2 {
-    color: #2a2a72;
-    margin-bottom: 2rem;
-    font-size: 1.8rem;
+    color: #0f172a;
+    margin: 0 0 1.75rem 0;
+    font-size: 1.6rem;
+    font-weight: 700;
 }
 
 .profile-form {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.25rem;
 }
 
 .form-row-three {
@@ -81,27 +89,46 @@
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.4rem;
     flex: 1;
 }
 
 .form-group label {
-    font-size: 0.9rem;
-    color: #666;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
 }
 
-.form-group input, .form-group select {
-    padding: 0.8rem 1rem;
-    border: 1px solid #dcdfe3;
+.form-group input, 
+.form-group select {
+    padding: 0.75rem 1rem;
+    border: 1px solid #cbd5e1;
     border-radius: 8px;
-    font-size: 0.95rem;
+    font-size: 0.925rem;
+    font-weight: 500;
+    color: #0f172a;
     outline: none;
-    transition: 0.2s;
-    background: white;
+    transition: all 0.2s ease;
+    background: #ffffff;
 }
 
-.form-group input:focus, .form-group select:focus {
-    border-color: #2a2a72;
+/* Custom Dropdown Chevron with generous right space */
+.form-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 16px;
+    padding-right: 2.75rem;
+    cursor: pointer;
+}
+
+.form-group input:focus, 
+.form-group select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 .locked-input {
@@ -112,69 +139,95 @@
 
 .locked-input input {
     width: 100%;
-    background-color: #f9f9f9;
-    color: #666;
-    padding-right: 2.5rem;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    padding-right: 2.75rem;
+    cursor: not-allowed;
 }
 
 .lock-icon {
     position: absolute;
     right: 1rem;
-    color: #2a2a72;
+    color: #94a3b8;
+    pointer-events: none;
 }
 
 .profile-actions {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 2rem;
-    margin-top: 2rem;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #f1f5f9;
 }
 
 .cancel-btn {
-    background: transparent;
-    border: none;
-    color: #111;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    padding: 0.75rem 1.75rem;
+    border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+    border-color: #94a3b8;
 }
 
 .save-btn {
-    background: #171740;
-    color: white;
+    background: #2563eb;
+    color: #ffffff;
     border: none;
-    padding: 0.8rem 2.5rem;
-    border-radius: 30px;
+    padding: 0.75rem 2.25rem;
+    border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    font-size: 1rem;
-    transition: 0.2s;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    transition: all 0.2s ease;
 }
 
-.save-btn:hover {
-    background: #2a2a72;
+.save-btn:hover:not(:disabled) {
+    background: #1d4ed8;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    transform: translateY(-1px);
+}
+
+.save-btn:focus-visible,
+.cancel-btn:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
 }
 
 .save-btn:disabled {
-    background: #999;
+    background: #94a3b8;
     cursor: not-allowed;
+    box-shadow: none;
 }
 
 .alert {
-    padding: 1rem;
+    padding: 0.85rem 1.25rem;
     border-radius: 8px;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 500;
 }
-.alert.success { background: #dcfce7; color: #166534; }
-.alert.error { background: #fee2e2; color: #dc2626; }
+.alert.success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.alert.error { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
 
 /* --- TABLET RESPONSIVENESS --- */
 @media (max-width: 900px) {
     .profile-container {
         flex-direction: column;
-        gap: 2.5rem;
-        padding: 1.5rem;
+        gap: 2rem;
+        padding: 0.5rem;
     }
 
     .profile-left {
@@ -182,18 +235,18 @@
         align-items: center;
         text-align: center;
         border-bottom: 1px solid #e2e8f0;
-        padding-bottom: 2rem;
+        padding-bottom: 1.75rem;
     }
 
     .profile-avatar-large {
-        width: 130px;
-        height: 130px;
-        margin: 0 auto 1.5rem auto;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 1rem auto;
     }
 
     .profile-name-large {
-        font-size: 1.35rem;
-        margin-bottom: 1.5rem;
+        font-size: 1.3rem;
+        margin-bottom: 1.25rem;
     }
 
     .profile-info-block {
@@ -206,81 +259,52 @@
     .info-item {
         align-items: center;
     }
-
-    .info-label {
-        font-size: 0.8rem;
-    }
-
-    .info-value {
-        font-size: 0.92rem;
-    }
 }
 
 /* --- MOBILE RESPONSIVENESS --- */
 @media (max-width: 600px) {
     .profile-container {
-        padding: 1rem 0.5rem;
-    }
-
-    .profile-avatar-large {
-        width: 110px;
-        height: 110px;
-    }
-
-    .profile-name-large {
-        font-size: 1.25rem;
+        padding: 0;
     }
 
     .form-row-three {
         flex-direction: column;
-        gap: 1.25rem;
+        gap: 1rem;
     }
 
     .profile-info-block {
         flex-direction: column;
         align-items: stretch;
         text-align: left;
-        gap: 1.25rem;
+        gap: 1rem;
         width: 100%;
-        max-width: 400px;
     }
 
     .info-item {
         align-items: flex-start;
         border-bottom: 1px dashed #e2e8f0;
-        padding-bottom: 0.75rem;
+        padding-bottom: 0.5rem;
     }
 
     .info-item:last-child {
         border-bottom: none;
     }
 
-    .info-value {
-        font-size: 0.9rem;
-    }
-
-    .form-group input, .form-group select {
-        padding: 0.7rem 0.9rem;
-        font-size: 0.9rem;
-    }
-
     .profile-actions {
         width: 100%;
         flex-direction: column-reverse;
-        gap: 1rem;
+        gap: 0.75rem;
         align-items: stretch;
     }
 
     .save-btn, .cancel-btn {
         width: 100%;
         text-align: center;
-        padding: 0.8rem 1rem;
-        border-radius: 8px; /* Standardize with inputs */
-        font-size: 0.95rem;
+        padding: 0.75rem 1rem;
     }
 
     .profile-right h2 {
-        font-size: 1.35rem;
-        margin-bottom: 1.5rem;
+        font-size: 1.3rem;
+        margin-bottom: 1.25rem;
     }
 }

@@ -189,7 +189,6 @@
 .rl-badge--draft { background: #fef3c7; color: #d97706; }
 .rl-type-badge { font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
 .rl-type-badge--course_material { background: #ede9fe; color: #7c3aed; }
-.rl-type-badge--easy_read { background: #e0f2fe; color: #0284c7; }
 
 /* Stations Panel */
 .rl-stations-panel {

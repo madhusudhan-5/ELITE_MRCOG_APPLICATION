@@ -24,7 +24,7 @@ Once a module exists, you can add detailed reading articles and PDF stations.
 3.  **Fields**:
     *   **Module**: Select the parent module.
     *   **Title**: The name of the article.
-    *   **Type**: Choose between "Course Material" or "Easy Read".
+    *   **Type**: Set to "Course Material".
     *   **Short Description**: Summary shown on the card.
     *   **Overview Text**: Detailed syllabus/overview.
 4.  Click **Save Article**.

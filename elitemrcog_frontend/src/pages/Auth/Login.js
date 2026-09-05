@@ -230,12 +230,12 @@ const Login = () => {
                 Don't have an account? <Link to="/register">Sign up</Link>
             </p>
 
-            <div className="auth-legal-links" style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px', fontSize: '0.8rem', color: '#888' }}>
-                <button onClick={() => setActiveModal('refund')} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit', color: 'inherit', textDecoration: 'underline' }}>Refund Policy</button>
-                <span>|</span>
-                <button onClick={() => setActiveModal('privacy')} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit', color: 'inherit', textDecoration: 'underline' }}>Privacy Policy</button>
-                <span>|</span>
-                <button onClick={() => setActiveModal('terms')} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit', color: 'inherit', textDecoration: 'underline' }}>Terms &amp; Conditions</button>
+            <div className="auth-legal-links">
+                <button type="button" onClick={() => setActiveModal('refund')} className="auth-legal-btn">Refund Policy</button>
+                <span className="auth-legal-separator"></span>
+                <button type="button" onClick={() => setActiveModal('privacy')} className="auth-legal-btn">Privacy Policy</button>
+                <span className="auth-legal-separator"></span>
+                <button type="button" onClick={() => setActiveModal('terms')} className="auth-legal-btn">Terms &amp; Conditions</button>
             </div>
 
             <LegalModal

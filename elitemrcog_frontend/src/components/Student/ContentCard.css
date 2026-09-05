@@ -216,11 +216,6 @@
 }
 
 /* Category badge variants */
-.cc-badge.easy_read {
-    background: rgba(16, 185, 129, 0.85);
-    color: white;
-}
-
 .cc-badge.course_material {
     background: rgba(139, 92, 246, 0.85);
     color: white;

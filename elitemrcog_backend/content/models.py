@@ -40,7 +40,7 @@ class Module(models.Model):
         max_length=20,
         choices=Category.choices,
         default=Category.COURSE_MATERIAL,
-        help_text="Easy Read or Course Material"
+        help_text="Course Material"
     )
     is_free = models.BooleanField(
         default=False,

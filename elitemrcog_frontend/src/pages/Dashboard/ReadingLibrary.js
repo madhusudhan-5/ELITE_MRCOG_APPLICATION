@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import ContentCard from '../../components/Student/ContentCard';
-import { Loader, BookOpen, Search } from 'lucide-react';
+import { Loader, Search } from 'lucide-react';
 import './Library.css'; // Shared CSS for both libraries
 
 const ReadingLibrary = () => {
-    const [activeTab, setActiveTab] = useState('Course Materials');
     const [modules, setModules] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -13,8 +12,7 @@ const ReadingLibrary = () => {
     useEffect(() => {
         const fetchContent = async () => {
             try {
-                const category = activeTab === 'Easy Reads' ? 'easy_read' : 'course_material';
-                const res = await api.get(`/api/content/reading/?type=${category}`);
+                const res = await api.get('/api/content/reading/');
                 const fetchedData = res.data.results || res.data;
                 const articlesArray = Array.isArray(fetchedData) ? fetchedData : [];
                 setModules(articlesArray);
@@ -25,7 +23,7 @@ const ReadingLibrary = () => {
             }
         };
         fetchContent();
-    }, [activeTab]);
+    }, []);
 
     const filteredModules = modules.filter(module =>
         module.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -38,7 +36,7 @@ const ReadingLibrary = () => {
         <div className="library-container">
             <header className="lib-header">
                 <div>
-                    <h1><BookOpen size={28} className="lib-header-icon reading" /> Reading Library</h1>
+                    <h1>Reading Library</h1>
                     <p>Browse your assigned syllabus and reading materials.</p>
                 </div>
                 
@@ -53,21 +51,6 @@ const ReadingLibrary = () => {
                 </div>
             </header>
 
-            <div className="lib-tabs">
-                <button 
-                    className={`lib-tab ${activeTab === 'Easy Reads' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('Easy Reads')}
-                >
-                    Easy Reads
-                </button>
-                <button 
-                    className={`lib-tab ${activeTab === 'Course Materials' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('Course Materials')}
-                >
-                    Course Materials
-                </button>
-            </div>
-
             <div className="lib-grid">
                 {filteredModules.length > 0 ? (
                     filteredModules.map(module => (
@@ -75,7 +58,7 @@ const ReadingLibrary = () => {
                     ))
                 ) : (
                     <div className="lib-empty">
-                        <p>No reading materials found for {activeTab}.</p>
+                        <p>No reading materials found.</p>
                     </div>
                 )}
             </div>

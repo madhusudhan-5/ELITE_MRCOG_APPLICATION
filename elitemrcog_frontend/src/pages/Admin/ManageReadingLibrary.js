@@ -10,7 +10,6 @@ import './ManageReadingLibrary.css';
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const ARTICLE_TYPES = [
     { value: 'course_material', label: 'Course Material' },
-    { value: 'easy_read', label: 'Easy Read' },
 ];
 
 const Toast = ({ msg, type, onClose }) => (
@@ -308,8 +307,8 @@ const ArticleRow = ({ article, onEditArticle, onDeleteArticle, showToast }) => {
                 </div>
                 <div className="rl-article-meta">
                     <span className="rl-article-title">{article.title}</span>
-                    <span className={`rl-type-badge rl-type-badge--${article.article_type}`}>
-                        {article.article_type === 'easy_read' ? 'Easy Read' : 'Course Material'}
+                    <span className="rl-type-badge rl-type-badge--course_material">
+                        Course Material
                     </span>
                     {article.is_free && <span className="rl-badge rl-badge--free">Free</span>}
                     {!article.is_active && <span className="rl-badge rl-badge--draft">Draft</span>}

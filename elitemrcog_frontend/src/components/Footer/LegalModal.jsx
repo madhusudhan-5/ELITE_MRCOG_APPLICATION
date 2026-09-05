@@ -1,4 +1,5 @@
 import React from 'react';
+import { X } from 'lucide-react';
 import './LegalModal.css';
 
 const LegalModal = ({ isOpen, onClose, title, content }) => {
@@ -9,8 +10,8 @@ const LegalModal = ({ isOpen, onClose, title, content }) => {
             <div className="legal-modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="legal-modal-header">
                     <h2>{title}</h2>
-                    <button className="legal-modal-close" onClick={onClose}>
-                        &times;
+                    <button className="legal-modal-close" onClick={onClose} aria-label="Close modal">
+                        <X size={18} />
                     </button>
                 </div>
                 <div className="legal-modal-body">

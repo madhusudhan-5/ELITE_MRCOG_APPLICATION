@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useOutletContext } from 'react-router-dom';
 import api from '../../services/api';
 import PdfViewer from '../../components/Student/PdfViewer';
-import { Lock, BookOpen } from 'lucide-react';
+import { Lock, BookOpen, Home, BookMarked } from 'lucide-react';
 import './ModuleDetail.css';
 
 const ModuleDetail = () => {
     const { id } = useParams();
-    const navigate = useNavigate();
+    const outletContext = useOutletContext();
+    const setCustomBreadcrumbs = outletContext?.setCustomBreadcrumbs;
+
     const [article, setArticle] = useState(null);
     const [selectedStation, setSelectedStation] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -38,6 +40,32 @@ const ModuleDetail = () => {
         };
         fetchArticle();
     }, [id]);
+
+    // Update complete breadcrumbs path (Home > Reading Library > Module Name > Article Name)
+    useEffect(() => {
+        if (article && setCustomBreadcrumbs) {
+            const crumbs = [
+                { label: 'Home', path: '/dashboard', icon: Home },
+                { label: 'Reading Library', path: '/dashboard/reading', icon: BookOpen }
+            ];
+
+            if (article.module_title) {
+                crumbs.push({
+                    label: article.module_title,
+                    path: '/dashboard/reading'
+                });
+            }
+
+            if (article.title) {
+                crumbs.push({
+                    label: article.title,
+                    icon: BookMarked
+                });
+            }
+
+            setCustomBreadcrumbs(crumbs);
+        }
+    }, [article, setCustomBreadcrumbs]);
 
     const handleProgressUpdate = (progressData) => {
         setStationProgress(prev => ({
@@ -96,21 +124,29 @@ const COLOR_PALETTE = ['#49BBBD', '#F48C06', '#9DCCFF', '#EE645B', '#BF9A72'];
                                 <button
                                     key={station.id}
                                     className={`md-station-card ${isActive ? 'active' : ''} ${isLocked ? 'locked' : ''}`}
+                                    aria-current={isActive ? 'true' : undefined}
+                                    title={station.title}
                                     style={{
                                         '--card-accent': cardColor,
-                                        borderLeftColor: cardColor,
-                                        backgroundColor: isActive ? `${cardColor}22` : `${cardColor}0F`
+                                        borderLeftColor: isActive ? '#2563eb' : cardColor,
+                                        backgroundColor: isActive ? '#eff6ff' : `${cardColor}0F`
                                     }}
                                     onClick={() => !isLocked && setSelectedStation(station)}
                                     disabled={isLocked}
                                 >
                                     <div className="md-card-top">
-                                        <span className="md-card-num" style={{ backgroundColor: cardColor, color: '#ffffff' }}>
+                                        <span className="md-card-num" style={{ backgroundColor: isActive ? '#2563eb' : cardColor, color: '#ffffff' }}>
                                             {String(idx + 1).padStart(2, '0')}
                                         </span>
-                                        <span className="md-card-name">{station.title}</span>
+                                        <span className="md-card-name" title={station.title}>{station.title}</span>
+                                        {isActive && (
+                                            <span className="md-card-active-badge" aria-label="Currently active lesson">
+                                                <span className="md-active-dot"></span>
+                                                Active
+                                            </span>
+                                        )}
                                         {isLocked && <Lock size={13} className="md-card-lock" />}
-                                        {station.is_free && !isLocked && (
+                                        {station.is_free && !isLocked && !isActive && (
                                             <span className="md-card-free-badge">Free</span>
                                         )}
                                     </div>

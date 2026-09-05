@@ -37,7 +37,7 @@ const BundleModal = ({ bundle, onClose, onAddToCart, adding }) => {
                     <div className="sub-modal-includes">
                         <h4>What's Included:</h4>
                         <ul>
-                            {bundle.includes_reading && <li><Check size={14} className="check-icon" /> Full access to Reading Library — Easy Reads & Course Materials</li>}
+                            {bundle.includes_reading && <li><Check size={14} className="check-icon" /> Full access to Reading Library — Course Materials</li>}
                             {bundle.includes_video && <li><Check size={14} className="check-icon" /> Full access to Video Library — HD lectures</li>}
                             {bundle.includes_mock_exam && <li><Check size={14} className="check-icon" /> Full access to Mock Exam — practice papers with explanations</li>}
                             <li><Check size={14} className="check-icon" /> Valid for {bundle.duration_days} days from purchase</li>

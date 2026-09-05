@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import ContentCard from '../../components/Student/ContentCard';
-import { Loader, PlayCircle, Search } from 'lucide-react';
+import { Loader, Search } from 'lucide-react';
 import './Library.css'; // Shared CSS
 
 const VideoLibrary = () => {
-    const [activeTab, setActiveTab] = useState('Course Materials');
     const [modules, setModules] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -13,8 +12,7 @@ const VideoLibrary = () => {
     useEffect(() => {
         const fetchContent = async () => {
             try {
-                const category = activeTab === 'Easy Reads' ? 'easy_read' : 'course_material';
-                const modulesRes = await api.get(`/api/content/modules/?category=${category}`);
+                const modulesRes = await api.get('/api/content/modules/');
                 const fetchedModules = modulesRes.data.results || modulesRes.data;
                 const modulesArray = Array.isArray(fetchedModules) ? fetchedModules : [];
                 setModules(modulesArray.filter(m => m.video_count > 0));
@@ -25,7 +23,7 @@ const VideoLibrary = () => {
             }
         };
         fetchContent();
-    }, [activeTab]);
+    }, []);
 
     const filteredModules = modules.filter(module =>
         module.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -38,7 +36,7 @@ const VideoLibrary = () => {
         <div className="library-container">
             <header className="lib-header">
                 <div>
-                    <h1><PlayCircle size={28} className="lib-header-icon video" /> Video Library</h1>
+                    <h1>Video Library</h1>
                     <p>Watch deeply recorded lectures and roleplays.</p>
                 </div>
                 
@@ -53,21 +51,6 @@ const VideoLibrary = () => {
                 </div>
             </header>
 
-            <div className="lib-tabs">
-                <button 
-                    className={`lib-tab ${activeTab === 'Easy Reads' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('Easy Reads')}
-                >
-                    Easy Reads
-                </button>
-                <button 
-                    className={`lib-tab ${activeTab === 'Course Materials' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('Course Materials')}
-                >
-                    Course Materials
-                </button>
-            </div>
-
             <div className="lib-grid">
                 {filteredModules.length > 0 ? (
                     filteredModules.map(module => (
@@ -75,7 +58,7 @@ const VideoLibrary = () => {
                     ))
                 ) : (
                     <div className="lib-empty">
-                        <p>No video courses found for {activeTab}.</p>
+                        <p>No video courses found.</p>
                     </div>
                 )}
             </div>

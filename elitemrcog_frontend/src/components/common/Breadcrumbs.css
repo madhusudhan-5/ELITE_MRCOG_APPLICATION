@@ -46,7 +46,10 @@
     align-items: center;
     gap: 0.35rem;
     font-weight: 600;
-    color: var(--primary-color, #2563eb);
+    color: #475569;
+    cursor: default;
+    pointer-events: none;
+    user-select: text;
 }
 
 .page-breadcrumbs .breadcrumb-icon {
@@ -55,16 +58,20 @@
 
 /* --- RESPONSIVE ADAPTATION --- */
 @media (max-width: 768px) {
-    /* Hide the first item (Home) and its separator to save space on tablets */
-    .page-breadcrumbs > *:nth-child(1),
-    .page-breadcrumbs > *:nth-child(2) {
-        display: none !important;
+    .page-breadcrumbs {
+        font-size: 0.8rem;
+        gap: 0.35rem;
+    }
+
+    .page-breadcrumbs .breadcrumb-icon {
+        width: 12px;
+        height: 12px;
     }
 }
 
 @media (max-width: 480px) {
-    /* Hide all parent breadcrumb items and separators, showing only the current page title on mobile */
-    .page-breadcrumbs > *:not(:last-child) {
-        display: none !important;
+    .page-breadcrumbs {
+        font-size: 0.75rem;
+        gap: 0.3rem;
     }
 }

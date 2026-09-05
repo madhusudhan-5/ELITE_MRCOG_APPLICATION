@@ -35,13 +35,21 @@ const AdminLayout = () => {
             }
         };
 
+        const handleWindowBlur = () => {
+            setIsProfileOpen(false);
+        };
+
         if (isProfileOpen) {
+            document.addEventListener('pointerdown', handleProfileOutsideClick);
             document.addEventListener('mousedown', handleProfileOutsideClick);
             document.addEventListener('touchstart', handleProfileOutsideClick);
+            window.addEventListener('blur', handleWindowBlur);
         }
         return () => {
+            document.removeEventListener('pointerdown', handleProfileOutsideClick);
             document.removeEventListener('mousedown', handleProfileOutsideClick);
             document.removeEventListener('touchstart', handleProfileOutsideClick);
+            window.removeEventListener('blur', handleWindowBlur);
         };
     }, [isProfileOpen]);
 
@@ -59,10 +67,12 @@ const AdminLayout = () => {
         };
 
         if (isSidebarOpen) {
+            document.addEventListener('pointerdown', handleSidebarOutsideClick);
             document.addEventListener('mousedown', handleSidebarOutsideClick);
             document.addEventListener('touchstart', handleSidebarOutsideClick);
         }
         return () => {
+            document.removeEventListener('pointerdown', handleSidebarOutsideClick);
             document.removeEventListener('mousedown', handleSidebarOutsideClick);
             document.removeEventListener('touchstart', handleSidebarOutsideClick);
         };
@@ -158,6 +168,9 @@ const AdminLayout = () => {
                     <div className="admin-white-box">
                         <Outlet />
                     </div>
+                    <footer className="admin-footer">
+                        <p>© {new Date().getFullYear()} Elite MRCOG. All rights reserved.</p>
+                    </footer>
                 </div>
             </main>
         </div>

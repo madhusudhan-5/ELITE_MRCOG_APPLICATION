@@ -297,6 +297,41 @@
     text-decoration: none;
 }
 
+.auth-legal-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+    color: #64748b;
+    flex-wrap: wrap;
+}
+
+.auth-legal-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    color: #64748b;
+    text-decoration: underline;
+    transition: color 0.15s;
+}
+
+.auth-legal-btn:hover {
+    color: #2563eb;
+}
+
+.auth-legal-separator {
+    display: inline-block;
+    height: 14px;
+    width: 1px;
+    background-color: #cbd5e1;
+    margin: 0 4px;
+    vertical-align: middle;
+}
+
 /* --- MOBILE RESPONSIVENESS --- */
 @media (max-width: 600px) {
     .auth-page-wrapper {

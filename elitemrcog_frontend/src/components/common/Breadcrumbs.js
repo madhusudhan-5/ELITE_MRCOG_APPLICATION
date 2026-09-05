@@ -15,7 +15,7 @@ const Breadcrumbs = ({ items }) => {
                     <React.Fragment key={index}>
                         {index > 0 && <span className="breadcrumb-separator">›</span>}
                         {isLast || !item.path ? (
-                            <span className="breadcrumb-current">
+                            <span className="breadcrumb-current" aria-current="page">
                                 {IconComponent && <IconComponent size={14} className="breadcrumb-icon" />}
                                 <span>{item.label}</span>
                             </span>

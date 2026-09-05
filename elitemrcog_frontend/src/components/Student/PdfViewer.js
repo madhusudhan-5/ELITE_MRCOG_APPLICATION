@@ -11,6 +11,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.vers
 const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onProgressUpdate }) => {
     const [numPages, setNumPages] = useState(initialPageCount || null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [inputPage, setInputPage] = useState('1');
     const [pdfBlob, setPdfBlob] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -149,7 +150,7 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
         };
     }, [isFullscreenActive, pdfBlob]);
 
-    // Pinch to zoom support
+    // Pinch to zoom support with hardware accelerated live transforms
     const touchStartDistRef = useRef(null);
     const touchStartScaleRef = useRef(1.0);
 
@@ -172,13 +173,37 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
                 e.touches[0].clientY - e.touches[1].clientY
             );
             const factor = dist / touchStartDistRef.current;
-            const newScale = Math.min(2.5, Math.max(0.6, +(touchStartScaleRef.current * factor).toFixed(2)));
-            setZoomScale(newScale);
+            const liveScale = Math.min(2.5, Math.max(0.6, +(touchStartScaleRef.current * factor).toFixed(2)));
+            if (canvasAreaRef.current) {
+                const docWrapper = canvasAreaRef.current.querySelector('.react-pdf__Document');
+                if (docWrapper) {
+                    docWrapper.style.transform = `scale(${liveScale / zoomScale})`;
+                    docWrapper.style.transformOrigin = 'center top';
+                    docWrapper.style.transition = 'none';
+                }
+            }
         }
     };
 
     const handleTouchEnd = (e) => {
-        if (e.touches.length < 2) {
+        if (e.touches.length < 2 && touchStartDistRef.current) {
+            if (canvasAreaRef.current) {
+                const docWrapper = canvasAreaRef.current.querySelector('.react-pdf__Document');
+                if (docWrapper) {
+                    const currentTransform = docWrapper.style.transform;
+                    const match = currentTransform.match(/scale\(([^)]+)\)/);
+                    if (match) {
+                        const ratio = parseFloat(match[1]);
+                        if (!isNaN(ratio) && ratio !== 1) {
+                            const newScale = Math.min(2.5, Math.max(0.6, +(zoomScale * ratio).toFixed(2)));
+                            setZoomScale(newScale);
+                        }
+                    }
+                    docWrapper.style.transform = '';
+                    docWrapper.style.transformOrigin = '';
+                    docWrapper.style.transition = '';
+                }
+            }
             touchStartDistRef.current = null;
         }
     };
@@ -268,6 +293,10 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
 
     const total = numPages || initialPageCount || 1;
 
+    useEffect(() => {
+        setInputPage(String(currentPage));
+    }, [currentPage]);
+
     if (loading) {
         return (
             <div className="pdf-loading">
@@ -308,9 +337,45 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
         }
     };
 
+    const handlePageInputChange = (e) => {
+        setInputPage(e.target.value);
+    };
+
+    const handlePageInputSubmit = (targetVal) => {
+        const rawVal = targetVal !== undefined ? targetVal : inputPage;
+        const pageNum = parseInt(rawVal, 10);
+        if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= total) {
+            if (pageNum !== currentPage) {
+                setCurrentPage(pageNum);
+                saveProgress(pageNum, total);
+            }
+            if (isFullscreenActive) {
+                const el = document.getElementById(`pdf-page-${pageNum}`);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+            setInputPage(String(pageNum));
+        } else {
+            setInputPage(String(currentPage));
+        }
+    };
+
+    const handlePageInputKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handlePageInputSubmit();
+            e.target.blur();
+        }
+    };
+
+    const handlePageInputBlur = () => {
+        handlePageInputSubmit();
+    };
+
     // Calculate effective page width
     const effectiveWidth = Math.min(containerWidth, isFullscreenActive ? containerWidth : 750);
-    const pixelRatio = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2.5) : 1;
+    const pixelRatio = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 3.0) : 1;
 
     return (
         <div
@@ -348,7 +413,7 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
                 >
                     {isFullscreenActive ? (
                         Array.from(new Array(total), (el, index) => (
-                            <div key={`page_${index + 1}`} className="pdf-page-container">
+                            <div key={`page_${index + 1}`} id={`pdf-page-${index + 1}`} className="pdf-page-container">
                                 <Page
                                     pageNumber={index + 1}
                                     width={effectiveWidth}
@@ -382,19 +447,37 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
                         {/* Page navigation */}
                         <div className="pdf-nav-controls">
                             <button 
+                                type="button"
                                 className="pdf-nav-btn" 
                                 disabled={currentPage <= 1} 
                                 onClick={handlePrev}
+                                title="Previous page"
                             >
                                 Previous
                             </button>
-                            <span className="pdf-page-info">
-                                Page {currentPage} of {total}
-                            </span>
+
+                            <div className="pdf-page-jump-container" title="Type a page number and press Enter to jump">
+                                <span className="pdf-page-jump-label">Page</span>
+                                <input
+                                    type="number"
+                                    min={1}
+                                    max={total}
+                                    value={inputPage}
+                                    onChange={handlePageInputChange}
+                                    onKeyDown={handlePageInputKeyDown}
+                                    onBlur={handlePageInputBlur}
+                                    className="pdf-page-input"
+                                    aria-label="Current page number"
+                                />
+                                <span className="pdf-page-jump-total">of {total}</span>
+                            </div>
+
                             <button 
+                                type="button"
                                 className="pdf-nav-btn" 
                                 disabled={currentPage >= total} 
                                 onClick={handleNext}
+                                title="Next page"
                             >
                                 Next
                             </button>
@@ -443,7 +526,21 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
                     </div>
                 ) : (
                     <div className="pdf-bottom-bar-inner">
-                        <span className="pdf-page-info">Total Pages: {total}</span>
+                        <div className="pdf-page-jump-container" title="Type a page number and press Enter to jump">
+                            <span className="pdf-page-jump-label">Jump to Page</span>
+                            <input
+                                type="number"
+                                min={1}
+                                max={total}
+                                value={inputPage}
+                                onChange={handlePageInputChange}
+                                onKeyDown={handlePageInputKeyDown}
+                                onBlur={handlePageInputBlur}
+                                className="pdf-page-input"
+                                aria-label="Jump to page number"
+                            />
+                            <span className="pdf-page-jump-total">of {total}</span>
+                        </div>
                         
                         {/* Zoom controls in fullscreen */}
                         <div className="pdf-zoom-controls">
@@ -475,7 +572,7 @@ const PdfViewer = ({ stationId, pageCount: initialPageCount, stationTitle, onPro
                             </button>
                         </div>
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <div className="pdf-fullscreen-actions">
                             <button 
                                 type="button"
                                 className="pdf-fullscreen-btn-styled" 

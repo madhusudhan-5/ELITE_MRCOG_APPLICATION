@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useOutletContext } from 'react-router-dom';
 import api from '../../services/api';
 import VideoViewer from '../../components/Student/VideoViewer';
-import { Lock, PlayCircle, Clock } from 'lucide-react';
+import { Lock, PlayCircle, Clock, Home, Video, CheckCircle, Star } from 'lucide-react';
 import './VideoModuleDetail.css';
 
 const VideoModuleDetail = () => {
     const { id } = useParams();
-    const navigate = useNavigate();
+    const outletContext = useOutletContext();
+    const setCustomBreadcrumbs = outletContext?.setCustomBreadcrumbs;
+
     const [moduleData, setModuleData] = useState(null);
     const [videos, setVideos] = useState([]);
     const [selectedVideo, setSelectedVideo] = useState(null);
@@ -52,6 +54,32 @@ const VideoModuleDetail = () => {
         fetchModuleData();
     }, [id]);
 
+    // Update complete breadcrumbs path (Home > Video Library > Module Name > Video Name)
+    useEffect(() => {
+        if (moduleData && setCustomBreadcrumbs) {
+            const crumbs = [
+                { label: 'Home', path: '/dashboard', icon: Home },
+                { label: 'Video Library', path: '/dashboard/video', icon: PlayCircle }
+            ];
+
+            if (moduleData.title) {
+                crumbs.push({
+                    label: moduleData.title,
+                    path: selectedVideo ? `/dashboard/video-modules/${id}` : null
+                });
+            }
+
+            if (selectedVideo?.title) {
+                crumbs.push({
+                    label: selectedVideo.title,
+                    icon: Video
+                });
+            }
+
+            setCustomBreadcrumbs(crumbs);
+        }
+    }, [moduleData, selectedVideo, id, setCustomBreadcrumbs]);
+
     const handleSelectVideo = async (videoItem) => {
         setSelectedVideo(videoItem);
         // Fetch detail if not already cached (need embed_url)
@@ -82,7 +110,7 @@ const VideoModuleDetail = () => {
         }));
     }, []);
 
-const COLOR_PALETTE = ['#49BBBD', '#F48C06', '#9DCCFF', '#EE645B', '#BF9A72'];
+    const COLOR_PALETTE = ['#49BBBD', '#F48C06', '#9DCCFF', '#EE645B', '#BF9A72'];
 
     const getVideoColor = (idx) => {
         return COLOR_PALETTE[idx % COLOR_PALETTE.length];
@@ -92,7 +120,7 @@ const COLOR_PALETTE = ['#49BBBD', '#F48C06', '#9DCCFF', '#EE645B', '#BF9A72'];
         return (
             <div className="vmd-loading">
                 <div className="vmd-spinner" />
-                <p>Loading module...</p>
+                <p>Loading video module...</p>
             </div>
         );
     }
@@ -109,13 +137,12 @@ const COLOR_PALETTE = ['#49BBBD', '#F48C06', '#9DCCFF', '#EE645B', '#BF9A72'];
 
     return (
         <div className="video-module-detail">
-
             <div className="vmd-body">
                 {/* Left: Video List Sidebar */}
                 <aside className="vmd-sidebar">
                     <div className="vmd-sidebar-header">
-                        <h2 className="vmd-sidebar-title">{moduleData.title}</h2>
-                        <span className="vmd-count">{videos.length} Videos</span>
+                        <h2 className="vmd-sidebar-title" title={moduleData.title}>{moduleData.title}</h2>
+                        <span className="vmd-count">{videos.length} {videos.length === 1 ? 'Video' : 'Videos'}</span>
                     </div>
 
                     <div className="vmd-video-list">
@@ -123,26 +150,35 @@ const COLOR_PALETTE = ['#49BBBD', '#F48C06', '#9DCCFF', '#EE645B', '#BF9A72'];
                             const progress = videoProgress[video.id];
                             const isActive = selectedVideo?.id === video.id;
                             const isCompleted = progress?.progress_percent >= 100;
+                            const isLocked = videoDetails[video.id]?.locked || (!video.is_free && currentDetail?.locked);
                             const cardColor = getVideoColor(idx);
 
                             return (
                                 <button
                                     key={video.id}
-                                    className={`vmd-card ${isActive ? 'active' : ''}`}
+                                    className={`vmd-card ${isActive ? 'active' : ''} ${isLocked ? 'locked' : ''}`}
+                                    aria-current={isActive ? 'true' : undefined}
+                                    title={video.title}
                                     style={{
                                         '--card-accent': cardColor,
-                                        borderLeftColor: cardColor,
-                                        backgroundColor: isActive ? `${cardColor}22` : `${cardColor}0F`
+                                        borderLeftColor: isActive ? '#2563eb' : cardColor,
+                                        backgroundColor: isActive ? '#eff6ff' : `${cardColor}0F`
                                     }}
                                     onClick={() => handleSelectVideo(video)}
                                 >
                                     <div className="vmd-card-top">
-                                        <span className="vmd-card-num" style={{ backgroundColor: cardColor, color: '#ffffff' }}>
+                                        <span className="vmd-card-num" style={{ backgroundColor: isActive ? '#2563eb' : cardColor, color: '#ffffff' }}>
                                             {String(idx + 1).padStart(2, '0')}
                                         </span>
                                         <span className="vmd-card-name" title={video.title}>{video.title}</span>
-                                        {videoDetails[video.id]?.locked && <Lock size={13} className="vmd-card-lock" />}
-                                        {video.is_free && (
+                                        {isActive && (
+                                            <span className="vmd-card-active-badge" aria-label="Currently playing video">
+                                                <span className="vmd-active-dot"></span>
+                                                Playing
+                                            </span>
+                                        )}
+                                        {isLocked && <Lock size={13} className="vmd-card-lock" aria-label="Locked Video" role="img" />}
+                                        {video.is_free && !isActive && !isLocked && (
                                             <span className="vmd-card-free-badge">Free</span>
                                         )}
                                     </div>
@@ -150,18 +186,39 @@ const COLOR_PALETTE = ['#49BBBD', '#F48C06', '#9DCCFF', '#EE645B', '#BF9A72'];
                                     <div className="vmd-card-bottom">
                                         {isCompleted ? (
                                             <span className="vmd-card-status complete">Complete ✓</span>
+                                        ) : progress?.progress_percent > 0 ? (
+                                            <span className="vmd-card-status in-progress">{progress.progress_percent}% Watched</span>
                                         ) : (
                                             <span className="vmd-card-status">
-                                                <Clock size={12}/> {video.duration_display || 'N/A'}
+                                                {video.is_free ? 'Free Video' : 'Locked'}
+                                            </span>
+                                        )}
+                                        {video.duration_display && (
+                                            <span className="vmd-card-duration">
+                                                <Clock size={11} style={{ verticalAlign: 'middle', marginRight: '3px' }} />
+                                                {video.duration_display}
                                             </span>
                                         )}
                                     </div>
+
+                                    {/* Progress accent bar at bottom */}
+                                    {progress && (
+                                        <div className="vmd-card-progress-bar">
+                                            <div
+                                                className="vmd-card-progress-fill"
+                                                style={{ width: `${progress.progress_percent || 0}%`, backgroundColor: cardColor }}
+                                            />
+                                        </div>
+                                    )}
                                 </button>
                             );
                         })}
 
                         {videos.length === 0 && (
-                            <p className="vmd-no-videos">No videos available yet.</p>
+                            <div className="vmd-no-videos">
+                                <PlayCircle size={32} className="vmd-no-videos-icon" />
+                                <p>No videos available in this module yet.</p>
+                            </div>
                         )}
                         
                         {videos.some(v => !v.is_free) && (
@@ -180,22 +237,54 @@ const COLOR_PALETTE = ['#49BBBD', '#F48C06', '#9DCCFF', '#EE645B', '#BF9A72'];
                     {selectedVideo ? (
                         currentDetail && currentDetail.locked ? (
                             <div className="vmd-locked-state">
-                                <Lock size={48} className="vmd-locked-icon" />
-                                <h2>Premium Content</h2>
-                                <p>This video requires an active subscription.</p>
-                                <Link to="/dashboard/subscription" className="vmd-subscribe-btn-large">
-                                    Subscribe Now
-                                </Link>
+                                <div className="vmd-locked-cinema">
+                                    <div className="vmd-locked-cinema-overlay">
+                                        <div className="vmd-locked-badge">
+                                            <Lock size={16} className="vmd-locked-badge-icon" />
+                                            <span>Premium Video Lecture</span>
+                                        </div>
+                                        <h3 className="vmd-locked-video-title" title={selectedVideo.title}>{selectedVideo.title}</h3>
+                                        <p className="vmd-locked-video-subtitle">This clinical station video lecture requires an active subscription.</p>
+                                        
+                                        <div className="vmd-locked-benefits">
+                                            <div className="vmd-benefit-item">
+                                                <CheckCircle size={15} className="vmd-benefit-icon" />
+                                                <span>Full High-Definition Clinical Demonstrations & Roleplays</span>
+                                            </div>
+                                            <div className="vmd-benefit-item">
+                                                <CheckCircle size={15} className="vmd-benefit-icon" />
+                                                <span>Complete station-wise video guides & examiner tips</span>
+                                            </div>
+                                            <div className="vmd-benefit-item">
+                                                <CheckCircle size={15} className="vmd-benefit-icon" />
+                                                <span>Unlimited access across all Reading & Video modules</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="vmd-locked-actions">
+                                            <Link to="/dashboard/subscription" className="vmd-subscribe-btn-large">
+                                                <Star size={16} /> Unlock All Content — View Plans
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         ) : currentDetail && (currentDetail.embed_url || currentDetail.has_video_file) ? (
-                            <VideoViewer
-                                key={selectedVideo.id}
-                                videoId={selectedVideo.id}
-                                embedUrl={currentDetail.embed_url}
-                                hasVideoFile={currentDetail.has_video_file}
-                                videoTitle={selectedVideo.title}
-                                onProgressUpdate={handleProgressUpdate}
-                            />
+                            <>
+                                <div className="vmd-playing-header">
+                                    <h2 className="vmd-playing-title" title={selectedVideo.title}>
+                                        {selectedVideo.title}
+                                    </h2>
+                                </div>
+                                <VideoViewer
+                                    key={selectedVideo.id}
+                                    videoId={selectedVideo.id}
+                                    embedUrl={currentDetail.embed_url}
+                                    hasVideoFile={currentDetail.has_video_file}
+                                    videoTitle={selectedVideo.title}
+                                    onProgressUpdate={handleProgressUpdate}
+                                />
+                            </>
                         ) : (
                             <div className="vmd-loading-viewer">
                                 <div className="vmd-spinner" />
@@ -212,7 +301,9 @@ const COLOR_PALETTE = ['#49BBBD', '#F48C06', '#9DCCFF', '#EE645B', '#BF9A72'];
                     {/* Extended Description */}
                     {(currentDetail?.long_description || moduleData.long_text) && (
                         <div className="vmd-description-section">
-                            <h3 className="vmd-desc-title">{currentDetail?.title || moduleData.title}</h3>
+                            <h3 className="vmd-desc-title" title={currentDetail?.title || moduleData.title}>
+                                {currentDetail?.title || moduleData.title}
+                            </h3>
                             <div className="vmd-desc-text">
                                 {(currentDetail?.long_description || moduleData.long_text)
                                     .split('\n')

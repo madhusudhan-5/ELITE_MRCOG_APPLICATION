@@ -13,9 +13,7 @@ const ContentCard = ({ material, type = 'module', basePath = '/dashboard/modules
     const isLocked = !isFree;
 
     // Determine category label
-    const categoryLabel = material.category === 'easy_read' || material.article_type === 'easy_read'
-        ? 'Easy Read'
-        : material.category === 'course_material' || material.article_type === 'course_material'
+    const categoryLabel = (material.category === 'course_material' || material.article_type === 'course_material')
         ? 'Course Material'
         : null;
 

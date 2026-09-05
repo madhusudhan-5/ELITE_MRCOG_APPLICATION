@@ -6,68 +6,47 @@
     background: var(--bg-primary, #f9fafb);
 }
 
-.vmd-breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    color: var(--text-muted, #6b7280);
-    margin-bottom: 1.5rem;
-}
-
-.vmd-breadcrumb a {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    color: var(--text-primary, #111827);
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.vmd-breadcrumb a:hover {
-    color: var(--primary-color, #2563eb);
-}
-
-.vmd-breadcrumb-current {
-    font-weight: 600;
-    color: var(--primary-color, #2563eb);
-}
-
 .vmd-body {
-    display: flex;
-    gap: 1.5rem;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 1rem;
     flex: 1;
+    overflow: hidden;
     min-height: 0; /* Important for flex child scrolling */
 }
 
-/* Sidebar */
+/* ─── Video Sidebar ─────────────────────────── */
 .vmd-sidebar {
-    width: 320px;
-    background: #fff;
-    border-radius: 12px;
-    border: 1px solid var(--border-color, #e5e7eb);
     display: flex;
     flex-direction: column;
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
     overflow: hidden;
+    min-height: 0;
     flex-shrink: 0;
 }
 
 .vmd-sidebar-header {
-    padding: 1.25rem;
-    border-bottom: 1px solid var(--border-color, #e5e7eb);
-    background: var(--bg-secondary, #f3f4f6);
+    padding: 1rem 1.25rem 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
+    flex-shrink: 0;
 }
 
 .vmd-sidebar-title {
-    margin: 0 0 0.25rem;
-    font-size: 1.125rem;
+    font-size: 1rem;
     font-weight: 700;
-    color: var(--text-primary, #111827);
+    color: #0f172a;
+    margin: 0 0 0.25rem;
+    word-break: break-word;
+    line-height: 1.35;
 }
 
 .vmd-count {
-    font-size: 0.875rem;
-    color: var(--text-muted, #6b7280);
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 500;
 }
 
 .vmd-video-list {
@@ -90,55 +69,105 @@
     background: transparent;
 }
 
+/* ─── Video Cards ────────────────────────────── */
 .vmd-card {
+    width: 100%;
+    min-height: 64px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 0;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #cbd5e1;
     border-left: 4px solid var(--card-accent, #49BBBD);
     border-radius: 10px;
     padding: 0.65rem 0.85rem;
     cursor: pointer;
     text-align: left;
-    transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
+    transition: all 0.2s ease;
     flex-shrink: 0;
+    background: #ffffff;
 }
 
-.vmd-card:hover {
-    transform: translateX(2px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+.vmd-card:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+.vmd-card.locked {
+    opacity: 0.75;
+    cursor: pointer;
 }
 
 .vmd-card.active {
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
-    border-color: var(--card-accent, #49BBBD);
+    box-shadow: 0 0 0 1px #2563eb, 0 4px 14px rgba(37, 99, 235, 0.18) !important;
+    border-color: #2563eb !important;
+    border-left: 5px solid #2563eb !important;
+    background-color: #eff6ff !important;
+    opacity: 1 !important;
+}
+
+.vmd-card.active .vmd-card-name {
+    color: #1e3a8a !important;
+    font-weight: 700 !important;
+}
+
+.vmd-card-active-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background-color: #2563eb;
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+}
+
+.vmd-active-dot {
+    width: 5px;
+    height: 5px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    animation: vmdActivePulse 1.8s infinite ease-in-out;
+}
+
+@keyframes vmdActivePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.75); }
+}
+
+.vmd-card:hover:not(:disabled) {
+    transform: translateX(2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .vmd-card-top {
     display: flex;
     align-items: flex-start;
     gap: 0.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
 }
 
 .vmd-card-num {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--text-muted, #6b7280);
-    background: var(--bg-secondary, #f3f4f6);
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #374151;
+    flex-shrink: 0;
     padding: 0.1rem 0.4rem;
     border-radius: 4px;
-    flex-shrink: 0;
+    margin-top: 1px;
 }
 
 .vmd-card-name {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     font-weight: 600;
-    color: var(--text-primary, #111827);
+    color: #0f172a;
     flex: 1;
+    min-width: 0;
     line-height: 1.35;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -146,180 +175,395 @@
     overflow: hidden;
     text-overflow: ellipsis;
     word-break: break-word;
+    transition: all 0.15s ease;
+}
+
+.vmd-card:hover .vmd-card-name,
+.vmd-card:focus-visible .vmd-card-name,
+.vmd-card.active .vmd-card-name {
+    -webkit-line-clamp: unset;
+    display: block;
+    overflow: visible;
 }
 
 .vmd-card-lock {
-    color: var(--text-muted, #6b7280);
+    color: #94a3b8;
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin-top: 2px;
 }
 
 .vmd-card-free-badge {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    font-weight: 700;
     background: #10b981;
-    color: #fff;
-    padding: 0.1rem 0.3rem;
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 1px 6px;
     border-radius: 4px;
+    flex-shrink: 0;
 }
 
 .vmd-card-bottom {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    font-size: 0.8rem;
-    color: var(--text-muted, #6b7280);
+    justify-content: space-between;
+    margin-top: auto;
 }
 
 .vmd-card-status {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
+    font-size: 0.7rem;
+    color: #64748b;
+    font-weight: 500;
 }
 
 .vmd-card-status.complete {
     color: #10b981;
+    font-weight: 700;
+}
+
+.vmd-card-status.in-progress {
+    color: #f59e0b;
     font-weight: 600;
 }
 
-.vmd-subscribe-cta {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: #fdf2f8;
-    border: 1px solid #fbcfe8;
-    border-radius: 8px;
+.vmd-card-duration {
+    font-size: 0.68rem;
+    color: #94a3b8;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+/* Card progress bar */
+.vmd-card-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.vmd-card-progress-fill {
+    height: 100%;
+    border-radius: 0 2px 2px 0;
+    transition: width 0.3s ease;
+}
+
+.vmd-no-videos {
     text-align: center;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.vmd-no-videos-icon {
+    color: #cbd5e1;
+}
+
+/* Subscribe CTA */
+.vmd-subscribe-cta {
+    margin-top: auto;
+    padding: 1rem;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    text-align: center;
+    flex-shrink: 0;
 }
 
 .vmd-subscribe-cta p {
-    margin: 0 0 0.75rem;
-    font-size: 0.875rem;
-    color: #be185d;
+    font-size: 0.8rem;
     font-weight: 600;
+    color: #1e40af;
+    margin: 0 0 0.5rem;
 }
 
 .vmd-subscribe-btn {
     display: inline-block;
-    padding: 0.5rem 1rem;
-    background: #be185d;
-    color: #fff;
-    text-decoration: none;
+    padding: 0.4rem 1.25rem;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 700;
     border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
 }
 
-/* Main Content Area */
+.vmd-subscribe-btn:hover {
+    background: #1d4ed8;
+}
+
+/* ─── Main Content Area ─────────────────────────── */
 .vmd-content-area {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
     overflow-y: auto;
+    min-height: 0;
 }
 
-.vmd-placeholder,
-.vmd-loading-viewer,
+.vmd-playing-header {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 0.85rem 1.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.vmd-playing-title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.35;
+    word-break: break-word;
+}
+
+/* ─── Rich Cinematic Premium Locked State ────────── */
 .vmd-locked-state {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #0f172a;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.2);
+    border: 1px solid #334155;
+}
+
+.vmd-locked-cinema {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    min-height: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 50% 30%, #1e293b 0%, #0f172a 100%);
+    padding: 2rem 1.5rem;
+}
+
+.vmd-locked-cinema-overlay {
+    max-width: 540px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+}
+
+.vmd-locked-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #fca5a5;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 0.75rem;
+}
+
+.vmd-locked-badge-icon {
+    color: #ef4444;
+}
+
+.vmd-locked-video-title {
+    color: #ffffff;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0 0 0.4rem;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+.vmd-locked-video-subtitle {
+    color: #94a3b8;
+    font-size: 0.88rem;
+    margin: 0 0 1.25rem;
+    line-height: 1.4;
+}
+
+.vmd-locked-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.85rem 1.25rem;
+    border-radius: 10px;
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
+
+.vmd-benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #e2e8f0;
+    font-size: 0.82rem;
+    line-height: 1.35;
+}
+
+.vmd-benefit-icon {
+    color: #10b981;
+    flex-shrink: 0;
+}
+
+.vmd-locked-actions {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+    justify-content: center;
+}
+
+.vmd-subscribe-btn-large {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 0.75rem 1.75rem;
+    border-radius: 8px;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    transition: all 0.2s ease;
+}
+
+.vmd-subscribe-btn-large:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+}
+
+.vmd-subscribe-btn-large:focus-visible {
+    outline: 2px solid #60a5fa;
+    outline-offset: 2px;
+}
+
+/* ─── Placeholder & Loaders ─────────────────────── */
+.vmd-placeholder,
+.vmd-loading-viewer {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: #fff;
-    border: 1px dashed var(--border-color, #e5e7eb);
+    background: #ffffff;
+    border: 1px dashed #cbd5e1;
     border-radius: 12px;
     padding: 3rem;
     text-align: center;
-    color: var(--text-muted, #6b7280);
-    min-height: 400px;
+    color: #64748b;
+    min-height: 380px;
 }
 
 .vmd-placeholder h3 {
     margin-top: 1rem;
-    color: var(--text-primary, #111827);
+    color: #0f172a;
+    font-size: 1.15rem;
 }
 
-.vmd-locked-state {
-    background: #f9fafb;
-    border-style: solid;
-}
-
-.vmd-locked-icon {
-    color: var(--text-muted, #6b7280);
-    margin-bottom: 1rem;
-}
-
-.vmd-subscribe-btn-large {
-    margin-top: 1.5rem;
-    padding: 0.75rem 2rem;
-    background: var(--primary-color, #2563eb);
-    color: #fff;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-}
-
-/* Description */
 .vmd-description-section {
-    background: #fff;
+    background: #ffffff;
     border-radius: 12px;
-    border: 1px solid var(--border-color, #e5e7eb);
-    padding: 2rem;
+    border: 1px solid #cbd5e1;
+    padding: 1.5rem 1.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
 .vmd-desc-title {
-    margin: 0 0 1rem;
-    font-size: 1.5rem;
-    color: var(--text-primary, #111827);
+    margin: 0 0 0.85rem;
+    font-size: 1.35rem;
+    color: #0f172a;
+    font-weight: 700;
+    word-break: break-word;
 }
 
 .vmd-desc-text {
     line-height: 1.6;
-    color: var(--text-secondary, #4b5563);
+    color: #475569;
+    font-size: 0.95rem;
 }
 
 .vmd-desc-text p {
-    margin-bottom: 1rem;
+    margin-bottom: 0.85rem;
 }
 
-/* Loading */
+.vmd-desc-text p:last-child {
+    margin-bottom: 0;
+}
+
 .vmd-loading {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: var(--text-muted, #6b7280);
+    min-height: 400px;
+    color: #64748b;
 }
 
 .vmd-spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid #e5e7eb;
-    border-top-color: var(--primary-color, #2563eb);
+    width: 38px;
+    height: 38px;
+    border: 3px solid #e2e8f0;
+    border-top-color: #2563eb;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation: vmdSpin 0.9s linear infinite;
     margin-bottom: 1rem;
 }
 
-@keyframes spin {
+@keyframes vmdSpin {
     to { transform: rotate(360deg); }
 }
 
-/* --- MOBILE RESPONSIVENESS --- */
+.vmd-error {
+    padding: 3rem;
+    text-align: center;
+    color: #ef4444;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* ─── Mobile Responsiveness ─────────────────────── */
 @media (max-width: 900px) {
     .vmd-body {
+        display: flex;
         flex-direction: column;
-        gap: 1.25rem;
+        gap: 1rem;
         height: auto;
         min-height: auto;
         overflow: visible;
     }
 
     .vmd-content-area {
-        display: contents; /* Promotes nested children to be direct flex items of .vmd-body */
+        display: contents;
     }
 
-    .video-viewer-container {
+    .vmd-playing-header {
+        order: 0;
+        width: 100%;
+    }
+
+    .video-viewer-container,
+    .vmd-locked-state,
+    .vmd-placeholder,
+    .vmd-loading-viewer {
         order: 1;
         width: 100%;
     }
@@ -327,22 +571,22 @@
     .vmd-sidebar {
         order: 2;
         width: 100%;
-        max-height: 45vh; /* Consistent with ModuleDetail.css pattern */
+        max-height: 45vh;
         overflow-y: auto;
         border-radius: 12px;
         flex-shrink: 0;
     }
 
     .vmd-sidebar-header {
-        padding: 1rem;
+        padding: 0.85rem 1rem;
     }
 
     .vmd-sidebar-title {
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
 
     .vmd-card-name {
-        font-size: 0.88rem;
+        font-size: 0.82rem;
     }
 
     .vmd-description-section {
@@ -352,7 +596,16 @@
     }
 
     .vmd-desc-title {
-        font-size: 1.2rem;
-        margin-bottom: 0.75rem;
+        font-size: 1.15rem;
+        margin-bottom: 0.65rem;
+    }
+
+    .vmd-locked-cinema {
+        min-height: 300px;
+        padding: 1.25rem 1rem;
+    }
+
+    .vmd-locked-video-title {
+        font-size: 1.1rem;
     }
 }

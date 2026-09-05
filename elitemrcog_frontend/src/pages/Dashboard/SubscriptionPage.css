@@ -400,3 +400,72 @@
     border-radius: 14px;
     border: 1px dashed #e2e8f0;
 }
+
+/* ─── Mobile Responsiveness ─── */
+@media (max-width: 768px) {
+    .sub-header {
+        margin-bottom: 1.25rem;
+        gap: 0.75rem;
+    }
+
+    .sub-header h1 {
+        font-size: 1.35rem;
+    }
+
+    .sub-header p {
+        font-size: 0.85rem;
+    }
+
+    .sub-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .sub-card-amount {
+        font-size: 1.75rem;
+    }
+
+    .sub-modal-body {
+        padding: 1.25rem;
+        gap: 0.75rem;
+    }
+
+    .sub-modal-title {
+        font-size: 1.15rem;
+    }
+
+    .sub-modal-price {
+        font-size: 1.5rem;
+    }
+
+    .sub-modal-add-btn {
+        padding: 0.65rem 1.15rem;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .sub-header h1 {
+        font-size: 1.2rem;
+    }
+
+    .sub-view-cart-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .sub-card-body {
+        padding: 1rem;
+    }
+
+    .sub-modal-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .sub-modal-add-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

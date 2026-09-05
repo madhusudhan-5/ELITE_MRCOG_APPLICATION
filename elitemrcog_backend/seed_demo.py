@@ -123,9 +123,9 @@ bundle, created = Bundle.objects.get_or_create(
     slug='reading-library-bundle',
     defaults={
         'title': 'Reading Library Bundle',
-        'short_description': 'Unlock all Easy Reads and Course Material modules in the Reading Library for 1 year.',
+        'short_description': 'Unlock all Course Material modules in the Reading Library for 1 year.',
         'description': (
-            'Get complete access to Elite MRCOG Reading Library — including all Easy Read summaries '
+            'Get complete access to Elite MRCOG Reading Library — including all comprehensive '
             'and in-depth Course Material stations for Part 3.\n\n'
             'Each module contains multiple stations, delivered as protected PDF lessons. '
             'Track your progress, revisit any station, and study at your own pace. '

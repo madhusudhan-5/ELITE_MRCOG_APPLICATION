@@ -40,6 +40,7 @@ const DashboardLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [activeModal, setActiveModal] = useState(null);
+    const [customBreadcrumbs, setCustomBreadcrumbs] = useState(null);
 
     const profileDropdownRef = React.useRef(null);
     const sidebarRef = React.useRef(null);
@@ -49,6 +50,7 @@ const DashboardLayout = () => {
     React.useEffect(() => {
         setIsSidebarOpen(false);
         setIsProfileOpen(false);
+        setCustomBreadcrumbs(null);
         if (location.pathname.includes('/modules/') || location.pathname.includes('/video-modules/')) {
             setIsSidebarCollapsed(true);
         } else {
@@ -64,13 +66,21 @@ const DashboardLayout = () => {
             }
         };
 
+        const handleWindowBlur = () => {
+            setIsProfileOpen(false);
+        };
+
         if (isProfileOpen) {
+            document.addEventListener('pointerdown', handleProfileOutsideClick);
             document.addEventListener('mousedown', handleProfileOutsideClick);
             document.addEventListener('touchstart', handleProfileOutsideClick);
+            window.addEventListener('blur', handleWindowBlur);
         }
         return () => {
+            document.removeEventListener('pointerdown', handleProfileOutsideClick);
             document.removeEventListener('mousedown', handleProfileOutsideClick);
             document.removeEventListener('touchstart', handleProfileOutsideClick);
+            window.removeEventListener('blur', handleWindowBlur);
         };
     }, [isProfileOpen]);
 
@@ -88,10 +98,12 @@ const DashboardLayout = () => {
         };
 
         if (isSidebarOpen) {
+            document.addEventListener('pointerdown', handleSidebarOutsideClick);
             document.addEventListener('mousedown', handleSidebarOutsideClick);
             document.addEventListener('touchstart', handleSidebarOutsideClick);
         }
         return () => {
+            document.removeEventListener('pointerdown', handleSidebarOutsideClick);
             document.removeEventListener('mousedown', handleSidebarOutsideClick);
             document.removeEventListener('touchstart', handleSidebarOutsideClick);
         };
@@ -111,12 +123,21 @@ const DashboardLayout = () => {
     };
 
     const getBreadcrumbItems = (pathname) => {
+        if (customBreadcrumbs && customBreadcrumbs.length > 0) {
+            return customBreadcrumbs;
+        }
+
         const pathnames = pathname.split('/').filter(x => x);
         if (pathnames.length <= 1) return null;
 
         const items = [
             { label: 'Home', path: '/dashboard', icon: Home }
         ];
+
+        if (pathname.includes('/profile')) {
+            items.push({ label: 'Edit Profile', icon: User });
+            return items;
+        }
 
         if (pathname.includes('/modules/')) {
             items.push({ label: 'Reading Library', path: '/dashboard/reading', icon: BookOpen });
@@ -207,7 +228,7 @@ const DashboardLayout = () => {
                         <button 
                             key={part}
                             className={`part-tab ${activePart === part ? 'active' : ''}`}
-                            onClick={() => setActivePart(part)}
+                            onClick={() => { setActivePart(part); closeSidebarOnMobile(); }}
                             disabled={part !== 'Part 3'}
                         >
                             {part}
@@ -317,12 +338,30 @@ const DashboardLayout = () => {
 
                 <div className={`dashboard-content-area ${location.pathname === '/dashboard' || location.pathname === '/dashboard/' ? 'dashboard-home-content' : ''}`}>
                     {location.pathname === '/dashboard' || location.pathname === '/dashboard/' || location.pathname.includes('/modules/') ? (
-                        <Outlet />
+                        <Outlet context={{ setCustomBreadcrumbs }} />
                     ) : (
                         <div className="dashboard-white-box">
-                            <Outlet />
+                            <Outlet context={{ setCustomBreadcrumbs }} />
                         </div>
                     )}
+                    <footer className="dashboard-footer">
+                        <div className="dashboard-footer-inner">
+                            <p className="dashboard-footer-copy">© {new Date().getFullYear()} Elite MRCOG. All rights reserved.</p>
+                            <div className="dashboard-footer-links">
+                                <button type="button" onClick={() => setActiveModal('terms')} className="dashboard-footer-link">
+                                    Terms &amp; Conditions
+                                </button>
+                                <span className="footer-link-divider">•</span>
+                                <button type="button" onClick={() => setActiveModal('privacy')} className="dashboard-footer-link">
+                                    Privacy Policy
+                                </button>
+                                <span className="footer-link-divider">•</span>
+                                <button type="button" onClick={() => setActiveModal('refund')} className="dashboard-footer-link">
+                                    Refund Policy
+                                </button>
+                            </div>
+                        </div>
+                    </footer>
                 </div>
             </main>
 

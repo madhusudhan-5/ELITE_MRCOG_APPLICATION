@@ -7,7 +7,7 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    z-index: 99999; /* Higher than PDF canvas / Video player elements */
+    z-index: 5; /* Scoped above PDF canvas / Video elements, but BELOW sidebar menu & modals */
     pointer-events: none; /* Let clicks pass through to the video/PDF */
     opacity: 0.35; /* Faint but clearly visible for security */
 }
@@ -28,7 +28,7 @@
     bottom: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    z-index: 2147483647 !important;
+    z-index: 50 !important;
     pointer-events: none !important;
     display: block !important;
 }
