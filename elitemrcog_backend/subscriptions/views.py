@@ -254,7 +254,10 @@ class CheckoutInitiateView(APIView):
             })
 
         # ------ Stripe Payment ------
-        if not stripe.api_key:
+        stripe_key = getattr(settings, 'STRIPE_SECRET_KEY', '')
+        stripe.api_key = stripe_key
+
+        if not stripe.api_key or 'YOUR_KEY' in stripe.api_key:
             return Response(
                 {'error': 'Payment gateway not configured. Contact support.'},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE
