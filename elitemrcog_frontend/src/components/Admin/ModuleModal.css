@@ -349,7 +349,7 @@
 }
 
 .modal-save-btn {
-    background: #2563eb;
+    background: var(--color-navy, #2F327D);
     border: none;
     color: white;
     padding: 0.8rem 2rem;
@@ -357,11 +357,19 @@
     font-weight: 600;
     cursor: pointer;
     transition: 0.2s;
-    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+    box-shadow: 0 4px 10px rgba(47, 50, 125, 0.2);
 }
 
-.modal-save-btn:hover {
-    background: #1d4ed8;
+.modal-save-btn:hover:not(:disabled) {
+    background: var(--color-navy-dark, #1D2045);
     transform: translateY(-1px);
-    box-shadow: 0 4px 10px -1px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 6px 14px rgba(47, 50, 125, 0.3);
+}
+
+.modal-save-btn:disabled {
+    background: #cbd5e1;
+    color: #94a3b8;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
 }

@@ -191,6 +191,40 @@ class CheckoutInitiateView(APIView):
         bundle_ids = list(cart.items.values_list('bundle_id', flat=True))
         first_bundle = cart.items.first().bundle
 
+        # ------ Free Checkout ($0.00) ------
+        if total <= Decimal('0.00'):
+            transaction = PaymentTransaction.objects.create(
+                user=request.user,
+                bundle=first_bundle,
+                coupon_applied=coupon,
+                amount=after_discount,
+                tax_amount=tax,
+                total_amount=total,
+                gateway=PaymentTransaction.Gateway.MANUAL,
+                country_code=country_code,
+                status=PaymentTransaction.Status.SUCCESS,
+            )
+            bundles = Bundle.objects.filter(id__in=bundle_ids)
+            for bundle in bundles:
+                _activate_bundle_subscription(
+                    user=request.user,
+                    bundle=bundle,
+                    payment_reference=f'FREE-{transaction.id}',
+                    gateway='manual'
+                )
+            # Clear the cart items
+            CartItem.objects.filter(cart__user=request.user).delete()
+
+            return Response({
+                'gateway': 'free',
+                'transaction_id': transaction.id,
+                'total': str(total),
+                'currency': first_bundle.currency,
+                'discount': str(discount),
+                'tax': str(tax),
+                'message': 'Free subscription activated successfully!',
+            })
+
         # ------ Pakistan Payment ------
         if country_code == 'PK':
             transaction = PaymentTransaction.objects.create(
@@ -226,9 +260,17 @@ class CheckoutInitiateView(APIView):
                 status=status.HTTP_503_SERVICE_UNAVAILABLE
             )
 
+        charge_cents = int(total * 100)
+        # Minimum allowed charge by Stripe is approx 50 cents ($0.50 / £0.30 / €0.50 / ₹0.50)
+        if charge_cents < 30:
+            return Response(
+                {'error': f'The order total ({first_bundle.currency} {total}) is below the minimum card payment threshold. Please adjust your bundle price or cart items.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         try:
             intent = stripe.PaymentIntent.create(
-                amount=int(total * 100),  # Stripe expects pence/cents
+                amount=charge_cents,  # Stripe expects pence/cents
                 currency=first_bundle.currency.lower(),
                 metadata={
                     'user_id': str(request.user.id),

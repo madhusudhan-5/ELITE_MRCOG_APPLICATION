@@ -28,10 +28,33 @@ const Profile = () => {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        if (message) setMessage(null);
+    };
+
+    const hasChanges = Boolean(
+        user && (
+            (formData.first_name || '') !== (user.first_name || '') ||
+            (formData.last_name || '') !== (user.last_name || '') ||
+            (formData.country || '') !== (user.country || '') ||
+            (formData.exam_batch || '') !== (user.exam_batch || '')
+        )
+    );
+
+    const handleCancel = () => {
+        if (user) {
+            setFormData({
+                first_name: user.first_name || '',
+                last_name: user.last_name || '',
+                country: user.country || '',
+                exam_batch: user.exam_batch || ''
+            });
+        }
+        setMessage(null);
     };
 
     const handleUpdate = async (e) => {
         e.preventDefault();
+        if (!hasChanges || isLoading) return;
         setIsLoading(true);
         setMessage(null);
         try {
@@ -142,8 +165,19 @@ const Profile = () => {
                     </div>
 
                     <div className="profile-actions">
-                        <button type="button" className="cancel-btn">Cancel</button>
-                        <button type="submit" className="save-btn" disabled={isLoading}>
+                        <button 
+                            type="button" 
+                            className="cancel-btn"
+                            onClick={handleCancel}
+                            disabled={!hasChanges || isLoading}
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            type="submit" 
+                            className="save-btn" 
+                            disabled={!hasChanges || isLoading}
+                        >
                             {isLoading ? 'Updating...' : 'Update'}
                         </button>
                     </div>

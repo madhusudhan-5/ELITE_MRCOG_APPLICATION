@@ -259,20 +259,29 @@
 }
 
 .ur-save-btn {
-    background: #4f46e5;
+    background: var(--color-navy, #2F327D);
     color: white;
     border: none;
     padding: 0.8rem 2rem;
     border-radius: 8px;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+    box-shadow: 0 4px 10px rgba(47, 50, 125, 0.2);
     transition: 0.2s;
 }
 
-.ur-save-btn:hover {
-    background: #4338ca;
+.ur-save-btn:hover:not(:disabled) {
+    background: var(--color-navy-dark, #1D2045);
     transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(47, 50, 125, 0.3);
+}
+
+.ur-save-btn:disabled {
+    background: #cbd5e1;
+    color: #94a3b8;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
 }
 
 @media (max-width: 600px) {

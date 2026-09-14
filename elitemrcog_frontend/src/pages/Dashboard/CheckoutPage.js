@@ -153,10 +153,13 @@ const CheckoutPage = () => {
             if (res.data.gateway === 'stripe') {
                 setClientSecret(res.data.client_secret);
                 setPublishableKey(res.data.publishable_key);
+                setStep('payment');
+            } else if (res.data.gateway === 'free') {
+                handleSuccess(res.data);
             } else {
                 setPaymentInfo(res.data.payment_instructions);
+                setStep('payment');
             }
-            setStep('payment');
         } catch (err) {
             setError(err.response?.data?.error || 'Failed to initiate checkout.');
         } finally {

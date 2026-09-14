@@ -127,8 +127,8 @@
 
 .form-group input:focus, 
 .form-group select:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    border-color: var(--color-navy, #2F327D);
+    box-shadow: 0 0 0 3px rgba(47, 50, 125, 0.12);
 }
 
 .locked-input {
@@ -163,9 +163,10 @@
     border-top: 1px solid #f1f5f9;
 }
 
+/* Secondary Action Button */
 .cancel-btn {
-    background: #f8fafc;
-    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
     color: #475569;
     padding: 0.75rem 1.75rem;
     border-radius: 8px;
@@ -175,41 +176,58 @@
     transition: all 0.2s ease;
 }
 
-.cancel-btn:hover {
+.cancel-btn:hover:not(:disabled) {
     background: #f1f5f9;
     color: #1e293b;
     border-color: #94a3b8;
 }
 
+.cancel-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    border-color: #e2e8f0;
+    color: #94a3b8;
+    background: #f8fafc;
+}
+
+/* Primary Action Button - matches wireframe & application primary */
 .save-btn {
-    background: #2563eb;
+    background: var(--color-navy, #2F327D);
     color: #ffffff;
-    border: none;
+    border: 1.5px solid var(--color-navy, #2F327D);
     padding: 0.75rem 2.25rem;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
     font-size: 0.95rem;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    box-shadow: 0 3px 10px rgba(47, 50, 125, 0.2);
     transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .save-btn:hover:not(:disabled) {
-    background: #1d4ed8;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    background: var(--color-navy-dark, #1D2045);
+    border-color: var(--color-navy-dark, #1D2045);
+    box-shadow: 0 5px 15px rgba(47, 50, 125, 0.3);
     transform: translateY(-1px);
 }
 
 .save-btn:focus-visible,
 .cancel-btn:focus-visible {
-    outline: 2px solid #2563eb;
+    outline: 2px solid var(--color-navy, #2F327D);
     outline-offset: 2px;
 }
 
+/* Inactive/Disabled state when form is not dirty or updating */
 .save-btn:disabled {
-    background: #94a3b8;
+    background: #e2e8f0;
+    border-color: #e2e8f0;
+    color: #94a3b8;
     cursor: not-allowed;
     box-shadow: none;
+    transform: none;
 }
 
 .alert {
