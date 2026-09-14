@@ -60,7 +60,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 };
 
 function App() {
-  const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || "";
+  const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || "488227241625-2r2fparrloakh05tfnl2q0jd0gnri8lr.apps.googleusercontent.com";
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
       <CartProvider>
