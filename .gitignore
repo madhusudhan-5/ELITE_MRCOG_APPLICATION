@@ -12,3 +12,6 @@ extract.sh
 node_modules/
 build/
 db.sqlite3
+.env
+.env.*
+*.env
