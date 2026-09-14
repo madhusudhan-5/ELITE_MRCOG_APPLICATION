@@ -11,12 +11,12 @@ if [ -f "$APP_DIR/elitemrcog_backend/db.sqlite3" ]; then
     cp "$APP_DIR/elitemrcog_backend/db.sqlite3" "$APP_DIR/elitemrcog_backend/db_backup_$(date +%Y%m%d_%H%M%S).sqlite3"
 fi
 if [ -f "$APP_DIR/elitemrcog_backend/.env" ]; then
-    echo "Backing up backend .env..."
-    cp "$APP_DIR/elitemrcog_backend/.env" "/tmp/elitemrcog_backend_env_backup"
+    echo "Preserving server backend .env..."
+    cp "$APP_DIR/elitemrcog_backend/.env" "/tmp/elitemrcog_backend_env_active"
 fi
 if [ -f "$APP_DIR/elitemrcog_frontend/.env" ]; then
-    echo "Backing up frontend .env..."
-    cp "$APP_DIR/elitemrcog_frontend/.env" "/tmp/elitemrcog_frontend_env_backup"
+    echo "Preserving server frontend .env..."
+    cp "$APP_DIR/elitemrcog_frontend/.env" "/tmp/elitemrcog_frontend_env_active"
 fi
 
 # 1. Pull Latest Code
@@ -24,14 +24,12 @@ cd $APP_DIR
 git fetch origin main
 git reset --hard origin/main
 
-# Restore .env files if deleted by git reset
-if [ -f "/tmp/elitemrcog_backend_env_backup" ] && [ ! -f "$APP_DIR/elitemrcog_backend/.env" ]; then
-    echo "Restoring backend .env..."
-    cp "/tmp/elitemrcog_backend_env_backup" "$APP_DIR/elitemrcog_backend/.env"
+# Ensure server's original .env files are always preserved and never replaced
+if [ -f "/tmp/elitemrcog_backend_env_active" ]; then
+    cp "/tmp/elitemrcog_backend_env_active" "$APP_DIR/elitemrcog_backend/.env"
 fi
-if [ -f "/tmp/elitemrcog_frontend_env_backup" ] && [ ! -f "$APP_DIR/elitemrcog_frontend/.env" ]; then
-    echo "Restoring frontend .env..."
-    cp "/tmp/elitemrcog_frontend_env_backup" "$APP_DIR/elitemrcog_frontend/.env"
+if [ -f "/tmp/elitemrcog_frontend_env_active" ]; then
+    cp "/tmp/elitemrcog_frontend_env_active" "$APP_DIR/elitemrcog_frontend/.env"
 fi
 
 # 2. Build Frontend
