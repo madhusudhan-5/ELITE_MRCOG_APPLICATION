@@ -47,7 +47,7 @@ if [ ! -d "../elitemrcog_backend_env" ]; then
     echo "Creating Python virtual environment..."
     python3 -m venv ../elitemrcog_backend_env
 fi
-source ../elitemrcog_backend_env/bin/activate
+. ../elitemrcog_backend_env/bin/activate
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py collectstatic --noinput
